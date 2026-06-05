@@ -9,6 +9,7 @@ wired together with routing:
 | `/dashboard`   | Dashboard   | The "control room": hero, transfer status, impact chart, allocation treemap, updates. A floating Tweaks panel switches the donation-status phase (preview / in-progress / allocated). |
 | `/onboarding`  | Onboarding  | Landing → 6-step questionnaire → submitted. A single-file state machine. |
 | `/partner`     | Partner     | Org directory (sort / filter / paginate) and individual partner detail (KPIs, accordions, intervention charts). |
+| `/shadcn-demo` | shadcn      | Living gallery + verification surface for the themed shadcn instance (`@/components/ui/*`). |
 
 `/` redirects to `/dashboard`.
 
@@ -32,3 +33,35 @@ npm run build    # production build → dist/
 The prototype's design medium was HTML/CSS/JS. The component JSX was ported into
 ES modules and recomposed; `public/styles.css` and the mesh gradient are carried
 over verbatim so the visual output matches the source pixel-for-pixel.
+
+## shadcn components
+
+This repo carries a themed [shadcn](https://ui.shadcn.com) instance that mirrors the
+separately-maintained component library
+[Niftic-Agency/ffg-components](https://github.com/Niftic-Agency/ffg-components)
+(its `base-nova` / Base UI style, FFG theme tokens, and PP Fragment fonts).
+
+- `components.json` — shadcn config. The `@ffg` registry namespace points at
+  `https://factory-for-goodcomponents.vercel.app/r/{name}.json`. Once the library
+  exposes that endpoint, `npx shadcn@latest add @ffg/<name>` works directly.
+- `src/index.css` — Tailwind v4 + the FFG theme tokens (ported from the library's
+  `app/globals.css`). Imported once in `src/main.jsx`. Tailwind's global *preflight*
+  reset is intentionally omitted so it coexists with `public/styles.css` without
+  regressing the existing surfaces.
+- `src/components/ui/*` — vendored themed components (`.tsx`, compiled by Vite/esbuild).
+- `src/lib/utils.js` — `cn()` helper.
+
+### Importing components (stopgap)
+
+Until the library ships its `/r` registry, the library's public `manifest.json` is a
+Brand-OS catalogue only — its `code` field is a usage demo, not component source — so
+the shadcn CLI can't consume it. The bridge script pulls real source from the library's
+GitHub repo (requires the `gh` CLI authenticated with read access):
+
+```bash
+npm run ui:import -- --list          # browse the catalogue (59 components)
+npm run ui:import -- button badge    # import specific components + internal deps
+npm run ui:import -- --all           # import everything
+```
+
+It writes to `src/components/ui/` and prints any external npm packages to install.
