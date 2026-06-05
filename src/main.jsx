@@ -4,13 +4,17 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import './index.css';
 import MeshBackground from './lib/MeshBackground.jsx';
 import Dashboard from './surfaces/Dashboard.jsx';
+import DashboardUnauth from './surfaces/DashboardUnauth.jsx';
+import Home from './surfaces/Home.jsx';
 import Onboarding from './surfaces/Onboarding.jsx';
 import Partner from './surfaces/Partner.jsx';
 import ShadcnDemo from './surfaces/ShadcnDemo.jsx';
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/dashboard" replace /> },
+  { path: '/home', element: <Home /> },
   { path: '/dashboard', element: <Dashboard /> },
+  { path: '/dashboard-unauth', element: <DashboardUnauth /> },
   { path: '/onboarding', element: <Onboarding /> },
   { path: '/partner', element: <Partner /> },
   { path: '/shadcn-demo', element: <ShadcnDemo /> },
