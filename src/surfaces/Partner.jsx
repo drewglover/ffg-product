@@ -1,7 +1,6 @@
 // FFG Partner surface — ported from the prototype's partner.jsx shell.
 // Single app toggling between the directory and an individual partner page.
 import React, { useState, useEffect } from 'react';
-import { FFGTopNav } from '../topnav-auth.jsx';
 import { PartnerDetail } from '../components/partner/sections/PartnerDetail.jsx';
 import { Directory } from '../components/partner/sections/Directory.jsx';
 
@@ -22,12 +21,12 @@ function PartnerApp() {
 }
 
 export default function Partner() {
+  // The .app wrapper (transparent background + lighter type scale) and the top
+  // nav are supplied by AuthLayout — see this route's `handle` in main.jsx.
+  // Uses the shared responsive .shell padding (no inline override).
   return (
-    <div className="app" data-gradient="off" style={{ fontSize: '14px', fontWeight: 200, background: 'transparent' }}>
-      <FFGTopNav />
-      <div className="shell" style={{ padding: '96px 48px 96px' }}>
-        <PartnerApp />
-      </div>
+    <div className="shell">
+      <PartnerApp />
     </div>
   );
 }

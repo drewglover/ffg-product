@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 // Shared FFG top nav + Lucide icon set, mounted into #topnav-root by any page
 // that includes this script.
@@ -14,7 +14,9 @@ const NAV_LINKS = [
 ];
 const NAV_LINKS_UNAUTH = [
   { label: 'Dashboard', to: '/dashboard-unauth' },
-  { label: 'Organizations', to: '/partner' },
+  // The authenticated partner directory lives behind sign-in; the unauth nav
+  // points at the public Organizations placeholder instead.
+  { label: 'Organizations', to: '/organizations' },
 ];
 
 // Primary nav links, rendered as react-router NavLinks with an active state.
@@ -83,9 +85,9 @@ function TopNav({ padded = true, stuck = false }) {
   return (
     <header className={"nav" + (stuck ? " is-stuck" : "")}>
       <div className="nav-inner" style={padded ? { padding: "12px 48px" } : undefined}>
-        <a className="wordmark" href="/dashboard" aria-label="Factory for Good">
+        <Link className="wordmark" to="/dashboard" aria-label="Factory for Good">
           <img src="/assets/Factory_for_Good_dark.svg" alt="Factory for Good" />
-        </a>
+        </Link>
         <div className="nav-right">
           <NavLinks />
           <button className="icon-btn" aria-label="Notifications">

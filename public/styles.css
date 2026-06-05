@@ -4814,6 +4814,22 @@ img {
   }
 }
 
+/* Route-level cross-fade. The persistent top nav stays mounted while the
+   routed surface swaps inside <Outlet/>; this wraps that content (keyed on
+   pathname) so it fades in on every navigation. Opacity-only on purpose —
+   each surface already runs its own staggered section entrances, so a second
+   translate here would double up. */
+@keyframes ffg-route-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.route-fade {
+  animation: ffg-route-fade 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-fade { animation: none; }
+}
+
 /* ── Dashboard ── */
 .nav {
   animation: ffg-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0ms both;
