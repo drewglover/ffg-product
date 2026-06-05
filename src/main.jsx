@@ -3,20 +3,43 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import './index.css';
 import MeshBackground from './lib/MeshBackground.jsx';
+import AuthLayout from './layouts/AuthLayout.jsx';
+import UnauthLayout from './layouts/UnauthLayout.jsx';
 import Dashboard from './surfaces/Dashboard.jsx';
 import DashboardUnauth from './surfaces/DashboardUnauth.jsx';
 import Home from './surfaces/Home.jsx';
 import Onboarding from './surfaces/Onboarding.jsx';
+import OrganizationsUnauth from './surfaces/OrganizationsUnauth.jsx';
 import Partner from './surfaces/Partner.jsx';
 import ShadcnDemo from './surfaces/ShadcnDemo.jsx';
 
+// Layout routes keep the top nav mounted across child navigations: only the
+// <Outlet/> content swaps, so moving between sibling surfaces never reloads
+// the page or remounts the nav. Crossing the auth boundary swaps the layout.
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/dashboard" replace /> },
-  { path: '/home', element: <Home /> },
-  { path: '/dashboard', element: <Dashboard /> },
-  { path: '/dashboard-unauth', element: <DashboardUnauth /> },
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: '/dashboard', element: <Dashboard /> },
+      {
+        path: '/partner',
+        element: <Partner />,
+        // Partner reveals the mesh (transparent .app) and runs a lighter type
+        // scale than the other authenticated surfaces.
+        handle: { appStyle: { fontSize: '14px', fontWeight: 200, background: 'transparent' } },
+      },
+    ],
+  },
+  {
+    element: <UnauthLayout />,
+    children: [
+      { path: '/home', element: <Home /> },
+      { path: '/dashboard-unauth', element: <DashboardUnauth /> },
+      { path: '/organizations', element: <OrganizationsUnauth /> },
+    ],
+  },
   { path: '/onboarding', element: <Onboarding /> },
-  { path: '/partner', element: <Partner /> },
   { path: '/shadcn-demo', element: <ShadcnDemo /> },
   { path: '*', element: <Navigate to="/dashboard" replace /> },
 ]);

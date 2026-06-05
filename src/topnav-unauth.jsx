@@ -10,13 +10,13 @@ function TopNavUnauth({ padded = true, stuck = false }) {
   return (
     <header className={"nav" + (stuck ? " is-stuck" : "")}>
       <div className="nav-inner" style={padded ? { padding: "12px 48px" } : undefined}>
-        <a className="wordmark" href="/home" aria-label="Factory for Good">
+        <Link className="wordmark" to="/home" aria-label="Factory for Good">
           <img src="/assets/Factory_for_Good_dark.svg" alt="Factory for Good" />
-        </a>
+        </Link>
         <div className="nav-right">
           <NavLinks links={NAV_LINKS_UNAUTH} />
           <Link className="nav-cta" to="/dashboard">Log in</Link>
-          <a className="nav-cta nav-cta--solid" href="/onboarding">Get started</a>
+          <Link className="nav-cta nav-cta--solid" to="/onboarding">Get started</Link>
         </div>
       </div>
     </header>

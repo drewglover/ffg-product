@@ -2,7 +2,6 @@
 // The control room: hero, transfer status, impact charts, allocation,
 // updates. The floating TweaksPanel switches the donation-status phase.
 import React, { useState, useEffect } from 'react';
-import { FFGTopNav } from '../topnav-auth.jsx';
 import { useTweaks, TweaksPanel, TweakSection, TweakRadio } from '../tweaks-panel.jsx';
 import { DENSITY_PRESETS } from '../components/dashboard/data/densityPresets.jsx';
 import { Hero } from '../components/dashboard/sections/Hero.jsx';
@@ -25,7 +24,6 @@ const TWEAK_DEFAULTS = {
 
 export default function Dashboard() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [stuck, setStuck] = useState(false);
   const [pageTab, setPageTab] = useState('overview');
   const [allocAmount, setAllocAmount] = useState(200000);
 
@@ -38,17 +36,8 @@ export default function Dashboard() {
     r.setProperty('--type-card-title', preset.card + 'px');
   }, [t.density]);
 
-  // Toggle sticky-nav fill once the page is scrolled
-  useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 4);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
-    <div className="app" data-gradient="off">
-      <FFGTopNav stuck={stuck} padded={false} />
+    <>
       <div className="shell">
         <Hero phase={t.phase} name={t.name} livesCount={t.livesCount} onAmountConfirm={setAllocAmount} confirmedAmount={allocAmount} />
         <TransferStatus phase={t.phase} firstGiveDate={t.firstGiveDate} />
@@ -68,6 +57,6 @@ export default function Dashboard() {
           options={['preview', 'in-progress', 'allocated']}
           onChange={(v) => setTweak('phase', v)} />
       </TweaksPanel>
-    </div>
+    </>
   );
 }
