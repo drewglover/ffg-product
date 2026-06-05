@@ -1,0 +1,240 @@
+/* ════════════════════════════════════════════════════════════════════
+   FFG SHADCN THEME · Tailwind v4
+   Ported from Niftic-Agency/ffg-components → app/globals.css.
+
+   This file powers the `@/components/ui/*` shadcn instance ONLY. It is
+   imported from main.jsx and lives alongside (not instead of) the hand-
+   written public/styles.css that renders the existing surfaces.
+
+   Two deliberate departures from the library's globals.css:
+     1. Tailwind's global *preflight* reset is NOT imported. public/styles.css
+        already sets `* { box-sizing: border-box }` + margin resets, and a
+        global preflight would regress the pixel-perfect existing surfaces.
+        We import theme + utilities only.
+     2. The library's global `@layer base` rules (body bg/fg, html font,
+        h1–h6 overrides) are omitted for the same reason — they would fight
+        the existing app + WebGL mesh background. shadcn components carry
+        their own utility classes, so they render themed without them.
+
+   To RE-THEME: this is a snapshot. The source of truth is the library's
+   globals.css. Re-run `npm run ui:import` (or, once the library exposes a
+   /r registry, `npx shadcn add @ffg/<name>`) to pull updates.
+════════════════════════════════════════════════════════════════════ */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, [data-theme="dark"], .dark *, [data-theme="dark"] *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'PP Fragment Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'PP Fragment Glare', ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-heading: 'PP Fragment Sans', ui-sans-serif, system-ui, sans-serif;
+  --spacing: 0.35rem;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* ─── Tier 1 — FFG brand primitives (sRGB hex → oklch) ───────────── */
+
+  /* Brand */
+  --ffg-light: oklch(0.971 0.006 84.6); /* #F7F5F1 */
+  --ffg-dark: oklch(0.268 0.011 27.5); /* #2B2423 */
+
+  /* Surfaces — neutral ramp (warm-tinted), light → dark */
+  --ffg-surface-50: oklch(0.971 0.006 84.6); /* #F7F5F1 */
+  --ffg-surface-100: oklch(0.931 0.007 88.6); /* #EAE8E3 */
+  --ffg-surface-200: oklch(0.892 0.008 80.7); /* #DEDBD6 */
+  --ffg-surface-300: oklch(0.815 0.008 80.7); /* #C5C2BD */
+  --ffg-surface-400: oklch(0.735 0.007 88.7); /* #ABA9A4 */
+  --ffg-surface-500: oklch(0.654 0.008 88.7); /* #92908B */
+  --ffg-surface-600: oklch(0.569 0.008 88.7); /* #797772 */
+  --ffg-surface-700: oklch(0.482 0.007 84.6); /* #605E5A */
+  --ffg-surface-800: oklch(0.391 0.006 78.3); /* #474542 */
+  --ffg-surface-900: oklch(0.294 0.005 67.6); /* #2E2C2A */
+  --ffg-surface-950: oklch(0.191 0.002 106.6); /* #141413 */
+
+  /* Shades — white-overlay alphas (dark-mode borders, scrims) */
+  --ffg-shade-10: oklch(1 0 0 / 0.1);
+  --ffg-shade-20: oklch(1 0 0 / 0.2);
+  --ffg-shade-30: oklch(1 0 0 / 0.3);
+  --ffg-shade-40: oklch(1 0 0 / 0.4);
+  --ffg-shade-50: oklch(1 0 0 / 0.5);
+  --ffg-shade-60: oklch(1 0 0 / 0.6);
+  --ffg-shade-70: oklch(1 0 0 / 0.7);
+  --ffg-shade-80: oklch(1 0 0 / 0.8);
+  --ffg-shade-90: oklch(1 0 0 / 0.9);
+
+  /* Qualitative — categorical palette (charts, tags, illustrations) */
+  --ffg-qual-purple: oklch(0.523 0.153 310.4); /* #854BAA */
+  --ffg-qual-pink: oklch(0.66 0.148 351.2); /* #D4689D */
+  --ffg-qual-orange: oklch(0.655 0.144 38.1); /* #D96D4B */
+  --ffg-qual-light-orange: oklch(0.74 0.137 59.8); /* #E99448 */
+  --ffg-qual-light-blue: oklch(0.651 0.102 241.2); /* #5197C8 */
+  --ffg-qual-blue: oklch(0.34 0.064 263.2); /* #263759 */
+  --ffg-qual-black: oklch(0.268 0.011 27.5); /* #2B2423 */
+
+  /* Sequential — ordered ramp (light → dark blue) */
+  --ffg-seq-100: oklch(0.879 0.02 245.7); /* #CDD9E4 */
+  --ffg-seq-200: oklch(0.789 0.04 248.3); /* #A7BDD3 */
+  --ffg-seq-300: oklch(0.698 0.056 250.3); /* #84A1C0 */
+  --ffg-seq-400: oklch(0.638 0.06 249.6); /* #708FAF */
+  --ffg-seq-500: oklch(0.519 0.072 252.6); /* #4A6B91 */
+  --ffg-seq-600: oklch(0.428 0.072 257.0); /* #355076 */
+  --ffg-seq-700: oklch(0.34 0.064 263.2); /* #263759 */
+
+  /* Diverging — bidirectional ramp through neutral zero */
+  --ffg-div-neg-3: oklch(0.34 0.064 263.2); /* #263759 */
+  --ffg-div-neg-2: oklch(0.551 0.039 270.6); /* #697189 */
+  --ffg-div-neg-1: oklch(0.759 0.017 278.4); /* #AEB0BC */
+  --ffg-div-zero: oklch(0.971 0.006 84.6); /* #F7F5F1 */
+  --ffg-div-pos-1: oklch(0.893 0.055 59.9); /* #F8D4B8 */
+  --ffg-div-pos-2: oklch(0.817 0.1 60.3); /* #F3B480 */
+  --ffg-div-pos-3: oklch(0.74 0.137 59.8); /* #E99448 */
+
+  /* ─── Tier 2 — semantic tokens (light mode) ─────────────────────── */
+  --background: var(--ffg-surface-50);
+  --foreground: var(--ffg-surface-800);
+  --card: var(--ffg-surface-50);
+  --card-foreground: var(--ffg-surface-800);
+  --popover: var(--ffg-surface-50);
+  --popover-foreground: var(--ffg-surface-950);
+  --primary: var(--ffg-surface-950);
+  --primary-foreground: var(--ffg-surface-50);
+  --secondary: var(--ffg-surface-50);
+  --secondary-foreground: var(--ffg-surface-950);
+  --muted: var(--ffg-surface-100);
+  --muted-foreground: var(--ffg-surface-600);
+  --accent: var(--ffg-surface-200);
+  --accent-foreground: var(--ffg-surface-950);
+
+  /* FFG palette has no dedicated red; holding shadcn's default. */
+  --destructive: oklch(0.577 0.245 27.325);
+
+  --border: var(--ffg-surface-200);
+  --input: var(--ffg-surface-300);
+  /* Ring stays on the qual blue so focus stays distinct from primary buttons. */
+  --ring: var(--ffg-qual-blue);
+
+  /* Charts — 5 most-distinct hues from the qualitative palette. */
+  --chart-1: var(--ffg-qual-purple);
+  --chart-2: var(--ffg-qual-pink);
+  --chart-3: var(--ffg-qual-orange);
+  --chart-4: var(--ffg-qual-light-blue);
+  --chart-5: var(--ffg-qual-blue);
+
+  --radius: 0rem;
+
+  /* Switch thumb — sized to fit the hardcoded track heights. */
+  --switch-thumb-size: 16px;
+  --switch-thumb-size-sm: 12px;
+
+  /* Shadows — disabled globally. FFG design language is flat. */
+  --shadow-2xs: none;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
+
+  /* Sidebar — references main semantic tokens so they stay in sync. */
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark,
+[data-theme='dark'] {
+  /* ─── Tier 2 — semantic tokens (dark mode) ──────────────────────── */
+  --background: var(--ffg-surface-950);
+  --foreground: var(--ffg-surface-100);
+  --card: var(--ffg-surface-950);
+  --card-foreground: var(--ffg-surface-200);
+  --popover: var(--ffg-surface-950);
+  --popover-foreground: var(--ffg-surface-50);
+  --primary: var(--ffg-surface-50);
+  --primary-foreground: var(--ffg-surface-950);
+  --secondary: var(--ffg-surface-950);
+  --secondary-foreground: var(--ffg-surface-50);
+  --muted: var(--ffg-surface-900);
+  --muted-foreground: var(--ffg-surface-500);
+  --accent: var(--ffg-surface-800);
+  --accent-foreground: var(--ffg-surface-50);
+
+  --destructive: oklch(0.704 0.191 22.216);
+
+  --border: var(--ffg-surface-900);
+  --input: var(--ffg-surface-600);
+  --ring: var(--ffg-qual-light-blue);
+
+  --chart-1: var(--ffg-qual-purple);
+  --chart-2: var(--ffg-qual-pink);
+  --chart-3: var(--ffg-qual-orange);
+  --chart-4: var(--ffg-qual-light-blue);
+  --chart-5: var(--ffg-qual-blue);
+
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
