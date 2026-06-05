@@ -1,8 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 // Shared FFG top nav + Lucide icon set, mounted into #topnav-root by any page
 // that includes this script.
+
+// Primary nav links. The auth and unauth navs share the same shape but point
+// Dashboard at their respective surfaces. "Organizations" maps to the partner
+// surface in both.
+const NAV_LINKS = [
+  { label: 'Dashboard', to: '/dashboard' },
+  { label: 'Organizations', to: '/partner' },
+];
+const NAV_LINKS_UNAUTH = [
+  { label: 'Dashboard', to: '/dashboard-unauth' },
+  { label: 'Organizations', to: '/partner' },
+];
+
+// Primary nav links, rendered as react-router NavLinks with an active state.
+function NavLinks({ links = NAV_LINKS }) {
+  return (
+    <nav className="nav-links" aria-label="Primary">
+      {links.map(({ label, to }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive }) => 'nav-link' + (isActive ? ' is-active' : '')}
+        >
+          {label}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
 
 const Icon = {
   Bell: (p) =>
@@ -34,6 +64,7 @@ const Icon = {
 function TopNav({ padded = true, stuck = false }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const menuRef = React.useRef(null);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (!menuOpen) return;
@@ -56,6 +87,7 @@ function TopNav({ padded = true, stuck = false }) {
           <img src="/assets/Factory_for_Good_dark.svg" alt="Factory for Good" />
         </a>
         <div className="nav-right">
+          <NavLinks />
           <button className="icon-btn" aria-label="Notifications">
             <Icon.Bell />
           </button>
@@ -84,7 +116,7 @@ function TopNav({ padded = true, stuck = false }) {
                 </div>
                 <div className="nav-dropdown__sep" role="separator" />
                 <div className="nav-dropdown__group">
-                  <button type="button" className="nav-dropdown__item nav-dropdown__item--destructive" role="menuitem" onClick={() => setMenuOpen(false)}>
+                  <button type="button" className="nav-dropdown__item nav-dropdown__item--destructive" role="menuitem" onClick={() => { setMenuOpen(false); navigate('/home'); }}>
                     <Icon.LogOut />
                     <span>Sign out</span>
                   </button>
@@ -98,4 +130,4 @@ function TopNav({ padded = true, stuck = false }) {
   );
 }
 
-export { Icon, TopNav, TopNav as FFGTopNav };
+export { Icon, NAV_LINKS, NAV_LINKS_UNAUTH, NavLinks, TopNav, TopNav as FFGTopNav };
