@@ -25,9 +25,9 @@ const router = createBrowserRouter([
       {
         path: '/partner',
         element: <Partner />,
-        // Partner reveals the mesh (transparent .app) and runs a lighter type
-        // scale than the other authenticated surfaces.
-        handle: { appStyle: { fontSize: '14px', fontWeight: 200, background: 'transparent' } },
+        // Partner runs a lighter type scale than the other authenticated
+        // surfaces. (The mesh shows through by default — see .app in styles.css.)
+        handle: { appStyle: { fontSize: '14px', fontWeight: 200 } },
       },
     ],
   },

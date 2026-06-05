@@ -225,7 +225,11 @@ img {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
-  background-color: var(--ffg-surface-50);
+  /* Transparent by default so the fixed mesh canvas (z-index 0) shows through
+     every surface. The html/body fallback colour covers the gap before the
+     WebGL canvas mounts. A surface can still opt back into an opaque fill via
+     its route's handle.appStyle if needed. */
+  background-color: transparent;
 }
 
 /* .app::before removed — static gradient.jpg replaced by WebGL leak canvas */
