@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { Icon } from '../icons/Icon';
 import { STRATEGIES, IMPACT_AREAS, IMPACT_AREA_ICONS } from '../data/orgTaxonomy';
 import { ORGS } from '../data/partnerList';
 import { OrgLogoPlaceholder } from '../atoms/OrgLogoPlaceholder';
-import { OrgPanel } from '../panels/OrgPanel';
 
-function OrgRow({ org, onOpen }) {
-  const handleOpen = () => onOpen(org);
-  const handleKey = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleOpen();
-    }
-  };
+function OrgRow({ org }) {
   return (
-    <article
-      className="org-row"
-      role="button"
-      tabIndex={0}
-      onClick={handleOpen}
-      onKeyDown={handleKey}
-      aria-label={`Open ${org.name}`}>
-
+    <article className="org-row">
       <OrgLogoPlaceholder name={org.name} size={48} />
       <div className="org-row__body">
         <div className="org-row__head">
@@ -50,12 +34,6 @@ function OrgRow({ org, onOpen }) {
           <div className="org-stat__value" style={{ fontWeight: "300" }}>${org.donated.toLocaleString()}</div>
         </div>
       </div>
-      <span className="org-row__open" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M7 17 17 7" />
-          <path d="M7 7h10v10" />
-        </svg>
-      </span>
       <div className="org-row__tags">
         {org.tags.map((tag) => {
           const slug = tag.toLowerCase().replace(/\s+/g, "-");
@@ -74,7 +52,6 @@ function ImpactAreasSection({ cohortSize = 122 }) {
   const [strategy, setStrategy] = useState("all");
   const [area, setArea] = useState("all");
   const [page, setPage] = useState(1);
-  const [openOrg, setOpenOrg] = useState(null);
   const perPage = 5;
 
   const filtered = ORGS.filter((o) =>
@@ -135,7 +112,7 @@ function ImpactAreasSection({ cohortSize = 122 }) {
             </p>
           </div> :
 
-        pageRows.map((o, i) => <OrgRow key={i} org={o} onOpen={setOpenOrg} />)
+        pageRows.map((o, i) => <OrgRow key={i} org={o} />)
         }
       </div>
 
@@ -175,11 +152,6 @@ function ImpactAreasSection({ cohortSize = 122 }) {
           </div>
         </nav>
       }
-
-      {openOrg && ReactDOM.createPortal(
-        <OrgPanel org={openOrg} cohortSize={cohortSize} onClose={() => setOpenOrg(null)} />,
-        document.body
-      )}
     </section>);
 
 }
