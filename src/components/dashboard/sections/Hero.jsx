@@ -34,7 +34,7 @@ function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount }) {
     <div className="hero" style={{ gap: "64px", alignItems: "flex-start", padding: "0 0 96px" }}>
       <div className="hero-text">
         <h1 style={{ fontSize: "48px" }}>Welcome, {name}</h1>
-        <p style={{ fontWeight: "300", fontSize: "16px", color: "rgb(121, 119, 114)" }}>Your good has reached <a className="accent-link" href="#impact" style={{ fontSize: "16px", fontWeight: "300", color: "rgb(20, 20, 19)" }}>{livesCount.toLocaleString()} new lives</a> since your last visit.</p>
+        <p style={{ fontWeight: "300", fontSize: "16px", color: "var(--ffg-muted)" }}>Your good has reached <a className="accent-link" href="#impact" style={{ fontSize: "16px", fontWeight: "300", color: "var(--ffg-surface-950)" }}>{livesCount.toLocaleString()} new lives</a> since your last visit.</p>
       </div>
 
       {isAllocated ?
@@ -48,7 +48,7 @@ function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount }) {
           </button>
         </div> :
       phase === "preview" ?
-      <div className="alloc-card" role="group" aria-label="Impact allocation" style={{ borderColor: "rgba(20, 20, 19, 0.1)" }}>
+      <div className="alloc-card" role="group" aria-label="Impact allocation" style={{ borderColor: "var(--overlay-dark-10)" }}>
           <div className="alloc-info">
             <div className="alloc-label">
               <span>Impact allocation</span>

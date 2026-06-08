@@ -52,14 +52,14 @@ function Directory({ onOpen }) {
     <div className="pt-dir" style={{ padding: "0px 0px 0px" }}>
       <header className="pt-dir__head" style={{ margin: "0px 0px 64px" }}>
         <h1 className="pt-dir__title" style={{ fontSize: "48px", fontWeight: "300", margin: "0px 0px 1px", padding: "0px" }}>Our Partners</h1>
-        <p className="pt-dir__sub" style={{ color: "rgb(121, 119, 114)", width: "1200px", padding: "16px 0px 0px", fontWeight: "300", fontSize: "16px" }}>
+        <p className="pt-dir__sub" style={{ color: "var(--ffg-muted)", width: "1200px", padding: "16px 0px 0px", fontWeight: "300", fontSize: "16px" }}>
           Browse all of the organizations we partner with and find the right match for you.
         </p>
       </header>
 
       <div className="pt-toolbar" style={{ borderStyle: "none", margin: "0px 0px 2px" }}>
-        <div className="pt-toolbar__results" style={{ fontSize: "14px", color: "rgb(46, 44, 42)" }}>
-          <span className="pt-toolbar__count" style={{ fontSize: "14px", fontWeight: "400", color: "rgb(46, 44, 42)" }}>{PARTNERS.length}</span> organizations
+        <div className="pt-toolbar__results" style={{ fontSize: "14px", color: "var(--ffg-surface-900)" }}>
+          <span className="pt-toolbar__count" style={{ fontSize: "14px", fontWeight: "400", color: "var(--ffg-surface-900)" }}>{PARTNERS.length}</span> organizations
         </div>
         <div className="pt-toolbar__right">
           <SortDropdown value={sort} onChange={setSort} />

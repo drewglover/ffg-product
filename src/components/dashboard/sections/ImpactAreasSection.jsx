@@ -40,7 +40,7 @@ function OrgRow({ org }) {
           return (
             <span key={tag} className={`impact-badge impact-badge--${slug}`}>
               <span className="impact-badge__icon">{IMPACT_AREA_ICONS[tag]}</span>
-              <span style={{ fontSize: "14px", fontWeight: "300", color: "rgb(121, 119, 114)" }}>{tag}</span>
+              <span style={{ fontSize: "14px", fontWeight: "300", color: "var(--ffg-muted)" }}>{tag}</span>
             </span>);
         })}
       </div>

@@ -7,7 +7,7 @@ const Badge = ({ children, solid }) => {
     return (
       <span className={`impact-badge impact-badge--${slug}`} style={{ alignItems: "center", justifyContent: "flex-start" }}>
         <span className="impact-badge__icon">{cat.svg}</span>
-        <span style={{ fontSize: "14px", fontWeight: "300", color: "rgb(121, 119, 114)" }}>{children}</span>
+        <span style={{ fontSize: "14px", fontWeight: "300", color: "var(--ffg-muted)" }}>{children}</span>
       </span>);
 
 

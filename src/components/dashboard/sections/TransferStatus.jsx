@@ -88,13 +88,13 @@ function TransferStatus({ phase, firstGiveDate = "April 15, 2026" }) {
               <div className="bar" style={{ "--p": s.progress + "%" }} />
               <div
                 className="step-label"
-                style={{ fontWeight: "300", fontSize: "14px", color: "rgb(20, 20, 19)", opacity: "0.6" }}
+                style={{ fontWeight: "300", fontSize: "14px", color: "var(--ffg-surface-950)", opacity: "0.6" }}
               >
                 {s.label}
               </div>
               <div
                 className="step-date"
-                style={{ fontWeight: "300", fontSize: "12px", color: "rgb(20, 20, 19)", opacity: "0.4" }}
+                style={{ fontWeight: "300", fontSize: "12px", color: "var(--ffg-surface-950)", opacity: "0.4" }}
               >
                 {s.date}
               </div>

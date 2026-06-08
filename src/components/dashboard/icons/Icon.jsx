@@ -20,7 +20,7 @@ const Icon = {
     </svg>,
 
   Info: (p) =>
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-info" {...p} style={{ stroke: "rgb(121, 119, 114)" }}>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-info" {...p} style={{ stroke: "var(--ffg-muted)" }}>
       <circle cx="12" cy="12" r="10" />
       <path d="M12 16v-4" />
       <path d="M12 8h.01" />

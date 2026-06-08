@@ -22,7 +22,7 @@ function ReviewStep({ order, locations, onBack, onSubmit }) {
             <h3 className="ob-review__h3" style={{ fontSize: "24px" }}>Your top focus areas</h3>
             <div className="ob-review__badge">
               <Ic.Diamond />
-              <span style={{ fontWeight: "300", fontSize: "14px", color: "rgb(121, 119, 114)" }}>You are part of the 5% of backers with these three top cause areas!</span>
+              <span style={{ fontWeight: "300", fontSize: "14px", color: "var(--ffg-muted)" }}>You are part of the 5% of backers with these three top cause areas!</span>
             </div>
             <div className="ob-cause-cards">
               {top3.map((id, idx) => {
@@ -42,7 +42,7 @@ function ReviewStep({ order, locations, onBack, onSubmit }) {
                       <span className="ob-cause-card__caret"><Ic.Caret /></span>
                     </button>
                     <div className="ob-cause-card__body">
-                      <p className="ob-cause-card__copy" style={{ color: "rgb(121, 119, 114)", lineHeight: "1.25", fontWeight: "300", fontSize: "16px" }}>{c.description}</p>
+                      <p className="ob-cause-card__copy" style={{ color: "var(--ffg-muted)", lineHeight: "1.25", fontWeight: "300", fontSize: "16px" }}>{c.description}</p>
                       {idx === 0 &&
                       <div className="ob-cause-card__meta">
                           <Ic.TrendingSm />

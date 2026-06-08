@@ -15,7 +15,7 @@ function RidgeDivider() {
         <path
           d="M0.249023 48.8633L83.9157 0.863281V48.8633L167.582 0.863281V48.8633L251.249 0.863281V48.8633"
           stroke="var(--ffg-surface-800)"
-          strokeWidth="1" style={{ stroke: "rgb(20, 20, 19)", opacity: "0.1" }} />
+          strokeWidth="1" style={{ stroke: "var(--ffg-surface-950)", opacity: "0.1" }} />
 
       </svg>
     </div>);

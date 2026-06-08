@@ -73,7 +73,7 @@ function PartnerDetail({ partner, onBack }) {
         <Section title="Why we chose this partner">
           <div className="pt-acc-list">
             <Accordion icon={<PIcon.Heart2 />} title="Trusted Leadership" defaultOpen>
-              <p className="pt-acc__copy" style={{ color: "rgb(121, 119, 114)", fontSize: "16px" }}>
+              <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
 {partner.name} is a Tier 4 organization on the Factory For Good scale. This mean that this organization is led by people we trust to operate with integrity, humility, and community connection.
               </p>
             </Accordion>
@@ -167,16 +167,16 @@ function PartnerDetail({ partner, onBack }) {
           <div className="pt-ba">
             <Accordion title="Before Intervention" defaultOpen variant="ba">
               <ul className="pt-bullets">
-                <li style={{ color: "rgb(121, 119, 114)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "rgb(121, 119, 114)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "rgb(121, 119, 114)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
               </ul>
             </Accordion>
             <Accordion title="After Intervention" defaultOpen variant="ba">
               <ul className="pt-bullets">
-                <li style={{ color: "rgb(121, 119, 114)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "rgb(121, 119, 114)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "rgb(121, 119, 114)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
               </ul>
             </Accordion>
           </div>

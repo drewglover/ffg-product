@@ -15,9 +15,9 @@ function Accordion({ icon, title, children, defaultOpen, variant }) {
         </span>
       </button>
       <div className="pt-acc__body" aria-hidden={!open}>
-        <div className="pt-acc__body-inner" style={{ color: "rgb(121, 119, 114)" }}>
+        <div className="pt-acc__body-inner" style={{ color: "var(--ffg-muted)" }}>
           {children ||
-            <p className="pt-acc__copy" style={{ color: "rgb(121, 119, 114)", fontSize: "16px" }}>
+            <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
               ut labore et dolore magna aliqua.
             </p>

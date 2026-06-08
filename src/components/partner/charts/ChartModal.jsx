@@ -39,7 +39,7 @@ function ChartModal({ title, onClose }) {
         </div>
         <div className="pt-modal__legend pt-chart__legend">
           <span><span className="pt-chart__sw pt-chart__sw--line" style={{ width: '18px', height: '4px', borderRadius: '2px', background: 'linear-gradient(90deg, #6F9DCB, #15315A)' }} /> This Organization</span>
-          <span><span className="pt-chart__sw pt-chart__sw--bar" style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#EAE8E3', border: '1px solid #92908B' }} /> Average of others</span>
+          <span><span className="pt-chart__sw pt-chart__sw--bar" style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--ffg-surface-100)', border: '1px solid var(--ffg-surface-500)' }} /> Average of others</span>
         </div>
       </div>
     </div>);

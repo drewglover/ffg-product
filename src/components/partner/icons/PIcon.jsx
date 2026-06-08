@@ -89,7 +89,7 @@ const PIcon = {
   // Reads as performance / trending up without leaning on a colored status dot,
   // which we’re moving away from in the hero.
   TrendUp: (p) =>
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" {...p} style={{ stroke: "rgb(121, 119, 114)" }}>
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" {...p} style={{ stroke: "var(--ffg-muted)" }}>
       <path d="M3 17l6-6 4 4 8-8" />
       <path d="M14 7h7v7" />
     </svg>,
@@ -121,7 +121,7 @@ const PIcon = {
 
   // Status: Ongoing Review — magnifier reads as “under examination”.
   Search: (p) =>
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p} style={{ stroke: "rgb(20, 20, 19)" }}>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p} style={{ stroke: "var(--ffg-surface-950)" }}>
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
     </svg>,
