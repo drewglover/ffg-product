@@ -38,7 +38,7 @@ function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount, onTab
           e.preventDefault();
           onTabChange && onTabChange("overview");
           const el = document.getElementById("impact-tabs");
-          if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" });
+          if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 48, behavior: "smooth" });
         }} style={{ fontSize: "16px", fontWeight: "300", color: "var(--ffg-surface-950)" }}>{livesCount.toLocaleString()} new lives</a> since your last visit.</p>
       </div>
 
