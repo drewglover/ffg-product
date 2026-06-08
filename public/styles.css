@@ -2473,7 +2473,7 @@ img {
 }
 .ob-cause__row {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 28px;
+  grid-template-columns: 28px minmax(0, 1fr) 28px 28px;
   align-items: center;
   gap: 14px;
   padding: 14px 18px;
@@ -2515,6 +2515,30 @@ img {
   align-items: center;
   justify-content: center;
   color: var(--ffg-surface-950);
+}
+.ob-cause__caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-icon);
+  transition: transform 140ms ease;
+}
+.ob-cause__row.is-open .ob-cause__caret { transform: rotate(180deg); }
+.ob-cause__row.is-open { row-gap: 6px; }
+.ob-cause__desc {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ffg-muted);
+  line-height: 1.4;
+  margin: 0;
+  padding-top: 4px;
 }
 
 /* SHADCN TARGET — RadioGroup (.ob-goals, .ob-goal) styled as cards */

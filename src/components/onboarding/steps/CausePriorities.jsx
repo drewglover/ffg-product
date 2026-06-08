@@ -6,6 +6,7 @@ import { CAUSE_BY_ID } from '../data/causeAreas';
 function CausePriorities({ order, setOrder }) {
   const [dragId, setDragId] = useState(null);
   const [overId, setOverId] = useState(null);
+  const [openId, setOpenId] = useState(null);
 
   const onDragStart = (e, id) => {
     setDragId(id);
@@ -48,7 +49,8 @@ function CausePriorities({ order, setOrder }) {
                 "ob-cause__row" + (
                 isTop ? " is-top" : "") + (
                 dragId === id ? " is-dragging" : "") + (
-                overId === id && dragId && dragId !== id ? " is-over" : "")
+                overId === id && dragId && dragId !== id ? " is-over" : "") + (
+                openId === id ? " is-open" : "")
                 }
                 draggable
                 onDragStart={(e) => onDragStart(e, id)}
@@ -60,6 +62,17 @@ function CausePriorities({ order, setOrder }) {
                 <span className="ob-cause__handle"><Ic.Grip /></span>
                 <span className="ob-cause__name" style={{ fontSize: "16px", fontWeight: "300" }}>{cause.name}</span>
                 <span className="ob-cause__icon"><Icon /></span>
+                <button
+                  type="button"
+                  className="ob-cause__caret"
+                  onClick={(e) => { e.stopPropagation(); setOpenId(openId === id ? null : id); }}
+                  aria-expanded={openId === id}
+                  aria-label="Toggle description">
+                  <Ic.Caret width="24" height="24" />
+                </button>
+                {openId === id && (
+                  <p className="ob-cause__desc">{cause.description}</p>
+                )}
               </div>
             </div>);
 
