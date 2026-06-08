@@ -98,7 +98,7 @@ function PartnerDetail({ partner, onBack }) {
               <div className="pt-poi__dot" style={{ left: "50%" }} />
             </div>
             <div className="pt-poi__labels">
-              <span style={{ fontSize: "14px" }}>Weak</span>
+              <span style={{ fontSize: "14px" }}>Suffering</span>
               <span style={{ fontSize: "14px" }}>Stable</span>
               <span style={{ fontSize: "14px" }}>Flourishing</span>
             </div>
