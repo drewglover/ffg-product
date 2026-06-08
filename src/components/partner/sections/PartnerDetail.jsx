@@ -157,49 +157,12 @@ function PartnerDetail({ partner, onBack }) {
           </ol>
         </Section>
 
-        {/* Proven Results */}
-        <Section title="Proven Results">
+        {/* Proven Outcomes */}
+        <Section title="Proven Outcomes">
           <div className="pt-results">
             <Stat label="Evictions avoided" value="1,345" />
             <Stat label="People supported" value="3,442" />
             <Stat label="Homes built" value="8,142" />
-          </div>
-          <div className="pt-ba">
-            <Accordion title="Before Intervention" defaultOpen variant="ba">
-              <ul className="pt-bullets">
-                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-              </ul>
-            </Accordion>
-            <Accordion title="After Intervention" defaultOpen variant="ba">
-              <ul className="pt-bullets">
-                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                <li style={{ color: "var(--ffg-muted)" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-              </ul>
-            </Accordion>
-          </div>
-        </Section>
-
-        {/* Built with Our Community */}
-        <Section title="Built with Our Community"
-        body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">
-          <div className="pt-built">
-            <div>
-              <div className="pt-built__label" style={{ fontSize: "14px" }}>
-                FFG Builders backing <PIcon.Info className="pt-info" />
-              </div>
-              <div className="pt-built__num" style={{ fontFamily: "\"PP Fragment Sans\"" }}>1,847</div>
-              <div className="pt-built__note">+312 New Backers this month</div>
-            </div>
-            <div>
-              <div className="pt-built__label" style={{ fontSize: "14px" }}>
-                Total Capital allocated <PIcon.Info className="pt-info" />
-              </div>
-              <div className="pt-built__num" style={{ fontFamily: "\"PP Fragment Sans\"" }}>$4.2 Million</div>
-              <div className="pt-built__note">22% Monthly allocation growth</div>
-            </div>
           </div>
         </Section>
       </main>
