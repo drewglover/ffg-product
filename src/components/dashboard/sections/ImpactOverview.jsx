@@ -6,6 +6,7 @@ import { Stat } from '../atoms/Stat.app';
 import { AllocModal } from '../modals/AllocModal';
 import { ImpactChart } from './ImpactChart';
 import { AllocationTreemap } from './AllocationTreemap';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 /* ====== Impact Overview Section ====== */
 function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
@@ -15,7 +16,7 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
   const [modeFilter, setModeFilter] = useState("actual");
   const [periodFilter, setPeriodFilter] = useState("year");
 
-  const scale = scope === "factory" ? 15 : 1;
+  const scale = scope === "factory" ? 15 : scope === "circle" ? 5 : 1;
   const livesValue = Math.round(34000 * scale).toLocaleString();
   const orgsValue = Math.round(142 * scale).toLocaleString();
   const contribValue = "$" + Math.round(totalContrib * scale).toLocaleString();
@@ -26,31 +27,26 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
     <section className="section-block" aria-label="Impact overview">
       <div className="overview-topbar" data-comment-anchor="6bc2ea5625-div-1335-7">
         <h2 className="overview-title">What you're building</h2>
-        <div className="scope-toggle" role="group" aria-label="Impact scope">
-          <button
-              type="button"
-              className={"scope-toggle__btn" + (scope === "you" ? " is-active" : "")}
-              aria-pressed={scope === "you"}
-              onClick={() => setScope("you")} style={{ fontSize: "14px", fontWeight: "300" }}>
-            Your impact</button>
-          <button
-              type="button"
-              className={"scope-toggle__btn" + (scope === "factory" ? " is-active" : "")}
-              aria-pressed={scope === "factory"}
-              onClick={() => setScope("factory")} style={{ fontSize: "14px", fontWeight: "300" }}>
-            Factory impact</button>
-        </div>
+        <ToggleGroup
+            variant="outline"
+            value={[scope]}
+            onValueChange={(vals) => vals[0] && setScope(vals[0])}
+            aria-label="Impact scope">
+          <ToggleGroupItem value="you">Your impact</ToggleGroupItem>
+          <ToggleGroupItem value="circle">Circle impact</ToggleGroupItem>
+          <ToggleGroupItem value="factory">Factory impact</ToggleGroupItem>
+        </ToggleGroup>
       </div>
-      <div className="stats-row" key={scope}>
-        <Stat label="Projected lives reached" value={livesValue} rawNum={Math.round(34000 * scale)} trend="+100% increase this month" onClick={() => {const el = document.getElementById("impact-chart");if (el) el.scrollIntoView ? window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" }) : null;}} />
-        <Stat label="Projected organizations supported" value={orgsValue} rawNum={Math.round(142 * scale)} trend="+100% increase this month" onClick={() => onTabChange && onTabChange("areas")} />
-        <Stat label="Total contributions" value="$10,928" trend="+100% increase this month" onClick={() => onTabChange && onTabChange("history")} />
+      <div className="stats-row">
+        <Stat scope={scope} label="Projected lives reached" value={livesValue} rawNum={Math.round(34000 * scale)} trend="+100% increase this month" onClick={() => {const el = document.getElementById("impact-chart");if (el) el.scrollIntoView ? window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" }) : null;}} />
+        <Stat scope={scope} label="Projected organizations supported" value={orgsValue} rawNum={Math.round(142 * scale)} trend="+100% increase this month" onClick={() => onTabChange && onTabChange("areas")} />
+        <Stat scope={scope} label="Total contributions" value="$10,928" trend="+100% increase this month" onClick={() => onTabChange && onTabChange("history")} />
       </div>
 
       <div className="impact">
         <div className="chart-card" id="impact-chart">
           <div className="chart-header">
-            <h3 className="chart-title">{scope === "factory" ? "Factory impact growth" : "Your impact growth"}</h3>
+            <h3 className="chart-title">{scope === "factory" ? "Factory impact growth" : scope === "circle" ? "Circle impact growth" : "Your impact growth"}</h3>
             <div className="chart-filters">
               <FilterChip
                   value={areaFilter}

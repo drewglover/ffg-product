@@ -1169,7 +1169,6 @@ img {
   border-bottom-color: var(--ffg-surface-950);
 }
 
-/* SHADCN TARGET — ToggleGroup (.scope-toggle) */
 /* ---- Section-head scope toggle ---- */
 .overview-topbar {
   display: flex;
@@ -1177,39 +1176,29 @@ img {
   gap: 64px;
   margin-bottom: 24px;
 }
-.scope-toggle {
-  display: inline-flex;
+/* The scope toggle now renders via the shadcn ToggleGroup component
+   (src/components/ui/toggle-group.tsx). The tweaks below are FFG theme
+   overrides applied as scoped CSS.
+   TODO(ffg-components): port these into the toggle / toggle-group variants
+   upstream in Niftic-Agency/ffg-components so they ship with the component
+   by default rather than living here as overrides:
+     • -1px gap between items (borders overlap into a single shared divider)
+     • border color uses --overlay-dark-10
+     • inactive item text uses --color-body; active uses --ffg-surface-950 */
+.overview-topbar [data-slot="toggle-group"] {
   margin-left: auto;
-  border: 1px solid var(--ffg-divider);
-  border-radius: var(--radius);
-  background: transparent;
-  flex-shrink: 0;
-  overflow: hidden;
 }
-.scope-toggle__btn {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  border-right: 1px solid var(--ffg-divider);
-  padding: 8px 16px;
-  font-family: "PP Fragment Sans", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.005em;
-  color: var(--ffg-surface-900);
-  cursor: pointer;
-  transition: background-color 120ms ease, color 120ms ease;
-  border-radius: 0;
+.overview-topbar [data-slot="toggle-group-item"] {
+  border-color: var(--overlay-dark-10);
+  color: var(--color-body);
 }
-.scope-toggle__btn:first-child { border-radius: calc(var(--radius) - 1px) 0 0 calc(var(--radius) - 1px); }
-.scope-toggle__btn:last-child {
-  border-right: 0;
-  border-radius: 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0;
+/* -1px gap: pull each item over its neighbour so the adjacent 1px borders
+   collapse into a single shared divider. */
+.overview-topbar [data-slot="toggle-group-item"]:not(:first-child) {
+  margin-left: -1px;
 }
-.scope-toggle__btn:hover { background: rgba(27, 27, 26, 0.04); }
-.scope-toggle__btn.is-active {
-  background: var(--ffg-surface-950);
-  color: var(--ffg-surface-50);
+.overview-topbar [data-slot="toggle-group-item"][data-pressed] {
+  color: var(--ffg-surface-950);
 }
 
 /* ---- Impact grid ---- */
@@ -1265,6 +1254,16 @@ img {
   font-weight: 300;
   color: var(--ffg-surface-700, rgb(121, 119, 114));
   margin-top: 12px;
+}
+/* Scope-change refresh: only the value + trend fade, not the whole card.
+   Triggered by remount (key on scope) in Stat.app.jsx. */
+@keyframes ffg-stat-refresh {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.stat-value--refresh,
+.stat-trend--refresh {
+  animation: ffg-stat-refresh 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .stat-card__open {
   position: absolute;
@@ -1711,7 +1710,7 @@ img {
   background: transparent;
   border: 1px solid var(--overlay-dark-10);
   min-width: 0;
-  border-radius: 12px;
+  border-radius: var(--radius);
   overflow: hidden;
   height: 100%;
   transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
@@ -1726,7 +1725,7 @@ img {
   /*background: var(--ffg-surface-50);*/
   overflow: hidden;
   border-bottom: 1px var(--overlay-dark-10);
-  border-radius: 12px 12px 0 0;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 .update-card__image img {
   display: block;
@@ -4848,10 +4847,10 @@ img {
   }
 
   /* ── Overview topbar scope toggle: full width ── */
-  .scope-toggle {
+  .overview-topbar [data-slot="toggle-group"] {
     width: 100%;
   }
-  .scope-toggle__btn {
+  .overview-topbar [data-slot="toggle-group-item"] {
     flex: 1;
     justify-content: center;
   }

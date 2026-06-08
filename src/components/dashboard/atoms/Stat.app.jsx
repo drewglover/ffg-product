@@ -22,7 +22,7 @@ function useCountUp(target, duration) {
   return count;
 }
 
-function Stat({ label, value, trend, rawNum, prefix, onClick }) {
+function Stat({ label, value, trend, rawNum, prefix, onClick, scope }) {
   if (prefix === undefined) prefix = "";
   var animated = useCountUp(rawNum != null ? rawNum : null);
   var displayValue = rawNum != null ? prefix + animated.toLocaleString() : value;
@@ -38,8 +38,10 @@ function Stat({ label, value, trend, rawNum, prefix, onClick }) {
         <span>{label}</span>
         <span className="info"><Icon.Info /></span>
       </div>
-      <div className="stat-value" style={{ fontSize: "24px" }}>{displayValue}</div>
-      <div className="stat-trend">
+      {/* Keyed on scope so only the value + trend replay their fade/count-up
+          when the scope toggle changes — the card frame stays put. */}
+      <div className="stat-value stat-value--refresh" key={"v-" + scope} style={{ fontSize: "24px" }}>{displayValue}</div>
+      <div className="stat-trend stat-trend--refresh" key={"t-" + scope}>
         <Icon.Trend />
         <span>{trend}</span>
       </div>
