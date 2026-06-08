@@ -33,9 +33,6 @@ function TransferStatus({ phase, firstGiveDate = "April 15, 2026" }) {
         className="section-block"
         aria-label="Transfer status"
         style={{
-          position: "relative",
-          padding: "0px 0px 96px",
-          transition: "opacity 300ms ease, transform 300ms ease",
           opacity: isClosing ? 0 : 1,
           transform: isClosing ? "translateY(-14px)" : "translateY(0)",
         }}
@@ -70,7 +67,7 @@ function TransferStatus({ phase, firstGiveDate = "April 15, 2026" }) {
 
         <div
           className="subhead"
-          style={{ fontWeight: "300", margin: "0px 0px 32px", fontSize: "16px" }}
+          style={{ fontWeight: "300", fontSize: "16px" }}
         >
           {phase === "allocated" ? "Transfer complete" : "Transfer in progress"}
         </div>

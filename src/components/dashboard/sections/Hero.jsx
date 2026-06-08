@@ -31,7 +31,7 @@ function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount }) {
   };
 
   return (
-    <div className="hero" style={{ gap: "64px", alignItems: "flex-start", padding: "0 0 96px" }}>
+    <div className="hero">
       <div className="hero-text">
         <h1 style={{ fontSize: "48px" }}>Welcome, {name}</h1>
         <p style={{ fontWeight: "300", fontSize: "16px", color: "var(--ffg-muted)" }}>Your good has reached <a className="accent-link" href="#impact" style={{ fontSize: "16px", fontWeight: "300", color: "var(--ffg-surface-950)" }}>{livesCount.toLocaleString()} new lives</a> since your last visit.</p>
