@@ -25,7 +25,7 @@ function OrgRow({ org }) {
           <div className="org-stat__label" style={{ fontSize: "14px", fontWeight: "300" }}>Strategy</div>
           <div className="org-stat__value" style={{ fontWeight: "300" }}>{org.strategy}</div>
         </div>
-        <div className="org-stat" style={{ padding: "0px 24px 0px 0px" }}>
+        <div className="org-stat">
           <div className="org-stat__label" style={{ fontSize: "14px", fontWeight: "300" }}>Projected lives reached</div>
           <div className="org-stat__value" style={{ fontWeight: "300" }}>{org.lives.toLocaleString()}</div>
         </div>
@@ -40,7 +40,7 @@ function OrgRow({ org }) {
           return (
             <span key={tag} className={`impact-badge impact-badge--${slug}`}>
               <span className="impact-badge__icon">{IMPACT_AREA_ICONS[tag]}</span>
-              <span style={{ fontSize: "14px", fontWeight: "300", color: "rgb(121, 119, 114)" }}>{tag}</span>
+              <span style={{ fontSize: "14px", fontWeight: "300", color: "var(--ffg-muted)" }}>{tag}</span>
             </span>);
         })}
       </div>
