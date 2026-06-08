@@ -23,10 +23,10 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
 
   return (
     <>
-    <section className="section-block" aria-label="Impact overview" style={{ padding: "0px 0px 110px" }}>
-      <div className="overview-topbar" data-comment-anchor="6bc2ea5625-div-1335-7" style={{ alignItems: "center", margin: "0px 0px 24px" }}>
+    <section className="section-block" aria-label="Impact overview">
+      <div className="overview-topbar" data-comment-anchor="6bc2ea5625-div-1335-7">
         <h2 className="overview-title">What you're building</h2>
-        <div className="scope-toggle" role="group" aria-label="Impact scope" style={{ marginLeft: "auto" }}>
+        <div className="scope-toggle" role="group" aria-label="Impact scope">
           <button
               type="button"
               className={"scope-toggle__btn" + (scope === "you" ? " is-active" : "")}
@@ -41,7 +41,7 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
             Factory impact</button>
         </div>
       </div>
-      <div className="stats-row" key={scope} style={{ marginBottom: "64px" }}>
+      <div className="stats-row" key={scope}>
         <Stat label="Projected lives reached" value={livesValue} rawNum={Math.round(34000 * scale)} trend="+100% increase this month" onClick={() => {const el = document.getElementById("impact-chart");if (el) el.scrollIntoView ? window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" }) : null;}} />
         <Stat label="Projected organizations supported" value={orgsValue} rawNum={Math.round(142 * scale)} trend="+100% increase this month" onClick={() => onTabChange && onTabChange("areas")} />
         <Stat label="Total contributions" value="$10,928" trend="+100% increase this month" onClick={() => onTabChange && onTabChange("history")} />
@@ -49,7 +49,7 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
 
       <div className="impact">
         <div className="chart-card" id="impact-chart">
-          <div className="chart-header" style={{ padding: "0px 0px 12px" }}>
+          <div className="chart-header">
             <h3 className="chart-title">{scope === "factory" ? "Factory impact growth" : "Your impact growth"}</h3>
             <div className="chart-filters">
               <FilterChip
@@ -73,20 +73,20 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
             </div>
           </div>
           <ImpactChart accent={accent} data={periodData} scale={scale} mode={modeFilter} />
-          <div className="chart-legend" style={{ justifyContent: "center", alignItems: "center", gap: "16px" }}>
-            <span className="chart-legend__item" style={{ fontSize: "14px", padding: "0px 12px 0px 0px", alignItems: "center", gap: "4px" }}>
-              <span className="chart-legend__swatch chart-legend__swatch--bar" style={{ flexShrink: 0 }} />
+          <div className="chart-legend">
+            <span className="chart-legend__item" style={{ fontSize: "14px" }}>
+              <span className="chart-legend__swatch chart-legend__swatch--bar" />
               Dollars given
             </span>
-            <span className="chart-legend__item" style={{ fontSize: "14px", padding: "0px", alignItems: "center", gap: "4px" }}>
-              <span className="chart-legend__swatch chart-legend__swatch--area" style={{ flexShrink: 0 }} />
+            <span className="chart-legend__item" style={{ fontSize: "14px" }}>
+              <span className="chart-legend__swatch chart-legend__swatch--area" />
               Outcomes created
             </span>
           </div>
         </div>
 
         <div className="alloc-treemap-card">
-          <div className="alloc-treemap-head" style={{ padding: "0px", alignItems: "flex-start", height: "40px", margin: "0px" }}>
+          <div className="alloc-treemap-head">
             <h3 className="chart-title">Impact areas</h3>
             <button className="alloc-treemap-view-btn" onClick={() => setAllocModalOpen(true)}>View</button>
           </div>
