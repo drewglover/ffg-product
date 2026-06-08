@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Icon } from '../icons/Icon';
 
 /* ====== Hero ====== */
-function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount }) {
+function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount, onTabChange }) {
   const DEFAULT_AMOUNT = 200000;
   const [amount, setAmount] = useState(DEFAULT_AMOUNT);
   const [mode, setMode] = useState("idle"); // "idle" | "confirming" | "confirmed"
@@ -34,7 +34,12 @@ function Hero({ phase, name, livesCount, onAmountConfirm, confirmedAmount }) {
     <div className="hero">
       <div className="hero-text">
         <h1 style={{ fontSize: "48px" }}>Welcome, {name}</h1>
-        <p style={{ fontWeight: "300", fontSize: "16px", color: "var(--ffg-muted)" }}>Your good has reached <a className="accent-link" href="#impact" style={{ fontSize: "16px", fontWeight: "300", color: "var(--ffg-surface-950)" }}>{livesCount.toLocaleString()} new lives</a> since your last visit.</p>
+        <p style={{ fontWeight: "300", fontSize: "16px", color: "var(--ffg-muted)" }}>Your good has reached <a className="accent-link" href="#impact-tabs" onClick={(e) => {
+          e.preventDefault();
+          onTabChange && onTabChange("overview");
+          const el = document.getElementById("impact-tabs");
+          if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" });
+        }} style={{ fontSize: "16px", fontWeight: "300", color: "var(--ffg-surface-950)" }}>{livesCount.toLocaleString()} new lives</a> since your last visit.</p>
       </div>
 
       {isAllocated ?
