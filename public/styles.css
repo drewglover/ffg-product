@@ -2997,7 +2997,7 @@ img {
    ═══════════════════════════════════════════════════════════════════════════ */
 /* SHADCN TARGET — Card (.pt-card)  Pagination (.pt-pagination)  DropdownMenu (.pt-sort__menu) */
 .pt-dir__head {
-  margin-bottom: 40px;
+  margin-bottom: 64px;
 }
 .pt-dir__title {
   font-family: "PP Fragment Glare", serif;
@@ -3006,7 +3006,7 @@ img {
   font-size: var(--type-h1);
   line-height: 1.05;
   letter-spacing: -0.02em;
-  margin: 0 0 14px;
+  margin: 0 0 1px;
   color: var(--color-h);
 }
 .pt-dir__sub {
@@ -3017,6 +3017,7 @@ img {
   color: var(--color-body);
   letter-spacing: 0.005em;
   max-width: 60ch;
+  padding-top: 16px;
 }
 
 /* Toolbar */
@@ -3025,9 +3026,8 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 2px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--ffg-divider);
 }
 .pt-toolbar__results {
   font-size: 13px;
