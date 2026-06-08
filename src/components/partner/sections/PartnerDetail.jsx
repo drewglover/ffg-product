@@ -16,9 +16,9 @@ import { ChartCard } from '../charts/ChartCard';
 // ═══════════════════════════════════════════════════════════════════════════
 function PartnerDetail({ partner, onBack }) {
   return (
-    <div className="pt-detail" style={{ padding: "0px 0px 0px" }}>
+    <div className="pt-detail">
       {/* Top bar — Back link */}
-      <div className="pt-topbar" style={{ display: "flex", gap: "16px", justifyContent: "space-between", alignItems: "baseline" }}>
+      <div className="pt-topbar">
         <button className="pt-back" onClick={onBack} style={{ fontSize: "14px" }}>
           <PIcon.ArrowLeft />
           All partners
@@ -26,15 +26,15 @@ function PartnerDetail({ partner, onBack }) {
       </div>
 
       {/* Hero — org identity top, then two-column: desc+tags left, KPIs right */}
-      <section className="pt-hero" style={{ display: "flex", flexDirection: "column", marginTop: "16px", marginBottom: "72px", padding: "0px 0px 96px" }}>
+      <section className="pt-hero">
         {/* Logo + name + meta */}
-        <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+        <div className="pt-hero__id">
           <LogoPlaceholder size={72} name={partner.name} />
-          <div style={{ paddingTop: "4px" }}>
+          <div className="pt-hero__id-text">
             <h1 style={{ fontFamily: "\"PP Fragment Sans\", sans-serif", fontWeight: 400, fontStyle: "normal", fontSize: "48px", lineHeight: 1.05, letterSpacing: "-0.01em", margin: 0 }}>
               {partner.name}
             </h1>
-            <div className="pt-side__meta" style={{ marginTop: "10px" }}>
+            <div className="pt-side__meta">
               <span className="pt-side__meta-item">
                 <PIcon.MapPin />
                 {partner.location}
@@ -54,21 +54,21 @@ function PartnerDetail({ partner, onBack }) {
         </div>
 
         {/* Description + tags (left) · KPIs side-by-side (right) */}
-        <div className="pt-hero__body" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "80px", alignItems: "start", marginTop: "28px" }}>
+        <div className="pt-hero__body">
           <div>
-            <p className="pt-side__desc" style={{ margin: 0, maxWidth: "62ch" }}>{PARTNER_DESC}</p>
-            <div className="pt-side__tags" style={{ marginTop: "22px" }}>
+            <p className="pt-side__desc">{PARTNER_DESC}</p>
+            <div className="pt-side__tags">
               {partner.tags.map((t, i) => <Badge key={i}>{t}</Badge>)}
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "32px", alignItems: "flex-start" }}>
+          <div className="pt-hero__kpis">
             <KPI label="Yearly People Reached" value="142" />
             <KPI label="Cost Per Outcome" value="$1,600" />
           </div>
         </div>
       </section>
 
-      <main className="pt-main" style={{ display: "flex", flexDirection: "column", gap: "80px", alignItems: "stretch", padding: "0px 0px 96px", width: "900px" }}>
+      <main className="pt-main">
         {/* Why we chose */}
         <Section title="Why we chose this partner">
           <div className="pt-acc-list">
@@ -106,7 +106,7 @@ function PartnerDetail({ partner, onBack }) {
 
           {/* Cause Allocation treemap */}
           <div className="pt-alloc">
-            <div className="pt-label-row" style={{ marginBottom: 12 }}>
+            <div className="pt-label-row">
               <span className="pt-label">Cause Allocation</span>
               <PIcon.Info className="pt-info" />
             </div>
@@ -190,14 +190,14 @@ function PartnerDetail({ partner, onBack }) {
               <div className="pt-built__label" style={{ fontSize: "14px" }}>
                 FFG Builders backing <PIcon.Info className="pt-info" />
               </div>
-              <div className="pt-built__num" style={{ fontFamily: "\"PP Fragment Sans\"", padding: "8px 0px" }}>1,847</div>
+              <div className="pt-built__num" style={{ fontFamily: "\"PP Fragment Sans\"" }}>1,847</div>
               <div className="pt-built__note">+312 New Backers this month</div>
             </div>
             <div>
               <div className="pt-built__label" style={{ fontSize: "14px" }}>
                 Total Capital allocated <PIcon.Info className="pt-info" />
               </div>
-              <div className="pt-built__num" style={{ fontFamily: "\"PP Fragment Sans\"", margin: "0px 0px 14px", padding: "8px 0px" }}>$4.2 Million</div>
+              <div className="pt-built__num" style={{ fontFamily: "\"PP Fragment Sans\"" }}>$4.2 Million</div>
               <div className="pt-built__note">22% Monthly allocation growth</div>
             </div>
           </div>
@@ -206,7 +206,7 @@ function PartnerDetail({ partner, onBack }) {
 
       {/* Updates from your partners and community */}
       <section className="pt-updates">
-        <div className="pt-updates__head" style={{ alignItems: "baseline" }}>
+        <div className="pt-updates__head">
           <h2 className="pt-updates__title" style={{ fontSize: "20px", fontFamily: "\"PP Fragment Sans\"" }}>Updates from your partners and community</h2>
           <a className="pt-updates__more" href="#" style={{ fontSize: "16px", fontWeight: "300" }}>See more</a>
         </div>
