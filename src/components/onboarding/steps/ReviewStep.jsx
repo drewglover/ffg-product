@@ -10,7 +10,7 @@ function ReviewStep({ order, locations, onBack, onSubmit }) {
   return (
     <div className="ob-step ob-review" style={{ gap: "40px" }}>
       <div className="ob-review__head" style={{ width: "900px" }}>
-        <h2 className="ob-review__title" style={{ fontSize: "32px" }}>Review your cause areas</h2>
+        <h2 className="ob-review__title" style={{ fontSize: "32px" }}>Your giving strategy</h2>
         <p className="ob-review__copy" style={{ width: "810px", fontSize: "16px", lineHeight: "1.25" }}>
           You're drawn to systemic barriers: climate and habitat collapse, education access, and the infrastructure that connects them. Your problem picks show people caught between immediate survival and long-term opportunity.
         </p>
