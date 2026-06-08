@@ -7,7 +7,7 @@ function PageTabs({ value, onChange }) {
   { id: "history", label: "Transaction history" }];
 
   return (
-    <div className="page-tabs" role="tablist" aria-label="Impact view" style={{ margin: "-16px 0px 48px" }}>
+    <div className="page-tabs" id="impact-tabs" role="tablist" aria-label="Impact view" style={{ margin: "-16px 0px 48px" }}>
       {tabs.map((t) =>
       <button
         key={t.id}

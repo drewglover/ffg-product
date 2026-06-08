@@ -27,6 +27,14 @@ export default function Dashboard() {
   const [pageTab, setPageTab] = useState('overview');
   const [allocAmount, setAllocAmount] = useState(200000);
 
+  // Pin to the top on mount. The staggered section entrances start at
+  // translateY(10px); with scroll anchoring on, that settling otherwise
+  // nudges the page down ~10px on load. Reset before paint so we never
+  // land mid-scroll.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Apply tweaks as CSS variables on the document root
   useEffect(() => {
     const r = document.documentElement.style;
@@ -39,7 +47,7 @@ export default function Dashboard() {
   return (
     <>
       <div className="shell">
-        <Hero phase={t.phase} name={t.name} livesCount={t.livesCount} onAmountConfirm={setAllocAmount} confirmedAmount={allocAmount} />
+        <Hero phase={t.phase} name={t.name} livesCount={t.livesCount} onAmountConfirm={setAllocAmount} confirmedAmount={allocAmount} onTabChange={setPageTab} />
         <TransferStatus phase={t.phase} firstGiveDate={t.firstGiveDate} />
         <PageTabs value={pageTab} onChange={setPageTab} />
         {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} />}

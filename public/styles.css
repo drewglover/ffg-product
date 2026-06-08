@@ -4892,12 +4892,21 @@ img {
 }
 
 /* ── Dashboard ── */
+/* Above-the-fold entrances fade in without the translateY lift: at scroll 0
+   the top elements are the scroll anchor, so settling a translate here nudges
+   the page down ~10px on load. Sections lower down keep the lift (ffg-fadein)
+   since they aren't the anchor. See ffg-fade-soft. */
+@keyframes ffg-fade-soft {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .nav {
-  animation: ffg-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0ms both;
+  animation: ffg-fade-soft 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0ms both;
 }
 
 .hero {
-  animation: ffg-fadein 0.6s cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+  animation: ffg-fade-soft 0.6s cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
 }
 
 .section-block {
