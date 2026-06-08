@@ -46,8 +46,8 @@ function PartnerCard({ partner, onOpen }) {
 
       {/* Footer: credibility tier (1–5) */}
       <div className="pt-card__foot pt-card__foot--tier" style={{ alignItems: "baseline" }}>
-        <span className="pt-card__tier" style={{ fontWeight: "400" }}>Tier {tier}</span>
-        <span className="pt-card__tier-unit" style={{ fontSize: "14px" }}>/ Credibility scale</span>
+        <span className="pt-card__tier" style={{ fontWeight: "400" }}>{tier * 20}%</span>
+        <span className="pt-card__tier-unit" style={{ fontSize: "14px" }}>Confidence Level</span>
         <PIcon.Info className="pt-info" />
       </div>
     </article>);
