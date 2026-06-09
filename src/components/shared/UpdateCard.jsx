@@ -6,13 +6,14 @@ import { IMPACT_AREA_ICONS } from '../dashboard/data/orgTaxonomy.jsx';
 // Style authority: pt-updates (Partner surface).
 //
 // Props:
-//   title  {string}  — card headline
-//   copy   {string}  — body text
-//   tag    {string?} — impact-area label (e.g. "Community", "Education")
-//   img    {string?} — image URL; omit to render the striped placeholder
-//   alt    {string?} — img alt text (pass "" for decorative images)
+//   title   {string}  — card headline
+//   copy    {string}  — body text
+//   partner {string?} — partner/organization name; shown below the copy
+//   tag     {string?} — impact-area label (e.g. "Community", "Education")
+//   img     {string?} — image URL; omit to render the striped placeholder
+//   alt     {string?} — img alt text (pass "" for decorative images)
 
-const UpdateCard = ({ title, copy, tag, img, alt }) => {
+const UpdateCard = ({ title, copy, partner, tag, img, alt }) => {
   const slug = tag ? tag.toLowerCase().replace(/\s+/g, '-') : null;
 
   // Resolve the tag icon. Both maps carry the same glyph set keyed by label;
@@ -57,6 +58,7 @@ const UpdateCard = ({ title, copy, tag, img, alt }) => {
             />
           )
         }
+        {partner ? <p className="update-card__partner">{partner}</p> : null}
       </div>
       <div className="update-card__body">
         <h4 className="update-card__title">{title}</h4>

@@ -14,6 +14,7 @@ function UpdatesSection() {
           key={i}
           title={item.title}
           copy={item.body}
+          partner={item.partner}
           tag={item.tag}
           img={item.img}
           alt={item.alt} />
