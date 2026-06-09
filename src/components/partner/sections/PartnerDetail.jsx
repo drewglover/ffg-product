@@ -70,15 +70,43 @@ function PartnerDetail({ partner, onBack }) {
 
       <main className="pt-main">
         {/* Why we chose */}
-        <Section title="Why we chose this partner">
+        <Section title="Why we chose this partner" aside={
+          <div className="pt-reviewed-by">
+            <div className="pt-reviewed-by__badge">
+              <span className="pt-reviewed-by__logo">F/G</span>
+            </div>
+            <div className="pt-reviewed-by__text">
+              <span className="pt-reviewed-by__label">Reviewed by</span>
+              <span className="pt-reviewed-by__name">FFG Impact Team</span>
+            </div>
+          </div>
+        }>
           <div className="pt-acc-list">
-            <Accordion icon={<PIcon.Heart2 />} title="Trusted Leadership" defaultOpen>
+            <Accordion icon={<PIcon.Target />} title="Problem Quality" defaultOpen>
               <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
-{partner.name} is a Tier 4 organization on the Factory For Good scale. This mean that this organization is led by people we trust to operate with integrity, humility, and community connection.
+{partner.name} addresses a clearly defined, high-impact problem with strong evidence of need. The scope is focused enough to drive measurable change while meaningful enough to matter at scale.
               </p>
             </Accordion>
-            <Accordion icon={<PIcon.Pin />} title="Location" />
-            <Accordion icon={<PIcon.Sprout />} title="Growth Potential" />
+            <Accordion icon={<PIcon.Users />} title="Team & Leadership">
+              <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+The leadership team brings deep domain expertise, lived experience, and a track record of sound decision-making. We trust them to operate with integrity, humility, and community connection.
+              </p>
+            </Accordion>
+            <Accordion icon={<PIcon.BarChart />} title="Track Record & Approach">
+              <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+{partner.name} has demonstrated consistent, reproducible results over time. Their methodology is grounded in evidence and adapted thoughtfully to the communities they serve.
+              </p>
+            </Accordion>
+            <Accordion icon={<PIcon.TrendingUp />} title="Growth Potential & Fit">
+              <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+This organization is positioned for responsible growth. Their model aligns well with Factory for Good's strategic focus areas and has clear pathways to expand reach without sacrificing quality.
+              </p>
+            </Accordion>
+            <Accordion icon={<PIcon.Coin />} title="Cost Effectiveness & Leverage">
+              <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks favorably against peers, and their model creates downstream leverage — multiplying impact beyond the direct investment.
+              </p>
+            </Accordion>
           </div>
         </Section>
 
