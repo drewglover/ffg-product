@@ -3768,6 +3768,51 @@ img {
 .pt-sec .pt-sec__title + .pt-sec__body {
   margin-top: -16px;
 }
+.pt-sec__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.pt-reviewed-by {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pt-reviewed-by__badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--overlay-dark-20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pt-reviewed-by__logo {
+  font-family: "PP Fragment Glare", serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--ffg-surface-950);
+}
+.pt-reviewed-by__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.pt-reviewed-by__label {
+  font-size: 12px;
+  color: var(--ffg-muted);
+  font-weight: 300;
+  line-height: 1.2;
+}
+.pt-reviewed-by__name {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ffg-surface-950);
+  line-height: 1.2;
+}
 
 /* Label rows */
 .pt-label-row {
