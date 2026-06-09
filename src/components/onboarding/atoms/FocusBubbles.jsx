@@ -54,15 +54,19 @@ function FocusBubbles({ top3 }) {
         {deco.map((d, i) => {
           const cause = remaining[i % remaining.length];
           const stroke = cause ? `url(#${gradientId(cause.name)})` : "var(--ffg-surface-950)";
-          return <circle key={`d${i}`} cx={d.cx} cy={d.cy} r={d.r} fill="none" stroke={stroke} strokeWidth="1" />;
+          // deco bubbles animate after the 3 labeled ones (indices 3,4,5)
+          const delay = `${(i + top3.length) * 180}ms`;
+          return <circle key={`d${i}`} cx={d.cx} cy={d.cy} r={d.r} fill="none" stroke={stroke} strokeWidth="1"
+            style={{ animation: `ob-bubble-in 600ms ease both`, animationDelay: delay }} />;
         })}
         {top3.map((id, i) => {
           const c = CAUSE_BY_ID[id];
           const p = positions[i];
           const cat = CATEGORY_ICONS[c.name];
           const stroke = cat ? `url(#${gradientId(c.name)})` : "var(--ffg-surface-950)";
+          const delay = `${i * 180}ms`;
           return (
-            <g key={id}>
+            <g key={id} style={{ animation: `ob-bubble-in 600ms ease both`, animationDelay: delay }}>
               <circle cx={p.cx} cy={p.cy} r={p.r} fill="none" stroke={stroke} strokeWidth="1" />
               <text x={p.cx} y={p.cy + 4} textAnchor="middle">
                 {c.name.split(" ").map((w, idx) =>
