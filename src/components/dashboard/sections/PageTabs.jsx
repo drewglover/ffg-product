@@ -3,7 +3,7 @@
 function PageTabs({ value, onChange }) {
   const tabs = [
   { id: "overview", label: "Overview" },
-  { id: "areas", label: "Your impact areas" },
+  { id: "areas", label: "Your impact portfolio" },
   { id: "history", label: "Transaction history" }];
 
   return (

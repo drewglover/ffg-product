@@ -23,7 +23,8 @@ const router = createBrowserRouter([
     children: [
       { path: '/dashboard', element: <Dashboard /> },
       {
-        path: '/partner',
+        // Bare path shows the directory; :name deep-links to one partner's detail.
+        path: '/partner/:name?',
         element: <Partner />,
         // Partner runs a lighter type scale than the other authenticated
         // surfaces. (The mesh shows through by default — see .app in styles.css.)

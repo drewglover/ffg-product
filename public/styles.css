@@ -2213,7 +2213,7 @@ img {
 .impact-badge--culture         { --impact-badge-accent: var(--ffg-data-qual-umber);    }
 .org-row__stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 24px;
   align-items: start;
   min-width: 0;
@@ -2251,6 +2251,32 @@ img {
 }
 .org-row:hover .org-row__open,
 .org-row:focus-visible .org-row__open { opacity: 1; }
+
+/* ---- Add to portfolio ---- */
+.org-row__add {
+  margin-left: auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: "PP Fragment Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ffg-surface-950);
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+.org-row__add:hover { border-color: var(--overlay-dark-90); }
+.org-row__add svg { flex-shrink: 0; }
+.org-row__add.is-added {
+  border-color: var(--ffg-surface-950);
+  background: var(--ffg-surface-950);
+  color: var(--ffg-surface-50);
+}
 
 /* ---- Empty state ---- */
 .empty-state {
