@@ -2252,7 +2252,6 @@ img {
   font-family: "PP Fragment Sans", sans-serif;
   color: var(--ffg-surface-950);
 }
-
 /* SHADCN TARGET — Progress (.ob-progress — composed ×6 segments) */
 /* ---- Top progress bar + header chrome ---- */
 /* Chrome sits over the brand-bleed gradient — no surface fill, so the leak
@@ -2912,13 +2911,16 @@ img {
 .ob-initiative-tag {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border: 1px solid var(--ffg-divider-strong);
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--overlay-dark-10);
   border-radius: var(--radius);
-  font-size: 12px;
-  color: var(--ffg-surface-950);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ffg-muted);
   letter-spacing: 0.005em;
   background: transparent;
+  white-space: nowrap;
 }
 .ob-loc-stats {
   display: flex;

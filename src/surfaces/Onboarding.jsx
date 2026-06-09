@@ -18,6 +18,10 @@ export default function Onboarding() {
      "landing" → "step1" → "step2" → "step3" → "step4" → "step5" → "step6" → "done" */
   const SCREENS = ['landing', 'step1', 'step2', 'step3', 'step4', 'step5', 'step6', 'done'];
   const [screen, setScreen] = useState('landing');
+  const goTo = useCallback((nextScreen, scrollTop = true) => {
+    setScreen(nextScreen);
+    if (scrollTop) window.scrollTo({ top: 0 });
+  }, []);
 
   const [order, setOrder] = useState(CAUSE_AREAS.map((c) => c.id));
   const [goalsByCause, setGoalsByCause] = useState({}); // { causeId: [goal,..] }
@@ -31,22 +35,19 @@ export default function Onboarding() {
   const stepNumber = idx === 0 || idx === 7 ? 0 : idx; // 1..6 inside questionnaire
 
   const next = useCallback(() => {
-    setScreen(SCREENS[Math.min(idx + 1, SCREENS.length - 1)]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [idx]);
+    goTo(SCREENS[Math.min(idx + 1, SCREENS.length - 1)]);
+  }, [idx, goTo]);
   const back = useCallback(() => {
-    setScreen(SCREENS[Math.max(idx - 1, 0)]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [idx]);
+    goTo(SCREENS[Math.max(idx - 1, 0)]);
+  }, [idx, goTo]);
   const resetToLanding = () => {
     setOrder(CAUSE_AREAS.map((c) => c.id));
     setGoalsByCause({});
     setScales([]);
     setLocations([]);
-    setScreen('landing');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    goTo('landing');
   };
-  const closeOut = () => setScreen('landing');
+  const closeOut = () => goTo('landing');
 
   // Continue-button enabled state per step
   const canContinue = useMemo(() => {
