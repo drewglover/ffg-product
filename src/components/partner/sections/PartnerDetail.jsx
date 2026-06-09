@@ -35,11 +35,6 @@ function PartnerDetail({ partner, onBack }) {
               {partner.name}
             </h1>
             <div className="pt-side__meta">
-              <span className="pt-side__meta-item">
-                <PIcon.MapPin />
-                {partner.location}
-              </span>
-              <span className="pt-side__meta-dot" />
               <a className="pt-side__meta-item pt-side__meta-item--link" href="#">
                 <PIcon.Link />
                 Website
@@ -50,6 +45,11 @@ function PartnerDetail({ partner, onBack }) {
                 Ongoing Review
               </span>
             </div>
+          </div>
+          {/* Backed by badge — top right of hero */}
+          <div className="pt-backed">
+            <PIcon.ShieldCheck />
+            Backed by 112 Builders
           </div>
         </div>
 
@@ -64,6 +64,19 @@ function PartnerDetail({ partner, onBack }) {
           <div className="pt-hero__kpis">
             <KPI label="Yearly People Reached" value="142" />
             <KPI label="Cost Per Outcome" value="$1,600" />
+          </div>
+        </div>
+
+        {/* Location + EIN — below tags */}
+        <div className="pt-hero__details">
+          <div className="pt-hero__detail-block">
+            <span className="pt-hero__detail-label">Location (1)</span>
+            <span className="pt-hero__detail-sub">Places where this organization intervenes</span>
+            <span className="pt-hero__detail-value">{partner.location}</span>
+          </div>
+          <div className="pt-hero__detail-block">
+            <span className="pt-hero__detail-label">Employer Identification Number (EIN)</span>
+            <span className="pt-hero__detail-value">EIN: 12-3456789</span>
           </div>
         </div>
       </section>
@@ -81,6 +94,13 @@ function PartnerDetail({ partner, onBack }) {
             </div>
           </div>
         }>
+          <div className="pt-org-photo">
+            <img
+              src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&q=80&auto=format&fit=crop"
+              alt={`${partner.name} — organization photo`}
+              className="pt-org-photo__img"
+            />
+          </div>
           <div className="pt-acc-list">
             <Accordion icon={<PIcon.Target />} title="Problem Quality" defaultOpen>
               <p className="pt-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>

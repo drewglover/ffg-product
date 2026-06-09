@@ -3728,6 +3728,71 @@ img {
   display: flex;
   gap: 20px;
   align-items: center;
+  position: relative;
+}
+/* Backed by X Builders badge */
+.pt-backed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  align-self: flex-start;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ffg-muted);
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  height: 34px;
+}
+/* Location + EIN detail blocks below tags */
+.pt-hero__details {
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+  border-top: 1px solid var(--overlay-dark-10);
+}
+.pt-hero__detail-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--overlay-dark-10);
+}
+.pt-hero__detail-label {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ffg-surface-950);
+}
+.pt-hero__detail-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--ffg-muted);
+}
+.pt-hero__detail-value {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ffg-muted);
+  width: fit-content;
+}
+/* Org photo in Why We Chose section */
+.pt-org-photo {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 16 / 7;
+}
+.pt-org-photo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .pt-hero__id-text {
   padding-top: 4px;
