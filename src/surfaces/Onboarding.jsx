@@ -87,7 +87,10 @@ export default function Onboarding() {
   }
   if (screen === 'done') {
     return (
-      <div className="ob-app">
+      <div className="ob-app ob-app--landing">
+        <button type="button" className="ob-landing__close" onClick={() => navigate('/dashboard')} aria-label="Close">
+          <Ic.X width="24" height="24" />
+        </button>
         <Submitted />
       </div>);
   }
