@@ -1,6 +1,7 @@
 // FFG Onboarding flow — ported from the prototype's onboarding.jsx shell.
 // Landing → 6 questionnaire steps → Submitted. Single-file state machine.
 import React, { useState, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CAUSE_AREAS } from '../components/onboarding/data/causeAreas.jsx';
 import { Landing } from '../components/onboarding/steps/Landing.jsx';
 import { CausePriorities } from '../components/onboarding/steps/CausePriorities.jsx';
@@ -9,8 +10,10 @@ import { ScaleStep } from '../components/onboarding/steps/ScaleStep.jsx';
 import { ReviewStep } from '../components/onboarding/steps/ReviewStep.jsx';
 import { Submitted } from '../components/onboarding/steps/Submitted.jsx';
 import { StepChrome } from '../components/onboarding/atoms/StepChrome.jsx';
+import { Ic } from '../components/onboarding/icons/Ic.jsx';
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   /* screens:
      "landing" → "step1" → "step2" → "step3" → "step4" → "step5" → "step6" → "done" */
   const SCREENS = ['landing', 'step1', 'step2', 'step3', 'step4', 'step5', 'step6', 'done'];
@@ -74,7 +77,10 @@ export default function Onboarding() {
   // Render
   if (screen === 'landing') {
     return (
-      <div className="ob-app">
+      <div className="ob-app ob-app--landing">
+        <button type="button" className="ob-landing__close" onClick={() => navigate('/dashboard')} aria-label="Close">
+          <Ic.X width="24" height="24" />
+        </button>
         <Landing onStart={next} />
       </div>);
   }
