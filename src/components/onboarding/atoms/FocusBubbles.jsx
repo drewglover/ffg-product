@@ -1,4 +1,4 @@
-import { CAUSE_BY_ID } from '../data/causeAreas';
+import { CAUSE_BY_ID, CAUSE_AREAS } from '../data/causeAreas';
 import { CATEGORY_ICONS } from '../../partner/data/categoryIcons';
 
 /* ── Step 6: review profile ──────────────────────────── */
@@ -20,21 +20,47 @@ function FocusBubbles({ top3 }) {
   { cx: 106, cy: 209, r: 20 }, // lower-left of big
   { cx: 164, cy: 235, r: 20 } // between big and rank 2
   ];
+  // Pick colors for deco bubbles from the cause areas not already in top 3
+  const remaining = CAUSE_AREAS.filter((c) => !top3.includes(c.id));
+  const decoColors = deco.map((_, i) => {
+    const cause = remaining[i % remaining.length];
+    const cat = cause ? CATEGORY_ICONS[cause.name] : null;
+    return cat ? cat.color : "var(--ffg-surface-950)";
+  });
+
+  // Build gradient defs for every cause visible (top 3 + deco remaining)
+  const visibleCauses = [
+    ...top3.map((id) => CAUSE_BY_ID[id]),
+    ...remaining.slice(0, deco.length),
+  ];
+  const gradientDefs = visibleCauses.map((cause) => {
+    const cat = CATEGORY_ICONS[cause.name];
+    if (!cat) return null;
+    const id = `grad-${cause.name.toLowerCase().replace(/\s+/g, "-")}`;
+    return (
+      <linearGradient key={id} id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor={cat.color} />
+        <stop offset="100%" stopColor={cat.colorEnd || cat.color} />
+      </linearGradient>
+    );
+  }).filter(Boolean);
+
+  const gradientId = (name) => `grad-${name.toLowerCase().replace(/\s+/g, "-")}`;
 
   return (
     <div className="ob-bubbles" aria-hidden="true">
       <svg viewBox="0 0 320 320">
-        {deco.map((d, i) =>
-        <circle key={`d${i}`} cx={d.cx} cy={d.cy} r={d.r} fill="none" stroke="var(--ffg-surface-950)" strokeWidth="1" />
-        )}
+        <defs>{gradientDefs}</defs>
+        {deco.map((d, i) => {
+          const cause = remaining[i % remaining.length];
+          const stroke = cause ? `url(#${gradientId(cause.name)})` : "var(--ffg-surface-950)";
+          return <circle key={`d${i}`} cx={d.cx} cy={d.cy} r={d.r} fill="none" stroke={stroke} strokeWidth="1" />;
+        })}
         {top3.map((id, i) => {
           const c = CAUSE_BY_ID[id];
           const p = positions[i];
-          // Stroke color comes from the shared CATEGORY_ICONS map — same
-          // accent used by the dashboard's Cause Allocation treemap. Falls
-          // back to the neutral hairline if the cause isn't in the map.
           const cat = CATEGORY_ICONS[c.name];
-          const stroke = cat ? cat.color : "var(--ffg-surface-950)";
+          const stroke = cat ? `url(#${gradientId(c.name)})` : "var(--ffg-surface-950)";
           return (
             <g key={id}>
               <circle cx={p.cx} cy={p.cy} r={p.r} fill="none" stroke={stroke} strokeWidth="1" />
@@ -44,7 +70,6 @@ function FocusBubbles({ top3 }) {
                 )}
               </text>
             </g>);
-
         })}
       </svg>
     </div>);

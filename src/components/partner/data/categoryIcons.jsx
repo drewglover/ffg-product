@@ -6,7 +6,8 @@
 // Colors and icons are the single source — CSS classes (.impact-badge--*) in styles.css carry the color.
 const CATEGORY_ICONS = {
   "Social Justice": {
-    color: "#64BC98",
+    color: "#992A13",
+    colorEnd: "#BF7B6C",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="m16 2-4 4-4-4" />
@@ -18,7 +19,8 @@ const CATEGORY_ICONS = {
 
   },
   "Economic Growth": {
-    color: "#115E41",
+    color: "#64BC98",
+    colorEnd: "#9FD3BC",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="8" cy="8" r="6" />
@@ -29,7 +31,8 @@ const CATEGORY_ICONS = {
 
   },
   "Humanitarian": {
-    color: "#F6906D",
+    color: "#EE0D0E",
+    colorEnd: "#F26A69",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
@@ -40,7 +43,8 @@ const CATEGORY_ICONS = {
 
   },
   "Environment": {
-    color: "#298CC0",
+    color: "#115E41",
+    colorEnd: "#6D9A87",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M7 20h10" />
@@ -51,7 +55,8 @@ const CATEGORY_ICONS = {
 
   },
   "Community": {
-    color: "#992A13",
+    color: "#298CC0",
+    colorEnd: "#7BB6D4",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--ffg-muted)" }}>
         <path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z" />
@@ -61,7 +66,8 @@ const CATEGORY_ICONS = {
 
   },
   "Health": {
-    color: "#EE0D0E",
+    color: "#F6906D",
+    colorEnd: "#F6B8A2",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
@@ -69,7 +75,8 @@ const CATEGORY_ICONS = {
 
   },
   "Education": {
-    color: "#263759",
+    color: "#F2B705",
+    colorEnd: "#F4D063",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--ffg-muted)" }}>
         <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
@@ -78,7 +85,8 @@ const CATEGORY_ICONS = {
 
   },
   "Culture": {
-    color: "#76480D",
+    color: "#263759",
+    colorEnd: "#7A8396",
     svg:
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z" />
