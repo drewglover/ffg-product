@@ -1,7 +1,7 @@
 import { Ic } from '../icons/Ic';
 
 /* ── Landing ─────────────────────────────────────────── */
-function Landing({ onStart }) {
+function Landing({ onStart, onClose }) {
   return (
     <div className="ob-landing">
       <h1 className="ob-landing__h1"><em>Lexi</em>, you’re here for a reason.</h1>

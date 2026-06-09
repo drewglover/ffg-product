@@ -1,6 +1,7 @@
 // FFG Onboarding flow — ported from the prototype's onboarding.jsx shell.
 // Landing → 6 questionnaire steps → Submitted. Single-file state machine.
 import React, { useState, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CAUSE_AREAS } from '../components/onboarding/data/causeAreas.jsx';
 import { Landing } from '../components/onboarding/steps/Landing.jsx';
 import { CausePriorities } from '../components/onboarding/steps/CausePriorities.jsx';
@@ -9,12 +10,18 @@ import { ScaleStep } from '../components/onboarding/steps/ScaleStep.jsx';
 import { ReviewStep } from '../components/onboarding/steps/ReviewStep.jsx';
 import { Submitted } from '../components/onboarding/steps/Submitted.jsx';
 import { StepChrome } from '../components/onboarding/atoms/StepChrome.jsx';
+import { Ic } from '../components/onboarding/icons/Ic.jsx';
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   /* screens:
      "landing" → "step1" → "step2" → "step3" → "step4" → "step5" → "step6" → "done" */
   const SCREENS = ['landing', 'step1', 'step2', 'step3', 'step4', 'step5', 'step6', 'done'];
   const [screen, setScreen] = useState('landing');
+  const goTo = useCallback((nextScreen, scrollTop = true) => {
+    setScreen(nextScreen);
+    if (scrollTop) window.scrollTo({ top: 0 });
+  }, []);
 
   const [order, setOrder] = useState(CAUSE_AREAS.map((c) => c.id));
   const [goalsByCause, setGoalsByCause] = useState({}); // { causeId: [goal,..] }
@@ -28,22 +35,19 @@ export default function Onboarding() {
   const stepNumber = idx === 0 || idx === 7 ? 0 : idx; // 1..6 inside questionnaire
 
   const next = useCallback(() => {
-    setScreen(SCREENS[Math.min(idx + 1, SCREENS.length - 1)]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [idx]);
+    goTo(SCREENS[Math.min(idx + 1, SCREENS.length - 1)]);
+  }, [idx, goTo]);
   const back = useCallback(() => {
-    setScreen(SCREENS[Math.max(idx - 1, 0)]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [idx]);
+    goTo(SCREENS[Math.max(idx - 1, 0)]);
+  }, [idx, goTo]);
   const resetToLanding = () => {
     setOrder(CAUSE_AREAS.map((c) => c.id));
     setGoalsByCause({});
     setScales([]);
     setLocations([]);
-    setScreen('landing');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    goTo('landing');
   };
-  const closeOut = () => setScreen('landing');
+  const closeOut = () => goTo('landing');
 
   // Continue-button enabled state per step
   const canContinue = useMemo(() => {
@@ -74,7 +78,10 @@ export default function Onboarding() {
   // Render
   if (screen === 'landing') {
     return (
-      <div className="ob-app">
+      <div className="ob-app ob-app--landing">
+        <button type="button" className="ob-landing__close" onClick={() => navigate('/dashboard')} aria-label="Close">
+          <Ic.X width="24" height="24" />
+        </button>
         <Landing onStart={next} />
       </div>);
   }
