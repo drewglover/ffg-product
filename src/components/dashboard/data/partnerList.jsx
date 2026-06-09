@@ -47,11 +47,12 @@ function _pSeed(str) {
 const _STRATS = ["Angel", "SPV", "Fund", "Granted", "Pooled"];
 
 const ORGS = PARTNER_LIST.map((p) => {
-  const tier = p.cost < 120 ? 4 : p.cost < 160 ? 3 : p.cost < 215 ? 2 : 1;
+  const confidence = _pSeed(p.name + "c") % 40 + 60; // 60–99% confidence level
   const strategy = _STRATS[_pSeed(p.name + "s") % _STRATS.length];
   const lives = Math.round((_pSeed(p.name + "l") % 38000 + 3000) / 100) * 100;
   const donated = Math.round((_pSeed(p.name + "d") % 11000 + 2000) / 100) * 100;
-  return { name: p.name, loc: p.location, tier, strategy, lives, donated, tags: p.tags };
+  const livesImpacted = _pSeed(p.name + "i") % 291 + 10; // 10–300 lives impacted
+  return { name: p.name, loc: p.location, confidence, strategy, lives, donated, livesImpacted, tags: p.tags };
 });
 
 

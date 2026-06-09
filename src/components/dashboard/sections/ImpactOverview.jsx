@@ -19,8 +19,19 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
   const scale = scope === "factory" ? 15 : scope === "circle" ? 5 : 1;
   const livesValue = Math.round(34000 * scale).toLocaleString();
   const orgsValue = Math.round(142 * scale).toLocaleString();
-  const contribValue = "$" + Math.round(totalContrib * scale).toLocaleString();
+  // Contributions scale with scope just like lives/outcomes (you → circle → factory).
+  const contribNum = Math.round(10928 * scale);
   const periodData = IMPACT_DATA_BY_PERIOD[periodFilter];
+
+  // Randomized once per mount so the figures stay put across scope re-renders.
+  const trends = React.useMemo(() => {
+    const rand = () => Math.floor(Math.random() * 56) + 40; // 40–95%
+    return {
+      contrib: `+${rand()}% increase this month`,
+      outcomes: `+${rand()}% increase this month`,
+      lives: `+${rand()}% increase this month`
+    };
+  }, []);
 
   return (
     <>
@@ -38,9 +49,9 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
         </ToggleGroup>
       </div>
       <div className="stats-row">
-        <Stat scope={scope} label="Projected lives reached" value={livesValue} rawNum={Math.round(34000 * scale)} trend="+100% increase this month" onClick={() => {const el = document.getElementById("impact-chart");if (el) el.scrollIntoView ? window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" }) : null;}} />
-        <Stat scope={scope} label="Projected organizations supported" value={orgsValue} rawNum={Math.round(142 * scale)} trend="+100% increase this month" onClick={() => onTabChange && onTabChange("areas")} />
-        <Stat scope={scope} label="Total contributions" value="$10,928" trend="+100% increase this month" onClick={() => onTabChange && onTabChange("history")} />
+        <Stat scope={scope} label="Contributions" value={"$" + contribNum.toLocaleString()} rawNum={contribNum} prefix="$" trend={trends.contrib} onClick={() => onTabChange && onTabChange("history")} />
+        <Stat scope={scope} label="Outcomes" value={orgsValue} rawNum={Math.round(142 * scale)} trend={trends.outcomes} onClick={() => onTabChange && onTabChange("areas")} />
+        <Stat scope={scope} label="Lives impacted" value={livesValue} rawNum={Math.round(34000 * scale)} trend={trends.lives} onClick={() => {const el = document.getElementById("impact-chart");if (el) el.scrollIntoView ? window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: "smooth" }) : null;}} />
       </div>
 
       <div className="impact">
