@@ -126,14 +126,22 @@
   --overlay-dark-90: oklch(0.191 0.002 106.6 / 0.90);
 
   /* Qualitative — categorical palette (charts, tags, illustrations) */
-  --ffg-data-qual-seafoam:  oklch(0.730 0.101 165.1);  /* #64BC98 — Social Justice  */
-  --ffg-data-qual-forest:   oklch(0.429 0.087 162.4);  /* #115E41 — Economic Growth */
-  --ffg-data-qual-coral:    oklch(0.754 0.133  39.6);  /* #F6906D — Humanitarian    */
-  --ffg-data-qual-cerulean: oklch(0.608 0.118 237.0);  /* #298CC0 — Environment     */
-  --ffg-data-qual-sienna:   oklch(0.456 0.151  33.3);  /* #992A13 — Community       */
-  --ffg-data-qual-scarlet:  oklch(0.599 0.242  28.8);  /* #EE0D0E — Health          */
-  --ffg-data-qual-navy:     oklch(0.340 0.064 263.2);  /* #263759 — Education       */
-  --ffg-data-qual-umber:    oklch(0.445 0.093  66.1);  /* #76480D — Culture         */
+  --ffg-data-qual-environment:     oklch(0.429 0.087 162.4);  /* #115E41 — Environment     */
+  --ffg-data-qual-education:       oklch(0.783 0.149  86.0);  /* #F2B705 — Education       */
+  --ffg-data-qual-health:          oklch(0.754 0.133  39.6);  /* #F6906D — Health          */
+  --ffg-data-qual-social-justice:  oklch(0.456 0.151  33.3);  /* #992A13 — Social Justice  */
+  --ffg-data-qual-community:       oklch(0.608 0.118 237.0);  /* #298CC0 — Community       */
+  --ffg-data-qual-culture:         oklch(0.340 0.064 263.2);  /* #263759 — Culture         */
+  --ffg-data-qual-economic-growth: oklch(0.730 0.101 165.1);  /* #64BC98 — Economic Growth */
+  --ffg-data-qual-humanitarian:    oklch(0.599 0.242  28.8);  /* #EE0D0E — Humanitarian    */
+  /* Aliases for Shadcn UI semantic tokens */
+  --ffg-data-qual-scarlet:  var(--ffg-data-qual-humanitarian); /* --destructive */
+  --ffg-data-qual-navy:     var(--ffg-data-qual-culture);      /* --ring        */
+  --ffg-data-qual-seafoam:  var(--ffg-data-qual-economic-growth);
+  --ffg-data-qual-coral:    var(--ffg-data-qual-health);
+  --ffg-data-qual-cerulean: var(--ffg-data-qual-community);
+  --ffg-data-qual-forest:   var(--ffg-data-qual-environment);
+  --ffg-data-qual-sienna:   var(--ffg-data-qual-social-justice);
 
   /* Sequential — ordered ramp (light → dark blue) */
   --ffg-seq-100: oklch(0.879 0.020 245.7);  /* #CDD9E4 */
