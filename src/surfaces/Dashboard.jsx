@@ -2,10 +2,10 @@
 // The control room: hero, transfer status, impact charts, allocation,
 // updates. The floating TweaksPanel switches the donation-status phase.
 import React, { useState, useEffect } from 'react';
-import { useTweaks, TweaksPanel, TweakSection, TweakRadio } from '../tweaks-panel.jsx';
+import { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSelect } from '../tweaks-panel.jsx';
 import { DENSITY_PRESETS } from '../components/dashboard/data/densityPresets.jsx';
 import { Hero } from '../components/dashboard/sections/Hero.jsx';
-import { TransferStatus } from '../components/dashboard/sections/TransferStatus.jsx';
+import { Progress } from '../components/dashboard/sections/hero/Progress.jsx';
 import { PageTabs } from '../components/dashboard/sections/PageTabs.jsx';
 import { ImpactOverview } from '../components/dashboard/sections/ImpactOverview.jsx';
 import { ImpactAreasSection } from '../components/dashboard/sections/ImpactAreasSection.jsx';
@@ -20,7 +20,41 @@ const TWEAK_DEFAULTS = {
   cohortSize: 122,
   firstGiveDate: 'April 15, 2026',
   phase: 'in-progress',
+  dynamicAction: 'auto',
+  stepCount: 4,
 };
+
+// Step labels per progress variant. The 4-step variant keeps the original
+// transfer copy (including the dollar amount on the first step).
+const STEP_LABELS = {
+  3: ['Transfer initiated', 'Funds received', 'Funds distributed'],
+  4: ['Transfer initiated: $200,000', 'Funds received', 'Allocation in progress', 'Funds distributed'],
+  5: ['Transfer initiated', 'Allocate funds', 'Vetting', 'Review vetting', 'Funds distributed'],
+};
+
+// Which dynamic-action variant a phase maps to when the tweak is on "auto".
+const PHASE_DEFAULT_ACTION = {
+  preview: 'allocation-slider',
+  'in-progress': 'none',
+  allocated: 'hero-actions',
+};
+
+// Build the stepper data for the current phase + step count. "allocated"
+// completes every step; "in-progress" lands mid-way (last step pending, the
+// one before it active); "preview" shows no stepper at all.
+function buildSteps(phase, stepCount, date) {
+  if (phase === 'preview') return [];
+  const labels = STEP_LABELS[stepCount] || STEP_LABELS[4];
+  const activeIdx = labels.length - 2; // second-to-last is "in progress"
+  return labels.map((label, i) => {
+    if (phase === 'allocated') {
+      return { label, date, progress: 100, state: 'done' };
+    }
+    if (i < activeIdx) return { label, date, progress: 100, state: 'done' };
+    if (i === activeIdx) return { label, date, progress: 62, state: 'active' };
+    return { label, date, progress: 0, state: 'pending' };
+  });
+}
 
 export default function Dashboard() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
@@ -44,11 +78,26 @@ export default function Dashboard() {
     r.setProperty('--type-card-title', preset.card + 'px');
   }, [t.density]);
 
+  const dynamicAction = t.dynamicAction === 'auto'
+    ? (PHASE_DEFAULT_ACTION[t.phase] || 'none')
+    : t.dynamicAction;
+  const steps = buildSteps(t.phase, Number(t.stepCount), t.firstGiveDate);
+  const progressTitle = t.phase === 'allocated' ? 'Transfer complete' : 'Transfer in progress';
+
   return (
     <>
       <div className="shell">
-        <Hero phase={t.phase} name={t.name} livesCount={t.livesCount} onAmountConfirm={setAllocAmount} confirmedAmount={allocAmount} onTabChange={setPageTab} />
-        <TransferStatus phase={t.phase} firstGiveDate={t.firstGiveDate} />
+        <Hero
+          name={t.name}
+          livesCount={t.livesCount}
+          onTabChange={setPageTab}
+          dynamicAction={dynamicAction}
+          onAmountConfirm={setAllocAmount}
+          confirmedAmount={allocAmount} />
+        <Progress
+          title={progressTitle}
+          steps={steps}
+          dismissible={t.phase === 'allocated'} />
         <PageTabs value={pageTab} onChange={setPageTab} />
         {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} />}
         {pageTab === 'areas' && <ImpactAreasSection cohortSize={t.cohortSize} />}
@@ -64,6 +113,17 @@ export default function Dashboard() {
           value={t.phase}
           options={['preview', 'in-progress', 'allocated']}
           onChange={(v) => setTweak('phase', v)} />
+        <TweakSection label="Hero" />
+        <TweakSelect
+          label="Dynamic area"
+          value={t.dynamicAction}
+          options={['auto', 'none', 'allocation-slider', 'allocated-callout', 'hero-actions']}
+          onChange={(v) => setTweak('dynamicAction', v)} />
+        <TweakRadio
+          label="Progress"
+          value={t.stepCount}
+          options={[3, 4, 5]}
+          onChange={(v) => setTweak('stepCount', v)} />
       </TweaksPanel>
     </>
   );

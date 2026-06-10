@@ -506,6 +506,13 @@ img {
   color: var(--ffg-surface-600);
   line-height: 1.5;
 }
+/* In the hero's right slot the callout fills the column like the alloc card,
+   rather than spanning the full-width section it used to occupy. */
+.allocated-callout--in-hero {
+  flex: 0 0 33.333%;
+  max-width: 33.333%;
+  align-self: stretch;
+}
 
 /* SHADCN TARGET — Alert (.confirm-banner, .allocated-callout) */
 /* ---- Confirmation banner (preview state) ---- */
@@ -1115,7 +1122,7 @@ img {
 
 .stepper {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--step-count, 4), 1fr);
   gap: 24px;
 }
 .stepper[hidden] { display: none; }
@@ -1154,6 +1161,27 @@ img {
   letter-spacing: 0.01em;
 }
 .step.muted .step-date { color: var(--ffg-muted-2); }
+
+/* Optional per-step action — for steps that need further input from the user */
+.step-action {
+  appearance: none;
+  margin-top: 12px;
+  padding: 7px 14px;
+  font-family: "PP Fragment Sans", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.005em;
+  color: #FFFCF6;
+  background: var(--ffg-surface-950);
+  border: 1px solid var(--ffg-surface-950);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+.step-action:hover { background: #000; }
+.step-action:active { transform: translateY(1px); }
+.step-action:disabled { opacity: 0.45; cursor: not-allowed; }
 
 @keyframes bar-pulse {
   0%   { opacity: 1; }

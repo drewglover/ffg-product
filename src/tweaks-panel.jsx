@@ -60,9 +60,16 @@ const __TWEAKS_STYLE = `
   .twk-hd{display:flex;align-items:center;justify-content:space-between;
     padding:10px 8px 10px 14px;cursor:move;user-select:none}
   .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-hd-actions{display:flex;align-items:center;gap:2px}
   .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
     width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
   .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-caret{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;display:flex;
+    align-items:center;justify-content:center;padding:0}
+  .twk-caret:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-caret svg{transition:transform .15s ease}
+  .twk-caret[data-collapsed="1"] svg{transform:rotate(-90deg)}
   .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
     overflow-y:auto;overflow-x:hidden;min-height:0;
     scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
@@ -189,6 +196,9 @@ function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
   // Standalone app: no design-tool host sends __activate_edit_mode, so open the
   // panel by default — it's the donation-state switcher for the dashboard demo.
   const [open, setOpen] = React.useState(true);
+  // Collapse hides the body but keeps the header bar (drag handle + title)
+  // visible — distinct from dismiss, which removes the panel entirely.
+  const [collapsed, setCollapsed] = React.useState(false);
   const dragRef = React.useRef(null);
   // Auto-inject a rail toggle when a <deck-stage> is on the page. The
   // toggle drives the deck's per-viewer _railVisible via window message;
@@ -250,7 +260,7 @@ function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
     const ro = new ResizeObserver(clampToViewport);
     ro.observe(document.documentElement);
     return () => ro.disconnect();
-  }, [open, clampToViewport]);
+  }, [open, collapsed, clampToViewport]);
 
   React.useEffect(() => {
     const onMsg = (e) => {
@@ -298,18 +308,31 @@ function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
            style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
         <div className="twk-hd" onMouseDown={onDragStart}>
           <b>{title}</b>
-          <button className="twk-x" aria-label="Close tweaks"
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onClick={dismiss}>✕</button>
+          <div className="twk-hd-actions">
+            <button className="twk-caret" data-collapsed={collapsed ? '1' : '0'}
+                    aria-label={collapsed ? 'Expand tweaks' : 'Collapse tweaks'}
+                    aria-expanded={!collapsed}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={() => setCollapsed((c) => !c)}>
+              <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
+                <path fill="currentColor" d="M0 0h10L5 6z" />
+              </svg>
+            </button>
+            <button className="twk-x" aria-label="Close tweaks"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={dismiss}>✕</button>
+          </div>
         </div>
-        <div className="twk-body">
-          {children}
-          {hasDeckStage && railEnabled && !noDeckControls && (
-            <TweakSection label="Deck">
-              <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
-            </TweakSection>
-          )}
-        </div>
+        {!collapsed && (
+          <div className="twk-body">
+            {children}
+            {hasDeckStage && railEnabled && !noDeckControls && (
+              <TweakSection label="Deck">
+                <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
+              </TweakSection>
+            )}
+          </div>
+        )}
       </div>
     </>
   );
