@@ -44,9 +44,10 @@ separately-maintained component library
 - `components.json` — shadcn config. The `@ffg` registry namespace points at
   `https://factory-for-goodcomponents.vercel.app/r/{name}.json`. Once the library
   exposes that endpoint, `npx shadcn@latest add @ffg/<name>` works directly.
-- `src/index.css` — Tailwind v4 + the FFG theme tokens (ported from the library's
-  `app/globals.css`). Imported once in `src/main.jsx`. Tailwind's global *preflight*
-  reset is intentionally omitted so it coexists with `public/styles.css` without
+- `src/index.css` — Tailwind v4 + the FFG theme tokens. **Generated** from the
+  library's `app/globals.css` by `npm run ui:import -- --theme`; don't hand-edit.
+  Imported once in `src/main.jsx`. Tailwind's global *preflight* reset is
+  intentionally omitted so it coexists with `public/styles.css` without
   regressing the existing surfaces.
 - `src/components/ui/*` — vendored themed components (`.tsx`, compiled by Vite/esbuild).
 - `src/lib/utils.js` — `cn()` helper.
@@ -62,6 +63,9 @@ GitHub repo (requires the `gh` CLI authenticated with read access):
 npm run ui:import -- --list          # browse the catalogue (59 components)
 npm run ui:import -- button badge    # import specific components + internal deps
 npm run ui:import -- --all           # import everything
+npm run ui:import -- --theme         # re-sync src/index.css from the library theme
 ```
 
-It writes to `src/components/ui/` and prints any external npm packages to install.
+Component imports write to `src/components/ui/` and print any external npm packages
+to install. `--theme` regenerates `src/index.css` from the library's `app/globals.css`
+(applying the no-preflight / no-global-base departures and wiring the local fonts).

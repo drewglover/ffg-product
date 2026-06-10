@@ -138,7 +138,20 @@ html, body {
 
   --ffg-alert: #EE0D0E;
   --ffg-good: #115E41;
-  --radius: 6px;
+
+  /* Radius — unified with the shadcn theme (index.css), which already wins the
+   * :root cascade and renders existing surfaces at .75rem (12px). Declared here
+   * too so styles.css stays self-consistent. The ramp mirrors index.css's
+   * @theme inline steps (which Tailwind inlines into utilities and does NOT
+   * emit as :root vars), so hand-written CSS can use var(--radius-sm…4xl). */
+  --radius: .75rem;
+  --radius-sm:  calc(var(--radius) * 0.6); /* ~7px  */
+  --radius-md:  calc(var(--radius) * 0.8); /* ~10px */
+  --radius-lg:  var(--radius);             /* 12px  */
+  --radius-xl:  calc(var(--radius) * 1.4); /* ~17px */
+  --radius-2xl: calc(var(--radius) * 1.8); /* ~22px */
+  --radius-3xl: calc(var(--radius) * 2.2); /* ~26px */
+  --radius-4xl: calc(var(--radius) * 2.6); /* ~31px */
   --nav-height: 60px;
   --shadow-soft: 0 1px 0 rgba(27, 27, 26, 0.04);
 
