@@ -440,13 +440,26 @@ img {
 .txn-menu-btn:hover { background: var(--overlay-dark-10); }
 
 /* SHADCN TARGET — Button (.hero-btn--solid, .hero-btn--ghost) */
-/* ---- Allocated-state hero actions ---- */
-.hero-actions {
+/* ---- Hero action variants (bottom-aligned, right of the hero) ---- */
+.action-prompt {
   flex: 0 0 auto;
+  align-self: flex-end;
   margin-left: auto;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  max-width: 320px;
+  text-align: right;
+}
+/* Scoped to out-specify `.hero p` (0,1,1), which otherwise overrides the
+   body color on this in-hero <p>. */
+.action-prompt .action-prompt__copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: 0.005em;
+  color: var(--color-body);
 }
 .hero-btn {
   appearance: none;

@@ -2,6 +2,17 @@ import React, { useState, useRef } from 'react';
 import { Icon } from '../../icons/Icon';
 import { toast } from 'sonner';
 
+/* Bottom-aligned action prompts (copy + a single button). Keyed by variant
+   slug so adding another is a one-line entry here + an option in the panel. */
+const ACTION_PROMPTS = {
+  "action-annual-review": { copy: "It's time to review your good for the year.", button: "Schedule your review" },
+  "action-wrapped":       { copy: "Your impact wrapped is ready.",               button: "Open" },
+  "action-sign":          { copy: "Confirm your good.",                          button: "Sign engagement" },
+  "action-wire":          { copy: "Get your good in action.",                    button: "Wire funds" },
+  "action-vet":           { copy: "Select your nonprofits to vet.",              button: "Vet now" },
+  "action-renew":         { copy: "Keep your good going.",                        button: "Renew now" },
+};
+
 /* ====== Dynamic action ======
    Top-right of the hero. A single slot whose contents swap based on the
    resolved `variant`. Today's variants:
@@ -9,9 +20,11 @@ import { toast } from 'sonner';
      - "annual giving"      → annual-giving card (carousel + custom amount)
      - "in action"          → the "funds at work" callout
      - "vetting"            → the "vetting your orgs" callout
-     - "hero-actions"       → Share / Give buttons
+     - "action-*"           → a copy + button prompt (bottom-aligned); see
+                              ACTION_PROMPTS for the set
    Unknown variants render nothing, so new states can be added additively. */
 function DynamicAction({ variant, onAmountConfirm, confirmedAmount }) {
+  if (ACTION_PROMPTS[variant]) return <ActionPrompt {...ACTION_PROMPTS[variant]} />;
   switch (variant) {
     case "annual giving":
       return <AllocationSlider onAmountConfirm={onAmountConfirm} confirmedAmount={confirmedAmount} />;
@@ -29,25 +42,18 @@ function DynamicAction({ variant, onAmountConfirm, confirmedAmount }) {
           title="We're vetting your requested organizations."
           copy="We'll send you an update in 3-4 weeks." />
       );
-    case "hero-actions":
-      return <HeroActions />;
     case "none":
     default:
       return null;
   }
 }
 
-/* ---- hero-actions: Share / Give ---- */
-function HeroActions() {
+/* ---- action-*: a single copy line + button ---- */
+function ActionPrompt({ copy, button }) {
   return (
-    <div className="hero-actions" aria-label="Quick actions">
-      <button type="button" className="hero-btn hero-btn--ghost">
-        <Icon.Share />
-        <span>Share</span>
-      </button>
-      <button type="button" className="hero-btn hero-btn--solid">
-        <span>Give</span>
-      </button>
+    <div className="action-prompt" aria-label="Action">
+      <p className="action-prompt__copy">{copy}</p>
+      <button type="button" className="hero-btn hero-btn--solid">{button}</button>
     </div>
   );
 }

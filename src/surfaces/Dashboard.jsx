@@ -38,7 +38,7 @@ const STEP_LABELS = {
 const PHASE_DEFAULT_ACTION = {
   preview: 'annual giving',
   'in-progress': 'none',
-  allocated: 'hero-actions',
+  allocated: 'in action',
 };
 
 // Build the stepper data for the current phase + step count. "allocated"
@@ -127,7 +127,7 @@ export default function Dashboard() {
         <TweakSelect
           label="Dynamic area"
           value={t.dynamicAction}
-          options={['auto', 'none', 'annual giving', 'in action', 'vetting', 'hero-actions']}
+          options={['auto', 'none', 'annual giving', 'in action', 'vetting', 'action-annual-review', 'action-wrapped', 'action-sign', 'action-wire', 'action-vet', 'action-renew']}
           onChange={(v) => setTweak('dynamicAction', v)} />
         <TweakToggle
           label="Show progress"
