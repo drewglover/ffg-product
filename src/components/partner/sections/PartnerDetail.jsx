@@ -22,7 +22,7 @@ function PartnerDetail({ partner, onBack }) {
       <div className="pt-topbar">
         <button className="pt-back" onClick={onBack} style={{ fontSize: "14px" }}>
           <PIcon.ArrowLeft />
-          All partners
+          All Opportunities
         </button>
         <div className="pt-topbar__badges">
           <div className="pt-backed">
@@ -167,7 +167,7 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
                   <div className="pt-poi__dot" style={{ left: "50%" }} />
                 </div>
                 <div className="pt-poi__labels">
-                  <span style={{ fontSize: "14px" }}>Weak</span>
+                  <span style={{ fontSize: "14px" }}>Suffering</span>
                   <span style={{ fontSize: "14px" }}>Stable</span>
                   <span style={{ fontSize: "14px" }}>Flourishing</span>
                 </div>
