@@ -39,7 +39,7 @@ function PartnerDetail({ partner, onBack }) {
       <section className="pt-hero">
         {/* Logo + name + meta */}
         <div className="pt-hero__id">
-          <LogoPlaceholder size={56} name={partner.name} />
+          <LogoPlaceholder size={84} name={partner.name} />
           <div className="pt-hero__id-text">
             <h1 style={{ fontFamily: "\"PP Fragment Sans\", sans-serif", fontWeight: 400, fontStyle: "normal", fontSize: "48px", lineHeight: 1.05, letterSpacing: "-0.01em", margin: 0 }}>
               {partner.name}
@@ -58,15 +58,15 @@ function PartnerDetail({ partner, onBack }) {
         </div>
 
         {/* Description — full width */}
-        <p className="pt-side__desc" style={{ marginTop: "20px" }}>{PARTNER_DESC}</p>
+        <p className="pt-side__desc" style={{ marginTop: "24px" }}>{PARTNER_DESC}</p>
 
         {/* Cause area tags */}
-        <div className="pt-side__tags" style={{ marginTop: "12px" }}>
+        <div className="pt-side__tags" style={{ marginTop: "24px" }}>
           {partner.tags.map((t, i) => <Badge key={i}>{t}</Badge>)}
         </div>
 
         {/* KPIs row — 3 items */}
-        <div className="pt-hero__kpis" style={{ marginTop: "28px" }}>
+        <div className="pt-hero__kpis" style={{ marginTop: "48px" }}>
           <KPI label="Yearly People Reached" value="142" />
           <KPI label="Cost Per Outcome" value="$1,600" />
           <KPI label="Stage" value="500K–2M" />

@@ -3748,7 +3748,7 @@ img {
 .pt-hero {
   display: flex;
   flex-direction: column;
-  margin-top: 16px;
+  margin-top: 110px;
   margin-bottom: 110px;
   padding: 0;
   position: relative;
@@ -3848,7 +3848,7 @@ img {
 }
 .pt-photo-loc .pt-org-photo {
   aspect-ratio: unset;
-  min-height: 320px;
+  height: 450px;
 }
 .pt-photo-loc__info {
   display: flex;
@@ -4538,7 +4538,6 @@ img {
 }
 .pt-side__desc {
   margin: 0;
-  max-width: 62ch;
   font-size: var(--type-body-2);
   line-height: 1.55;
   color: var(--color-body);
