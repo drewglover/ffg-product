@@ -4041,14 +4041,14 @@ img {
   margin-bottom: 12px;
 }
 .pt-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--ffg-surface-950);
   letter-spacing: 0.005em;
 }
 .pt-sub {
   margin: 6px 0 0;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--ffg-muted);
   letter-spacing: 0.005em;
 }
@@ -4276,7 +4276,7 @@ img {
 .pt-metrics-left {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 40px;
 }
 
 /* Charts */
