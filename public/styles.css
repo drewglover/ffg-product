@@ -3749,8 +3749,20 @@ img {
   display: flex;
   flex-direction: column;
   margin-top: 16px;
-  margin-bottom: 72px;
-  padding: 0 0 96px;
+  margin-bottom: 110px;
+  padding: 0;
+  position: relative;
+}
+/* Divider 40px above the photo/location section — rendered as hero bottom border */
+.pt-hero::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -70px;
+  left: 56px;
+  right: 56px;
+  height: 1px;
+  background: var(--overlay-dark-10);
 }
 .pt-hero__id {
   display: flex;
@@ -3758,13 +3770,17 @@ img {
   align-items: center;
   position: relative;
 }
-/* Backed by X Builders badge */
+/* Top bar right-side badges */
+.pt-topbar__badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Backed by / status pill badges */
 .pt-backed {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-left: auto;
-  align-self: flex-start;
   font-size: 14px;
   font-weight: 300;
   color: var(--ffg-muted);
@@ -3809,12 +3825,12 @@ img {
   color: var(--ffg-muted);
   width: fit-content;
 }
-/* Org photo in Why We Chose section */
+/* Org photo */
 .pt-org-photo {
-  width: 100%;
   border-radius: var(--radius);
   overflow: hidden;
-  aspect-ratio: 16 / 7;
+  aspect-ratio: 4 / 3;
+  min-width: 0;
 }
 .pt-org-photo__img {
   width: 100%;
@@ -3822,21 +3838,44 @@ img {
   object-fit: cover;
   display: block;
 }
+/* Photo + Location two-column row */
+.pt-photo-loc {
+  display: grid;
+  grid-template-columns: 70fr 30fr;
+  gap: 24px;
+  align-items: stretch;
+  margin: 0 56px 72px;
+}
+.pt-photo-loc .pt-org-photo {
+  aspect-ratio: unset;
+  min-height: 320px;
+}
+.pt-photo-loc__info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+/* Location box — partner card style */
+.pt-loc-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: var(--radius);
+  background: var(--ffg-surface-wash);
+  height: 100%;
+  box-sizing: border-box;
+}
 .pt-hero__id-text {
   padding-top: 4px;
-}
-.pt-hero__body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 80px;
-  align-items: start;
-  margin-top: 28px;
 }
 .pt-hero__kpis {
   display: flex;
   flex-direction: row;
-  gap: 32px;
+  gap: 48px;
   align-items: flex-start;
+  margin-top: 28px;
 }
 .pt-hero__badges {
   display: flex;
@@ -4016,6 +4055,13 @@ img {
   flex-direction: column;
   gap: 0;
   border-top: 1px solid var(--ffg-divider);
+}
+.pt-acc-list--boxed {
+  border-top: none;
+  gap: 10px;
+}
+.pt-acc-list--boxed .pt-acc {
+  border-bottom: none;
 }
 .pt-acc {
   border-bottom: 1px solid var(--ffg-divider);
