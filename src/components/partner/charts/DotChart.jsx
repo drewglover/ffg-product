@@ -8,7 +8,7 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
   const W = 700;
   const H = 300;
   const padLeft = 64;
-  const padRight = 20;  // prevent right-edge clipping
+  const padRight = 0;
   const padTop = 16;    // prevent top-edge clipping
   const padBottom = 56; // tick labels + 24px gap + "People Reached"
   const plotW = W - padLeft - padRight;
@@ -41,7 +41,7 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
       </p>
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        style={{ width: '100%', height: 'auto', display: 'block', marginTop: '18px' }}
+        style={{ width: '100%', height: 'auto', display: 'block', marginTop: '18px', overflow: 'visible' }}
         aria-label="Depth of Intervention scatter chart">
 
         {/* Y axis labels — rotated, right edge sits 16px left of plot */}
