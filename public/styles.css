@@ -440,13 +440,26 @@ img {
 .txn-menu-btn:hover { background: var(--overlay-dark-10); }
 
 /* SHADCN TARGET — Button (.hero-btn--solid, .hero-btn--ghost) */
-/* ---- Allocated-state hero actions ---- */
-.hero-actions {
+/* ---- Hero action variants (bottom-aligned, right of the hero) ---- */
+.action-prompt {
   flex: 0 0 auto;
+  align-self: flex-end;
   margin-left: auto;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  max-width: 320px;
+  text-align: right;
+}
+/* Scoped to out-specify `.hero p` (0,1,1), which otherwise overrides the
+   body color on this in-hero <p>. */
+.action-prompt .action-prompt__copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: 0.005em;
+  color: var(--color-body);
 }
 .hero-btn {
   appearance: none;
@@ -500,11 +513,20 @@ img {
   margin-bottom: 4px;
   letter-spacing: 0.002em;
 }
-.allocated-callout__copy {
+/* Scoped to out-specify `.hero p` (0,1,1), which otherwise wins over a bare
+   `.allocated-callout__copy` now that this callout lives inside the hero. */
+.allocated-callout .allocated-callout__copy {
   margin: 0;
   font-size: 13px;
-  color: var(--ffg-surface-600);
+  color: var(--color-body);
   line-height: 1.5;
+}
+/* In the hero's right slot the callout fills the column like the alloc card,
+   rather than spanning the full-width section it used to occupy. */
+.allocated-callout--in-hero {
+  flex: 0 0 33.333%;
+  max-width: 33.333%;
+  align-self: stretch;
 }
 
 /* SHADCN TARGET — Alert (.confirm-banner, .allocated-callout) */
@@ -850,16 +872,12 @@ img {
   50%      { box-shadow: 0 0 0 5px rgba(47, 90, 146, 0.06); }
 }
 
-/* Disabled allocation slider (Allocated state) */
-.alloc-slider input[type="range"]:disabled { cursor: not-allowed; opacity: 0.55; }
-.alloc-slider input[type="range"]:disabled::-webkit-slider-thumb { background: var(--ffg-surface-200); }
-
 /* ---- Hero ---- */
 .hero {
   display: flex;
   align-items: flex-start;
   gap: 64px;
-  padding-bottom: 96px;
+  padding-bottom: 48px;
 }
 .hero-text { flex: 1 1 0; min-width: 0; }
 .hero h1 {
@@ -931,82 +949,91 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
-.alloc-controls {
+/* ---- Annual-giving carousel ---- */
+.alloc-carousel {
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  gap: 16px;
 }
-
-.alloc-slider {
+.alloc-carousel .alloc-value {
   flex: 1 1 auto;
-  position: relative;
-  height: 18px;
+  text-align: center;
+  font-size: 40px;
+}
+/* Carousel nav buttons — mirror shadcn Carousel's CarouselPrevious/Next
+   (Button: outline variant, size icon-sm → 28px, rounded-full). */
+.alloc-nav {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ffg-surface-950);
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease, opacity 120ms ease;
+}
+.alloc-nav svg { width: 16px; height: 16px; }
+.alloc-nav:hover { background: var(--muted); }
+.alloc-nav:active { transform: translateY(1px); }
+/* Min/max boundary: reads as disabled but still clickable (it toasts a hint). */
+.alloc-nav.is-disabled { opacity: 0.4; cursor: not-allowed; }
+.alloc-nav.is-disabled:hover { background: transparent; }
+
+/* ---- Custom amount ---- */
+.alloc-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.alloc-custom__row {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
-.alloc-slider::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 50%;
-  height: 2px;
-  margin-top: -1px;
-  background: var(--ffg-divider);
-  border-radius: var(--radius);
+.alloc-custom__row .alloc-btn {
+  height: 32px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
 }
-.alloc-slider::after {
-  content: "";
-  position: absolute;
-  left: 0; top: 50%;
-  width: var(--pct, 38%);
-  height: 2px;
-  margin-top: -1px;
-  background: var(--ffg-surface-950);
-  border-radius: var(--radius);
-}
-.alloc-slider input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 18px;
+/* Input field — mirror shadcn Input (h-8, border-input, rounded-lg, ring). */
+.alloc-input {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
   background: transparent;
-  margin: 0;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.alloc-input:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+.alloc-input__prefix { color: var(--muted-foreground); font-size: 14px; }
+.alloc-input input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: "PP Fragment Sans", sans-serif;
+  font-size: 14px;
+  color: var(--ffg-surface-950);
   padding: 0;
-  position: relative;
-  z-index: 1;
-  cursor: pointer;
+  font-variant-numeric: tabular-nums;
 }
-.alloc-slider input[type="range"]:focus { outline: none; }
-.alloc-slider input[type="range"]::-webkit-slider-runnable-track {
-  height: 18px;
-  background: transparent;
-  border: none;
-}
-.alloc-slider input[type="range"]::-moz-range-track {
-  height: 18px;
-  background: transparent;
-  border: none;
-}
-.alloc-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #FFFCF6;
-  border: 1.5px solid var(--ffg-surface-950);
-  margin-top: 2px;
-  cursor: grab;
-  box-shadow: 0 1px 2px rgba(27,27,26,0.12);
-}
-.alloc-slider input[type="range"]:active::-webkit-slider-thumb { cursor: grabbing; }
-.alloc-slider input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #FFFCF6;
-  border: 1.5px solid var(--ffg-surface-950);
-  cursor: grab;
-}
+.alloc-input input::placeholder { color: var(--muted-foreground); }
 
 .alloc-btn {
   appearance: none;
@@ -1026,58 +1053,12 @@ img {
 .alloc-btn:hover { background: #000; }
 .alloc-btn:active { transform: translateY(1px); }
 
-/* Confirm state — full-width "Show my good" solid button */
-.alloc-btn--solid {
-  width: 100%;
-  text-align: center;
-  background: var(--ffg-surface-950);
-  color: #FFFCF6;
-}
-.alloc-btn--solid:hover { background: #000; }
-
-/* Confirm-mode controls row */
-.alloc-controls--confirm {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-.alloc-confirm-label {
-  font-size: 13px;
-  color: var(--ffg-surface-950);
-  letter-spacing: 0.005em;
-  font-weight: 500;
-}
-
-/* Timestamp + undo line */
-.alloc-timestamp {
-  margin-top: 8px;
-  font-size: 11px;
-  color: var(--ffg-surface-600);
-  letter-spacing: 0.005em;
-  line-height: 1.5;
-}
-.alloc-undo {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  font-family: inherit;
-  font-size: inherit;
-  color: var(--ffg-surface-950);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-  letter-spacing: inherit;
-}
-.alloc-undo:hover { opacity: 0.7; }
-
 /* ---- Transfer status ---- */
 .section-block { padding-bottom: 64px; }
 .section-block[aria-label="Impact overview"] { padding-bottom: 110px; }
 .section-block[aria-label="Transfer status"] {
   position: relative;
-  padding-bottom: 96px;
+  padding-bottom: 72px;
   transition: opacity 300ms ease, transform 300ms ease;
 }
 
@@ -1115,7 +1096,7 @@ img {
 
 .stepper {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--step-count, 4), 1fr);
   gap: 24px;
 }
 .stepper[hidden] { display: none; }
@@ -1154,6 +1135,28 @@ img {
   letter-spacing: 0.01em;
 }
 .step.muted .step-date { color: var(--ffg-muted-2); }
+
+/* Optional per-step action — for steps that need further input from the user */
+/* Small outline button shown in place of the date on the active step. */
+.step-action {
+  appearance: none;
+  margin-top: 6px;
+  padding: 5px 12px;
+  font-family: "PP Fragment Sans", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.005em;
+  color: var(--ffg-surface-950);
+  background: transparent;
+  border: 1px solid var(--ffg-divider-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+.step-action:hover { background: var(--overlay-dark-10); }
+.step-action:active { transform: translateY(1px); }
+.step-action:disabled { opacity: 0.45; cursor: not-allowed; }
 
 @keyframes bar-pulse {
   0%   { opacity: 1; }
@@ -5202,11 +5205,11 @@ img {
     min-height: 140px;
   }
 
-  /* ── Allocation controls: stack ── */
-  .alloc-controls {
+  /* ── Allocation custom row: stack ── */
+  .alloc-custom__row {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
   }
   .alloc-btn {
     width: 100%;
@@ -5356,6 +5359,27 @@ img {
 @keyframes ffg-fade-soft {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* Smooth swaps: the hero's dynamic-action slot swaps variants (slider /
+   callout / actions) and the progress stepper changes shape (3/4/5). Each
+   remounts on change, so an entrance fade+lift reads as a smooth transition.
+   Keyed in JSX (DynamicAction variant type, stepper signature) to replay. */
+@keyframes ffg-swap-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-actions,
+.alloc-card,
+.allocated-callout--in-hero,
+.stepper {
+  animation: ffg-swap-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-actions,
+  .alloc-card,
+  .allocated-callout--in-hero,
+  .stepper { animation: none; }
 }
 
 .nav {
