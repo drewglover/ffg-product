@@ -4201,18 +4201,17 @@ img {
   flex-direction: column;
   gap: 4px;
 }
-.pt-tm {
+/* Proportional treemap grid — areas reflect percentages */
+.pt-tm-grid {
   display: grid;
-  grid-template-columns: 1fr 1.16fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 20fr 20fr 15fr;
+  grid-template-areas:
+    "culture   social"
+    "education social"
+    "community environment";
   gap: 4px;
-}
-.pt-tm--row {
-  grid-template-columns: 1fr 1.16fr;
-}
-.pt-tm__col {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex: 1;
 }
 .pt-tm__cell {
   border: 1px solid var(--ffg-surface-950);
@@ -4220,15 +4219,8 @@ img {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-height: 96px;
   background: transparent;
-}
-.pt-tm__cell--lg {
-  min-height: 197px;
-  justify-content: flex-start;
-}
-.pt-tm__cell--row {
-  min-height: 73px;
+  min-height: 0;
 }
 .pt-tm__pct {
   font-family: "PP Fragment Glare", serif;
@@ -4248,11 +4240,39 @@ img {
   letter-spacing: 0.005em;
 }
 
+/* Performance Metrics masonry grid */
+.pt-metrics-grid {
+  display: grid;
+  grid-template-columns: 70fr 30fr;
+  gap: 24px;
+  align-items: stretch;
+}
+.pt-metrics-right {
+  display: flex;
+  flex-direction: column;
+}
+.pt-metrics-right .pt-alloc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.pt-metrics-right .pt-tm-grid {
+  flex: 1;
+}
+.pt-metrics-left {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
 /* Charts */
 .pt-charts {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+}
+.pt-charts--stacked {
+  grid-template-columns: 1fr;
 }
 .pt-chart {
   background: var(--ffg-surface-wash);

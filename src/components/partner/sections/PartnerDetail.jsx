@@ -10,6 +10,7 @@ import { TimelineStep } from '../atoms/TimelineStep';
 import { UpdateCard } from '../../shared/UpdateCard';
 import { Accordion } from '../modals/Accordion.partner';
 import { ChartCard } from '../charts/ChartCard';
+import { DotChart } from '../charts/DotChart';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // INDIVIDUAL PARTNER PAGE
@@ -146,72 +147,71 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
         </Section>
       </div>
 
-      <main className="pt-main">
-        {/* Performance Metrics */}
-        <Section title="Performance Metrics">
-          {/* Point of Intervention slider */}
-          <div className="pt-poi">
-            <div className="pt-label-row">
-              <span className="pt-label">Point of Intervention</span>
-              <PIcon.Info className="pt-info" />
-            </div>
-            <p className="pt-sub" style={{ fontSize: "14px" }}>
-              Our intervention keeps individuals and families on stable footing.
-            </p>
-            <div className="pt-poi__track">
-              <div className="pt-poi__fill" style={{ width: "50%" }} />
-              <div className="pt-poi__dot" style={{ left: "50%" }} />
-            </div>
-            <div className="pt-poi__labels">
-              <span style={{ fontSize: "14px" }}>Suffering</span>
-              <span style={{ fontSize: "14px" }}>Stable</span>
-              <span style={{ fontSize: "14px" }}>Flourishing</span>
-            </div>
-          </div>
+      <div className="pt-why">
+        <Section title="Performance Metrics" fullWidth>
+          <div className="pt-metrics-grid">
+            {/* Left column — POI slider + charts stacked */}
+            <div className="pt-metrics-left">
+              {/* Point of Intervention slider */}
+              <div className="pt-poi">
+                <div className="pt-label-row">
+                  <span className="pt-label">Point of Intervention</span>
+                  <PIcon.Info className="pt-info" />
+                </div>
+                <p className="pt-sub" style={{ fontSize: "14px" }}>
+                  Our intervention keeps individuals and families on stable footing.
+                </p>
+                <div className="pt-poi__track">
+                  <div className="pt-poi__fill" style={{ width: "50%" }} />
+                  <div className="pt-poi__dot" style={{ left: "50%" }} />
+                </div>
+                <div className="pt-poi__labels">
+                  <span style={{ fontSize: "14px" }}>Weak</span>
+                  <span style={{ fontSize: "14px" }}>Stable</span>
+                  <span style={{ fontSize: "14px" }}>Flourishing</span>
+                </div>
+              </div>
 
-          {/* Cause Allocation treemap */}
-          <div className="pt-alloc">
-            <div className="pt-label-row">
-              <span className="pt-label">Cause Allocation</span>
-              <PIcon.Info className="pt-info" />
+              {/* Dot scatter chart */}
+              <DotChart peopleReached={120} depth={1.8} />
             </div>
-            <div className="pt-tm">
-              <div className="pt-tm__col">
-                <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Culture"].color }}>
-                  <div className="pt-tm__pct" style={{ fontFamily: "\"PP Fragment Sans\"" }}>20%</div>
-                  <div className="pt-tm__cat" style={{ fontSize: "14px" }}>Culture</div>
-                </div>
-                <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Education"].color }}>
-                  <div className="pt-tm__pct" style={{ fontFamily: "\"PP Fragment Sans\"" }}>20%</div>
-                  <div className="pt-tm__cat" style={{ fontSize: "14px" }}>Education</div>
-                </div>
-              </div>
-              <div className="pt-tm__col pt-tm__col--wide">
-                <div className="pt-tm__cell pt-tm__cell--lg" style={{ borderColor: CATEGORY_ICONS["Social Justice"].color }}>
-                  <div className="pt-tm__pct" style={{ fontFamily: "\"PP Fragment Sans\"" }}>40%</div>
-                  <div className="pt-tm__cat" style={{ fontSize: "14px", fontWeight: "300" }}>Social Justice</div>
-                </div>
-              </div>
-            </div>
-            <div className="pt-tm pt-tm--row">
-              <div className="pt-tm__cell pt-tm__cell--row" style={{ borderColor: CATEGORY_ICONS["Community"].color }}>
-                <div className="pt-tm__pct" style={{ fontFamily: "\"PP Fragment Sans\"" }}>15%</div>
-                <div className="pt-tm__cat" style={{ fontSize: "14px" }}>Community</div>
-              </div>
-              <div className="pt-tm__cell pt-tm__cell--row pt-tm__cell--wide" style={{ borderColor: CATEGORY_ICONS["Environment"].color }}>
-                <div className="pt-tm__pct" style={{ fontFamily: "\"PP Fragment Sans\"" }}>15%</div>
-                <div className="pt-tm__cat" style={{ fontSize: "14px" }}>Environment</div>
-              </div>
-            </div>
-          </div>
 
-          {/* Two side-by-side charts */}
-          <div className="pt-charts">
-            <ChartCard title="Depth of Intervention" />
-            <ChartCard title="Strength of Intervention" />
+            {/* Right column — Cause Allocation treemap */}
+            <div className="pt-metrics-right">
+              <div className="pt-alloc">
+                <div className="pt-label-row">
+                  <span className="pt-label">Cause Allocation</span>
+                  <PIcon.Info className="pt-info" />
+                </div>
+                <div className="pt-tm-grid">
+                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Culture"].color, gridArea: "culture" }}>
+                    <div className="pt-tm__pct">20%</div>
+                    <div className="pt-tm__cat">Culture</div>
+                  </div>
+                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Education"].color, gridArea: "education" }}>
+                    <div className="pt-tm__pct">20%</div>
+                    <div className="pt-tm__cat">Education</div>
+                  </div>
+                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Social Justice"].color, gridArea: "social" }}>
+                    <div className="pt-tm__pct">40%</div>
+                    <div className="pt-tm__cat">Social Justice</div>
+                  </div>
+                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Community"].color, gridArea: "community" }}>
+                    <div className="pt-tm__pct">15%</div>
+                    <div className="pt-tm__cat">Community</div>
+                  </div>
+                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Environment"].color, gridArea: "environment" }}>
+                    <div className="pt-tm__pct">15%</div>
+                    <div className="pt-tm__cat">Environment</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </Section>
+      </div>
 
+      <main className="pt-main">
         {/* How Your Impact Works */}
         <Section title="How Your Impact Works">
           <ol className="pt-timeline">
