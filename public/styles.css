@@ -3844,7 +3844,7 @@ img {
   grid-template-columns: 70fr 30fr;
   gap: 24px;
   align-items: stretch;
-  margin: 0 0 72px;
+  margin: 0 0 110px;
 }
 .pt-photo-loc .pt-org-photo {
   aspect-ratio: unset;
@@ -3942,14 +3942,15 @@ img {
 }
 .pt-why {
   width: 100%;
-  margin-bottom: 80px;
+  margin-bottom: 110px;
 }
 .pt-main {
   display: flex;
   flex-direction: column;
-  gap: 80px;
+  gap: 110px;
   min-width: 0;
-  padding: 0 0 96px;
+  padding: 0;
+  margin-bottom: 100px;
   width: 900px;
 }
 
