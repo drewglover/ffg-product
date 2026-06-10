@@ -91,12 +91,21 @@ function PartnerDetail({ partner, onBack }) {
         </div>
       </div>
 
-      <main className="pt-main">
-        {/* Why we chose */}
-        <Section title="Why we chose this partner">
-          <p style={{ color: "var(--ffg-muted)", fontSize: "16px", fontWeight: 300, lineHeight: 1.6, margin: 0 }}>
-            {partner.name} was selected through our rigorous vetting process, which evaluates organizations on their problem clarity, leadership quality, evidence of results, and long-term potential. Every partner on our platform has been reviewed and approved by the FFG Impact Team.
-          </p>
+      {/* Why we chose — full width, outside pt-main */}
+      <div className="pt-why">
+        <Section title="Why we chose this partner" fullWidth aside={
+          <div className="pt-reviewed-by">
+            <div className="pt-reviewed-by__badge">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="16" y="21" textAnchor="middle" fontFamily='"PP Fragment Glare", serif' fontSize="12" fontWeight="300" fill="currentColor" letterSpacing="0.02em">FfG</text>
+              </svg>
+            </div>
+            <div className="pt-reviewed-by__text">
+              <span className="pt-reviewed-by__label">Reviewed by</span>
+              <span className="pt-reviewed-by__name">FFG Impact Team</span>
+            </div>
+          </div>
+        }>
           <div className="pt-acc-list pt-acc-list--boxed">
             <div className="ob-cause-card">
               <Accordion icon={<PIcon.Target />} title="Problem Quality" defaultOpen>
@@ -135,7 +144,9 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
             </div>
           </div>
         </Section>
+      </div>
 
+      <main className="pt-main">
         {/* Performance Metrics */}
         <Section title="Performance Metrics">
           {/* Point of Intervention slider */}
