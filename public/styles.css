@@ -1058,7 +1058,7 @@ img {
 .section-block[aria-label="Impact overview"] { padding-bottom: 110px; }
 .section-block[aria-label="Transfer status"] {
   position: relative;
-  padding-bottom: 48px;
+  padding-bottom: 72px;
   transition: opacity 300ms ease, transform 300ms ease;
 }
 
