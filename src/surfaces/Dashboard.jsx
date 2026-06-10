@@ -20,6 +20,7 @@ const TWEAK_DEFAULTS = {
   cohortSize: 122,
   firstGiveDate: 'April 15, 2026',
   phase: 'in-progress',
+  welcome: 'new good',
   dynamicAction: 'auto',
   stepCount: 4,
 };
@@ -91,6 +92,7 @@ export default function Dashboard() {
           name={t.name}
           livesCount={t.livesCount}
           onTabChange={setPageTab}
+          welcomeState={t.welcome}
           dynamicAction={dynamicAction}
           onAmountConfirm={setAllocAmount}
           confirmedAmount={allocAmount} />
@@ -114,6 +116,11 @@ export default function Dashboard() {
           options={['preview', 'in-progress', 'allocated']}
           onChange={(v) => setTweak('phase', v)} />
         <TweakSection label="Hero" />
+        <TweakSelect
+          label="Welcome"
+          value={t.welcome}
+          options={['new good', 'generic', 'initial']}
+          onChange={(v) => setTweak('welcome', v)} />
         <TweakSelect
           label="Dynamic area"
           value={t.dynamicAction}

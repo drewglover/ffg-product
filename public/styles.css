@@ -866,7 +866,7 @@ img {
   display: flex;
   align-items: flex-start;
   gap: 64px;
-  padding-bottom: 96px;
+  padding-bottom: 48px;
 }
 .hero-text { flex: 1 1 0; min-width: 0; }
 .hero h1 {
@@ -1084,7 +1084,7 @@ img {
 .section-block[aria-label="Impact overview"] { padding-bottom: 110px; }
 .section-block[aria-label="Transfer status"] {
   position: relative;
-  padding-bottom: 96px;
+  padding-bottom: 48px;
   transition: opacity 300ms ease, transform 300ms ease;
 }
 
@@ -5239,6 +5239,27 @@ img {
 @keyframes ffg-fade-soft {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* Smooth swaps: the hero's dynamic-action slot swaps variants (slider /
+   callout / actions) and the progress stepper changes shape (3/4/5). Each
+   remounts on change, so an entrance fade+lift reads as a smooth transition.
+   Keyed in JSX (DynamicAction variant type, stepper signature) to replay. */
+@keyframes ffg-swap-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-actions,
+.alloc-card,
+.allocated-callout--in-hero,
+.stepper {
+  animation: ffg-swap-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-actions,
+  .alloc-card,
+  .allocated-callout--in-hero,
+  .stepper { animation: none; }
 }
 
 .nav {

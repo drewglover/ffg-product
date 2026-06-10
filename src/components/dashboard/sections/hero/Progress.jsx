@@ -63,7 +63,7 @@ function Progress({ title = "Transfer in progress", steps = [], dismissible = fa
         {title}
       </div>
 
-      <div className="stepper" style={{ "--step-count": steps.length }}>
+      <div className="stepper" key={steps.length + ":" + title} style={{ "--step-count": steps.length }}>
         {steps.map((s, i) => (
           <div
             key={i}
