@@ -173,7 +173,7 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
               </div>
 
               {/* Dot scatter chart */}
-              <DotChart peopleReached={120} depth={1.8} />
+              <DotChart peopleReached={1000} depth={2} />
             </div>
 
             {/* Right column — Cause Allocation treemap */}

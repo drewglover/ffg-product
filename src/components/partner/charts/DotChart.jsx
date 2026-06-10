@@ -1,4 +1,5 @@
 import React from 'react';
+import { PIcon } from '../icons/PIcon';
 
 // Scatter dot chart — People Reached (log scale) × Depth of Impact (linear 0–10)
 // Plot area spans 100% width to match the Point of Intervention slider above it.
@@ -6,10 +7,10 @@ import React from 'react';
 function DotChart({ peopleReached = 120, depth = 1.8 }) {
   const W = 700;
   const H = 300;
-  const padLeft = 72;
-  const padRight = 0;
-  const padTop = 8;
-  const padBottom = 36;
+  const padLeft = 64;
+  const padRight = 20;  // prevent right-edge clipping
+  const padTop = 16;    // prevent top-edge clipping
+  const padBottom = 56; // tick labels + 24px gap + "People Reached"
   const plotW = W - padLeft - padRight;
   const plotH = H - padTop - padBottom;
 
@@ -30,20 +31,28 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
   const tf = { fontFamily: 'PP Fragment Sans, sans-serif' };
 
   return (
-    <svg
+    <div>
+      <div className="pt-label-row">
+        <span className="pt-label">Intervention Impact</span>
+        <PIcon.Info className="pt-info" />
+      </div>
+      <p className="pt-sub" style={{ fontSize: '14px' }}>
+        This shows the overall intensity of the intervention measuring the reach and impact per person
+      </p>
+      <svg
         viewBox={`0 0 ${W} ${H}`}
-        style={{ width: '100%', height: 'auto', display: 'block' }}
+        style={{ width: '100%', height: 'auto', display: 'block', marginTop: '18px' }}
         aria-label="Depth of Intervention scatter chart">
 
-        {/* Y axis labels — rotated, centered within left padding band */}
-        <g transform={`translate(${padLeft / 2}, ${padTop + plotH / 2}) rotate(-90)`}>
-          <text x={0} y={0} textAnchor="middle" fill="#9A938A"
-            style={{ ...tf, fontSize: '10px' }}>
-            Intensity of impact per person
-          </text>
-          <text x={0} y={-22} textAnchor="middle" fill="#1A1A18"
+        {/* Y axis labels — rotated, right edge sits 16px left of plot */}
+        <g transform={`translate(8, ${padTop + plotH / 2}) rotate(-90)`}>
+          <text x={0} y={7} textAnchor="middle" fill="#1A1A18"
             style={{ ...tf, fontSize: '13px', fontWeight: 500 }}>
             Depth
+          </text>
+          <text x={0} y={26} textAnchor="middle" fill="#9A938A"
+            style={{ ...tf, fontSize: '10px' }}>
+            Intensity of impact per person
           </text>
         </g>
 
@@ -63,18 +72,18 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
             stroke="#C8C5BF" strokeWidth="1" />
         ))}
 
-        {/* Y tick labels — just inside plot left edge */}
+        {/* Y tick labels — just outside plot left edge */}
         {yTicks.map((v) => (
           <text key={`yl-${v}`}
-            x={padLeft + 6} y={yFor(v) - 4}
-            textAnchor="start"
+            x={padLeft - 6} y={yFor(v) + 4}
+            textAnchor="end"
             fill="#9A938A"
             style={{ ...tf, fontSize: '11px' }}>
             {v}
           </text>
         ))}
 
-        {/* X tick labels */}
+        {/* X tick labels — below plot bottom */}
         {xTicks.map((v, i) => (
           <text key={`xl-${i}`}
             x={xFor(v)} y={padTop + plotH + 16}
@@ -85,9 +94,9 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
           </text>
         ))}
 
-        {/* X axis title */}
+        {/* X axis title — 16px below tick labels */}
         <text
-          x={padLeft + plotW / 2} y={H - 2}
+          x={padLeft + plotW / 2} y={padTop + plotH + 16 + 24}
           textAnchor="middle"
           fill="#1A1A18"
           style={{ ...tf, fontSize: '13px', fontWeight: 500 }}>
@@ -96,10 +105,10 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
 
         {/* Data point */}
         <circle
-          cx={dotX} cy={dotY} r={7}
-          fill="var(--ffg-surface-50)"
-          stroke="#4A4744" strokeWidth="1.5" />
+          cx={dotX} cy={dotY}
+          fill="#1A1A18" r={6} />
     </svg>
+    </div>
   );
 }
 

@@ -4244,7 +4244,7 @@ img {
 .pt-metrics-grid {
   display: grid;
   grid-template-columns: 70fr 30fr;
-  gap: 24px;
+  gap: 40px;
   align-items: stretch;
 }
 .pt-metrics-right {
