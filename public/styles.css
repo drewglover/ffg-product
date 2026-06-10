@@ -4372,26 +4372,26 @@ img {
   gap: 10px;
 }
 .pt-tl-card__n {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--ffg-muted);
   font-family: "PP Fragment Sans", sans-serif;
   font-variant-numeric: tabular-nums;
   min-width: 24px;
 }
 .pt-tl-card__tag {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   font-family: "PP Fragment Sans", sans-serif;
   color: var(--ffg-surface-950);
 }
 .pt-tl-card__time {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--ffg-muted);
   font-family: "PP Fragment Sans", sans-serif;
   font-weight: 300;
 }
 .pt-tl-card__copy {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--ffg-muted);
   font-family: "PP Fragment Sans", sans-serif;
   font-weight: 300;
