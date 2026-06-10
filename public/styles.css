@@ -1237,13 +1237,28 @@ img {
    by default rather than living here as overrides:
      • -1px gap between items (borders overlap into a single shared divider)
      • border color uses --overlay-dark-10
-     • inactive item text uses --color-body; active uses --ffg-surface-950 */
+     • inactive item text uses --color-body; active uses --ffg-surface-950
+     • outer corner radius (see note below) */
 .overview-topbar [data-slot="toggle-group"] {
   margin-left: auto;
 }
 .overview-topbar [data-slot="toggle-group-item"] {
   border-color: var(--overlay-dark-10);
   color: var(--color-body);
+}
+/* Round the outer corners off the radius ramp. The shipped component rounds
+   first/last items via `group-data-horizontal/...:first:rounded-l-lg`, but the
+   Base UI primitive emits `data-orientation="horizontal"` (not `data-horizontal`),
+   so that variant never matches and `rounded-none` wins — leaving square corners
+   even after --radius moved to .75rem. Apply the radius here until the upstream
+   variant is fixed in ffg-components. */
+.overview-topbar [data-slot="toggle-group-item"]:first-child {
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+.overview-topbar [data-slot="toggle-group-item"]:last-child {
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
 }
 /* -1px gap: pull each item over its neighbour so the adjacent 1px borders
    collapse into a single shared divider. */
