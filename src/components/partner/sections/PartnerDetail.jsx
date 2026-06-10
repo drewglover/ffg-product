@@ -97,8 +97,9 @@ function PartnerDetail({ partner, onBack }) {
         <Section title="Why we chose this partner" fullWidth aside={
           <div className="pt-reviewed-by">
             <div className="pt-reviewed-by__badge">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <text x="16" y="21" textAnchor="middle" fontFamily='"PP Fragment Glare", serif' fontSize="12" fontWeight="300" fill="currentColor" letterSpacing="0.02em">FfG</text>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="17" stroke="#C8C5BF" strokeWidth="1" />
+                <text x="18" y="23" textAnchor="middle" fontFamily='"PP Fragment Glare", serif' fontSize="12" fontWeight="300" fill="currentColor" letterSpacing="0.02em">FfG</text>
               </svg>
             </div>
             <div className="pt-reviewed-by__text">
