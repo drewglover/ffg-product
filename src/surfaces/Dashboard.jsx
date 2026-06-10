@@ -2,7 +2,7 @@
 // The control room: hero, transfer status, impact charts, allocation,
 // updates. The floating TweaksPanel switches the donation-status phase.
 import React, { useState, useEffect } from 'react';
-import { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSelect } from '../tweaks-panel.jsx';
+import { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSelect, TweakToggle } from '../tweaks-panel.jsx';
 import { DENSITY_PRESETS } from '../components/dashboard/data/densityPresets.jsx';
 import { Hero } from '../components/dashboard/sections/Hero.jsx';
 import { Progress } from '../components/dashboard/sections/hero/Progress.jsx';
@@ -23,6 +23,7 @@ const TWEAK_DEFAULTS = {
   welcome: 'new good',
   dynamicAction: 'auto',
   stepCount: 4,
+  showProgress: true,
 };
 
 // Step labels per progress variant. The 4-step variant keeps the original
@@ -35,7 +36,7 @@ const STEP_LABELS = {
 
 // Which dynamic-action variant a phase maps to when the tweak is on "auto".
 const PHASE_DEFAULT_ACTION = {
-  preview: 'allocation-slider',
+  preview: 'annual giving',
   'in-progress': 'none',
   allocated: 'hero-actions',
 };
@@ -96,10 +97,12 @@ export default function Dashboard() {
           dynamicAction={dynamicAction}
           onAmountConfirm={setAllocAmount}
           confirmedAmount={allocAmount} />
-        <Progress
-          title={progressTitle}
-          steps={steps}
-          dismissible={t.phase === 'allocated'} />
+        {t.showProgress && (
+          <Progress
+            title={progressTitle}
+            steps={steps}
+            dismissible={t.phase === 'allocated'} />
+        )}
         <PageTabs value={pageTab} onChange={setPageTab} />
         {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} />}
         {pageTab === 'areas' && <ImpactAreasSection cohortSize={t.cohortSize} />}
@@ -124,8 +127,12 @@ export default function Dashboard() {
         <TweakSelect
           label="Dynamic area"
           value={t.dynamicAction}
-          options={['auto', 'none', 'allocation-slider', 'allocated-callout', 'hero-actions']}
+          options={['auto', 'none', 'annual giving', 'allocated-callout', 'hero-actions']}
           onChange={(v) => setTweak('dynamicAction', v)} />
+        <TweakToggle
+          label="Show progress"
+          value={t.showProgress}
+          onChange={(v) => setTweak('showProgress', v)} />
         <TweakRadio
           label="Progress"
           value={t.stepCount}
