@@ -500,10 +500,12 @@ img {
   margin-bottom: 4px;
   letter-spacing: 0.002em;
 }
-.allocated-callout__copy {
+/* Scoped to out-specify `.hero p` (0,1,1), which otherwise wins over a bare
+   `.allocated-callout__copy` now that this callout lives inside the hero. */
+.allocated-callout .allocated-callout__copy {
   margin: 0;
   font-size: 13px;
-  color: var(--ffg-surface-600);
+  color: var(--color-body);
   line-height: 1.5;
 }
 /* In the hero's right slot the callout fills the column like the alloc card,

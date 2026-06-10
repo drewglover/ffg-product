@@ -7,15 +7,28 @@ import { toast } from 'sonner';
    resolved `variant`. Today's variants:
      - "none"               → renders nothing
      - "annual giving"      → annual-giving card (carousel + custom amount)
-     - "allocated-callout"  → the "donation at work" callout
+     - "in action"          → the "funds at work" callout
+     - "vetting"            → the "vetting your orgs" callout
      - "hero-actions"       → Share / Give buttons
    Unknown variants render nothing, so new states can be added additively. */
 function DynamicAction({ variant, onAmountConfirm, confirmedAmount }) {
   switch (variant) {
     case "annual giving":
       return <AllocationSlider onAmountConfirm={onAmountConfirm} confirmedAmount={confirmedAmount} />;
-    case "allocated-callout":
-      return <AllocatedCallout />;
+    case "in action":
+      return (
+        <Callout
+          label="Funds in action"
+          title="Your funds are being put to work."
+          copy="Outcomes are visible in your dash, we'll send you impact stories as they happen." />
+      );
+    case "vetting":
+      return (
+        <Callout
+          label="Vetting"
+          title="We're vetting your requested organizations."
+          copy="We'll send you an update in 3-4 weeks." />
+      );
     case "hero-actions":
       return <HeroActions />;
     case "none":
@@ -39,16 +52,16 @@ function HeroActions() {
   );
 }
 
-/* ---- allocated-callout ----
-   Lives in the hero slot now (option B). The `--in-hero` modifier lets it
-   stretch to fill the right column rather than the full-width section it
-   used to occupy below the stepper. */
-function AllocatedCallout() {
+/* ---- callout ("in action" / "vetting") ----
+   A titled status callout for the hero slot (option B); the `--in-hero`
+   modifier lets it stretch to fill the right column rather than the
+   full-width section it used to occupy below the stepper. */
+function Callout({ label, title, copy }) {
   return (
-    <div className="allocated-callout allocated-callout--in-hero" aria-label="Donation status">
+    <div className="allocated-callout allocated-callout--in-hero" aria-label={label}>
       <div className="allocated-callout__text">
-        <div className="allocated-callout__title">Your donation is being put to work</div>
-        <p className="allocated-callout__copy">You can expect your contribution to see visible results in 6-8 weeks.</p>
+        <div className="allocated-callout__title">{title}</div>
+        <p className="allocated-callout__copy">{copy}</p>
       </div>
     </div>
   );

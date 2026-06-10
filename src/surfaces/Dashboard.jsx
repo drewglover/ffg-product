@@ -127,7 +127,7 @@ export default function Dashboard() {
         <TweakSelect
           label="Dynamic area"
           value={t.dynamicAction}
-          options={['auto', 'none', 'annual giving', 'allocated-callout', 'hero-actions']}
+          options={['auto', 'none', 'annual giving', 'in action', 'vetting', 'hero-actions']}
           onChange={(v) => setTweak('dynamicAction', v)} />
         <TweakToggle
           label="Show progress"
