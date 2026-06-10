@@ -3136,6 +3136,9 @@ img {
   font-family: "PP Fragment Sans", sans-serif;
   color: var(--ffg-surface-950);
 }
+.shell:has(.pt-detail) {
+  padding-top: 40px;
+}
 
 /* SHADCN TARGET — Badge (.pt-badge*)  Note: .impact-badge stays as FFG canon */
 /* ── Generic primitives ───────────────────────────────────────────────────── */
