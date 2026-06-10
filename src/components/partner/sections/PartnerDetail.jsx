@@ -97,8 +97,9 @@ function PartnerDetail({ partner, onBack }) {
         <Section title="Why we chose this partner" fullWidth aside={
           <div className="pt-reviewed-by">
             <div className="pt-reviewed-by__badge">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <text x="16" y="21" textAnchor="middle" fontFamily='"PP Fragment Glare", serif' fontSize="12" fontWeight="300" fill="currentColor" letterSpacing="0.02em">FfG</text>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="17" stroke="#C8C5BF" strokeWidth="1" />
+                <text x="18" y="23" textAnchor="middle" fontFamily='"PP Fragment Glare", serif' fontSize="12" fontWeight="300" fill="currentColor" letterSpacing="0.02em">FfG</text>
               </svg>
             </div>
             <div className="pt-reviewed-by__text">
@@ -211,17 +212,19 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
         </Section>
       </div>
 
-      <main className="pt-main">
-        {/* How Your Impact Works */}
-        <Section title="How Your Impact Works">
-          <ol className="pt-timeline">
+      {/* How Your Impact Works — full width */}
+      <div className="pt-why">
+        <Section title="How Your Impact Works" fullWidth>
+          <div className="pt-tl-cards">
             <TimelineStep n="01" tag="Funding" time="1–2 weeks" />
             <TimelineStep n="02" tag="Intervention" time="6–8 weeks" />
             <TimelineStep n="03" tag="Outputs" time="6–8 Months" />
-            <TimelineStep n="04" tag="Outcomes" time="6–8 Months" last />
-          </ol>
+            <TimelineStep n="04" tag="Outcomes" time="6–8 Months" />
+          </div>
         </Section>
+      </div>
 
+      <main className="pt-main">
         {/* Proven Outcomes */}
         <Section title="Proven Outcomes">
           <div className="pt-results">
