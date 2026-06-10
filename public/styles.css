@@ -4111,12 +4111,26 @@ img {
 .pt-acc__caret {
   display: inline-flex;
   color: var(--ffg-muted);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.pt-acc__caret svg {
+  width: 24px;
+  height: 24px;
 }
 .pt-acc__caret--anim {
   transition: transform 220ms ease;
 }
 .is-open .pt-acc__caret--anim {
   transform: rotate(-180deg);
+}
+.ob-cause-card:hover {
+  border-color: var(--ffg-surface-950);
+  background: var(--ffg-surface-wash);
+}
+.ob-cause-card:hover .pt-acc__caret {
+  color: var(--ffg-surface-950);
 }
 .pt-acc__body {
   display: grid;
