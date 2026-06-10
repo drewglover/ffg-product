@@ -211,17 +211,19 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
         </Section>
       </div>
 
-      <main className="pt-main">
-        {/* How Your Impact Works */}
-        <Section title="How Your Impact Works">
-          <ol className="pt-timeline">
+      {/* How Your Impact Works — full width */}
+      <div className="pt-why">
+        <Section title="How Your Impact Works" fullWidth>
+          <div className="pt-tl-cards">
             <TimelineStep n="01" tag="Funding" time="1–2 weeks" />
             <TimelineStep n="02" tag="Intervention" time="6–8 weeks" />
             <TimelineStep n="03" tag="Outputs" time="6–8 Months" />
-            <TimelineStep n="04" tag="Outcomes" time="6–8 Months" last />
-          </ol>
+            <TimelineStep n="04" tag="Outcomes" time="6–8 Months" />
+          </div>
         </Section>
+      </div>
 
+      <main className="pt-main">
         {/* Proven Outcomes */}
         <Section title="Proven Outcomes">
           <div className="pt-results">
