@@ -162,15 +162,15 @@ html, body {
 
   /* Brand bleed replaced by WebGL leak canvas — static gradient tokens removed */
 
-  /* Data qualitative palette — impact area accent colors */
-  --ffg-data-qual-seafoam:  #64BC98; /* Social Justice  */
-  --ffg-data-qual-forest:   #115E41; /* Economic Growth */
-  --ffg-data-qual-coral:    #F6906D; /* Humanitarian    */
-  --ffg-data-qual-cerulean: #298CC0; /* Environment     */
-  --ffg-data-qual-sienna:   #992A13; /* Community       */
-  --ffg-data-qual-scarlet:  #EE0D0E; /* Health          */
-  --ffg-data-qual-navy:     #263759; /* Education       */
-  --ffg-data-qual-umber:    #76480D; /* Culture         */
+  /* Data qualitative palette — impact area accent colors (start of gradient) */
+  --ffg-data-qual-environment:     #115E41; /* Environment     #115E41 → #6D9A87 */
+  --ffg-data-qual-education:       #F2B705; /* Education       #F2B705 → #F4D063 */
+  --ffg-data-qual-health:          #F6906D; /* Health          #F6906D → #F6B8A2 */
+  --ffg-data-qual-social-justice:  #992A13; /* Social Justice  #992A13 → #BF7B6C */
+  --ffg-data-qual-community:       #298CC0; /* Community       #298CC0 → #7BB6D4 */
+  --ffg-data-qual-culture:         #263759; /* Culture         #263759 → #7A8396 */
+  --ffg-data-qual-economic-growth: #64BC98; /* Economic Growth #64BC98 → #9FD3BC */
+  --ffg-data-qual-humanitarian:    #EE0D0E; /* Humanitarian    #EE0D0E → #F26A69 */
 
   /* ── Surface wash ramp — surface-50 at opacity (C7) ── */
   --ffg-surface-wash-soft:   rgba(247, 245, 241, 0.45); /* update-card__body    */
@@ -2243,20 +2243,21 @@ img {
 .impact-badge__icon {
   display: inline-flex;
   align-items: center;
+  color: var(--impact-badge-accent);
   justify-content: center;
   flex-shrink: 0;
   color: var(--color-icon);
 }
 
 /* Per-area accent via custom property — sets border + icon color together */
-.impact-badge--social-justice  { --impact-badge-accent: var(--ffg-data-qual-seafoam);  }
-.impact-badge--economic-growth { --impact-badge-accent: var(--ffg-data-qual-forest);   }
-.impact-badge--humanitarian    { --impact-badge-accent: var(--ffg-data-qual-coral);    }
-.impact-badge--environment     { --impact-badge-accent: var(--ffg-data-qual-cerulean); }
-.impact-badge--community       { --impact-badge-accent: var(--ffg-data-qual-sienna);   }
-.impact-badge--health          { --impact-badge-accent: var(--ffg-data-qual-scarlet);  }
-.impact-badge--education       { --impact-badge-accent: var(--ffg-data-qual-navy);     }
-.impact-badge--culture         { --impact-badge-accent: var(--ffg-data-qual-umber);    }
+.impact-badge--social-justice  { --impact-badge-accent: var(--ffg-data-qual-social-justice);  }
+.impact-badge--economic-growth { --impact-badge-accent: var(--ffg-data-qual-economic-growth); }
+.impact-badge--humanitarian    { --impact-badge-accent: var(--ffg-data-qual-humanitarian);    }
+.impact-badge--environment     { --impact-badge-accent: var(--ffg-data-qual-environment);     }
+.impact-badge--community       { --impact-badge-accent: var(--ffg-data-qual-community);       }
+.impact-badge--health          { --impact-badge-accent: var(--ffg-data-qual-health);          }
+.impact-badge--education       { --impact-badge-accent: var(--ffg-data-qual-education);       }
+.impact-badge--culture         { --impact-badge-accent: var(--ffg-data-qual-culture);         }
 .org-row__stats {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
