@@ -31,7 +31,7 @@ const TWEAK_DEFAULTS = {
 const STEP_LABELS = {
   3: ['Transfer initiated', 'Funds received', 'Funds distributed'],
   4: ['Transfer initiated: $200,000', 'Funds received', 'Allocation in progress', 'Funds distributed'],
-  5: ['Transfer initiated', 'Allocate funds', 'Vetting', 'Review vetting', 'Funds distributed'],
+  5: ['Transfer initiated', 'Allocate funds', 'Vetting', 'Final selection', 'Funds distributed'],
 };
 
 // Which dynamic-action variant a phase maps to when the tweak is on "auto".
@@ -53,7 +53,14 @@ function buildSteps(phase, stepCount, date) {
       return { label, date, progress: 100, state: 'done' };
     }
     if (i < activeIdx) return { label, date, progress: 100, state: 'done' };
-    if (i === activeIdx) return { label, date, progress: 62, state: 'active' };
+    if (i === activeIdx) {
+      // Active bar spans full width (keeps the pulse); the 4-step variant
+      // surfaces a nonprofit-selection action in place of the date.
+      const step = { label, date, progress: 100, state: 'active' };
+      if (stepCount === 4) step.action = { label: 'Choose nonprofits' };
+      if (stepCount === 5) step.action = { label: 'Review vetting' };
+      return step;
+    }
     return { label, date, progress: 0, state: 'pending' };
   });
 }

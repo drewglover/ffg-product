@@ -1137,23 +1137,24 @@ img {
 .step.muted .step-date { color: var(--ffg-muted-2); }
 
 /* Optional per-step action — for steps that need further input from the user */
+/* Small outline button shown in place of the date on the active step. */
 .step-action {
   appearance: none;
-  margin-top: 12px;
-  padding: 7px 14px;
+  margin-top: 6px;
+  padding: 5px 12px;
   font-family: "PP Fragment Sans", sans-serif;
   font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.005em;
-  color: #FFFCF6;
-  background: var(--ffg-surface-950);
-  border: 1px solid var(--ffg-surface-950);
+  color: var(--ffg-surface-950);
+  background: transparent;
+  border: 1px solid var(--ffg-divider-strong);
   border-radius: var(--radius-sm);
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 120ms ease, transform 120ms ease;
 }
-.step-action:hover { background: #000; }
+.step-action:hover { background: var(--overlay-dark-10); }
 .step-action:active { transform: translateY(1px); }
 .step-action:disabled { opacity: 0.45; cursor: not-allowed; }
 

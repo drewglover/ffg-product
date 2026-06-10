@@ -6,10 +6,10 @@ import { toast } from 'sonner';
    slug so adding another is a one-line entry here + an option in the panel. */
 const ACTION_PROMPTS = {
   "action-annual-review": { copy: "It's time to review your good for the year.", button: "Schedule your review" },
-  "action-wrapped":       { copy: "Your impact wrapped is ready.",               button: "Open" },
+  "action-wrapped":       { copy: "Your 2026 impact wrapped is ready.",          button: "Open" },
   "action-sign":          { copy: "Confirm your good.",                          button: "Sign engagement" },
   "action-wire":          { copy: "Get your good in action.",                    button: "Wire funds" },
-  "action-vet":           { copy: "Select your nonprofits to vet.",              button: "Vet now" },
+  "action-vet":           { copy: "Your good is waiting.",                       button: "Choose nonprofits" },
   "action-renew":         { copy: "Keep your good going.",                        button: "Renew now" },
 };
 

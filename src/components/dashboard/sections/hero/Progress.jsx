@@ -80,12 +80,14 @@ function Progress({ title = "Transfer in progress", steps = [], dismissible = fa
             >
               {s.label}
             </div>
-            <div
-              className="step-date"
-              style={{ fontWeight: "300", fontSize: "12px", color: "var(--ffg-surface-950)", opacity: "0.4" }}
-            >
-              {s.date}
-            </div>
+            {s.state === "done" && (
+              <div
+                className="step-date"
+                style={{ fontWeight: "300", fontSize: "12px", color: "var(--ffg-surface-950)", opacity: "0.4" }}
+              >
+                {s.date}
+              </div>
+            )}
             {s.action && (
               <button
                 type="button"
