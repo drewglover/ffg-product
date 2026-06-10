@@ -1,6 +1,6 @@
 import { LOGO_PALETTES } from '../data/logoPalettes';
 
-function LogoPlaceholder({ size = 50, name = "" }) {
+function LogoPlaceholder({ size = 50, name = "", style: styleProp }) {
   // 10 palettes × 6 marks = 60 stable combinations, picked by name hash.
   let h = 0;
   for (let i = 0; i < name.length; i++) h = h * 31 + name.charCodeAt(i) >>> 0;
@@ -64,7 +64,7 @@ function LogoPlaceholder({ size = 50, name = "" }) {
       viewBox="0 0 50 50"
       role="img"
       aria-label={`${name || "Organization"} logo placeholder`}
-      style={{ fontFamily: "inherit" }}>
+      style={{ fontFamily: "inherit", ...styleProp }}>
 
       <rect width="50" height="50" rx="8" fill={bg} style={{ fill: "rgba(250, 248, 245, 0)" }} />
       {marks[mark]()}
