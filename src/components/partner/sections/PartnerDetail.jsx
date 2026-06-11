@@ -101,7 +101,7 @@ function PartnerDetail({ partner, onBack }) {
 
       {/* Why we chose — full width, outside pt-main */}
       <div className="pt-why">
-        <Section title="Why we chose this partner" fullWidth aside={
+        <Section title="Why we chose this organization" fullWidth aside={
           <div className="pt-reviewed-by">
             <div className="pt-reviewed-by__badge">
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
