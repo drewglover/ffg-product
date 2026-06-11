@@ -1757,8 +1757,13 @@ img {
   fill: #FFFCF6;
 }
 
-/* ---- Updates section ---- */
-.updates-section { padding-bottom: 64px; }
+/* ---- Updates section (canonical — Dashboard + Partner) ---- */
+.updates-section {
+  padding-top: 24px;
+  padding-bottom: 64px;
+  border-top: 1px solid var(--ffg-divider);
+  animation: ffg-fadein 0.6s cubic-bezier(0.22, 1, 0.36, 1) 600ms both;
+}
 .updates-head {
   display: flex;
   align-items: center;
@@ -1861,27 +1866,6 @@ img {
   letter-spacing: 0.005em;
 }
 
-
-.updates-controls {
-  display: flex;
-  gap: 8px;
-  padding-top: 16px;
-}
-.updates-arrow {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ffg-surface-950);
-  cursor: pointer;
-  padding: 0;
-  transition: color 120ms ease;
-}
-.updates-arrow:hover { color: var(--ffg-surface-600); }
 
 /* SHADCN TARGET — Input (.orgs-search)  Select (.orgs-filter) */
 /* ---- Organizations list (Your impact areas tab) ---- */
@@ -4725,119 +4709,6 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
-/* SHADCN TARGET — Carousel + Card (.pt-updates, .pt-upd) */
-/* ── Updates ─────────────────────────────────────────────────────────────── */
-.pt-updates {
-  padding-top: 24px;
-  border-top: 1px solid var(--ffg-divider);
-}
-.pt-updates__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-.pt-updates__title {
-  font-family: "PP Fragment Glare", serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: var(--type-h4);
-  margin: 0;
-  color: var(--color-h);
-  letter-spacing: -0.005em;
-}
-.pt-updates__more {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ffg-surface-950);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  letter-spacing: 0.005em;
-}
-.pt-updates__more:hover { border-bottom-color: var(--ffg-surface-950); }
-
-.pt-updates__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 8px;
-}
-
-.pt-upd {
-  display: flex;
-  flex-direction: column;
-  background: transparent;
-  border: 1px solid var(--ffg-divider);
-  border-radius: var(--radius);
-  overflow: hidden;
-  min-width: 0;
-}
-.pt-upd__img {
-  aspect-ratio: 16 / 10;
-  background-color: var(--ffg-surface-200);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-bottom: 1px solid var(--ffg-divider);
-}
-.pt-upd__body {
-  padding: 18px 18px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  background: var(--ffg-surface-wash);
-}
-.pt-upd__title {
-  margin: 0;
-  font-family: "PP Fragment Glare", serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: var(--type-body-1);
-  color: var(--color-h);
-  letter-spacing: -0.005em;
-}
-.pt-upd__copy {
-  margin: 0;
-  font-size: var(--type-body-3);
-  color: var(--color-body);
-  line-height: 1.55;
-  letter-spacing: 0.005em;
-}
-.pt-upd__tag {
-  align-self: flex-start;
-  background: var(--ffg-surface-950);
-  color: var(--ffg-surface-50);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  letter-spacing: 0.04em;
-  margin-top: 6px;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-}
-
-.pt-updates__nav {
-  display: flex;
-  gap: 8px;
-  margin-top: 18px;
-}
-.pt-arrow {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-icon);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: background-color 120ms ease, color 120ms ease;
-}
-.pt-arrow:hover { background: var(--overlay-dark-10); }
-
 /* SHADCN TARGET — Dialog (.pt-modal) */
 /* ── Chart expand modal ────────────────────────────────────────────────── */
 .pt-modal {
@@ -5192,9 +5063,6 @@ img {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .pt-updates__grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ── Below sm (< 640px) — large phones ── */
@@ -5484,7 +5352,3 @@ img {
 .pt-sec:nth-of-type(3) { animation-delay: 450ms; }
 .pt-sec:nth-of-type(4) { animation-delay: 510ms; }
 .pt-sec:nth-of-type(5) { animation-delay: 560ms; }
-
-.pt-updates {
-  animation: ffg-fadein 0.6s cubic-bezier(0.22, 1, 0.36, 1) 600ms both;
-}
