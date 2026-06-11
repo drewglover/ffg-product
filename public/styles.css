@@ -256,6 +256,37 @@ img {
   padding: 128px 56px 96px;
 }
 
+/* Shared footer. Mirrors the shell's 1440px box + horizontal gutters (the
+   responsive gutter overrides live alongside each .shell breakpoint below) so
+   its content lines up with the page content. */
+.app-footer {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  margin-top: auto;
+  padding: 0 56px;
+  color: var(--ffg-surface-600);
+}
+/* Inner row carries the border + vertical rhythm, so the hairline spans the
+   content width (inside the gutters) rather than the full 1440px box. */
+.app-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-top: 1px solid var(--overlay-dark-10);
+}
+.app-footer__mark {
+  height: 20px;
+  width: auto;
+  fill: currentColor;
+}
+.app-footer__version {
+  font-size: 13px;
+  text-align: right;
+}
+
 /* SHADCN TARGET — Table (.txn-table, .txn-row) */
 /* ---- Transaction history ---- */
 .txn-toolbar {
@@ -4714,7 +4745,8 @@ img {
 
 /* ── xxl (≥ 1536px) ── wide-screen density tweaks ── */
 @media (min-width: 1536px) {
-  .shell {
+  .shell,
+  .app-footer {
     padding-left: 80px;
     padding-right: 80px;
   }
@@ -4726,7 +4758,8 @@ img {
 
 /* ── Below xl (< 1280px) ── tighten gutters ── */
 @media (max-width: 1279px) {
-  .shell {
+  .shell,
+  .app-footer {
     padding-left: 40px;
     padding-right: 40px;
   }
@@ -4758,6 +4791,10 @@ img {
   /* ── Shell ── */
   .shell {
     padding: 140px 32px 80px;
+  }
+  .app-footer {
+    padding-left: 32px;
+    padding-right: 32px;
   }
   .nav-inner {
     padding-left: 32px;
@@ -4849,6 +4886,10 @@ img {
   /* ── Shell ── */
   .shell {
     padding: 120px 20px 64px;
+  }
+  .app-footer {
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .nav-inner {
     padding-left: 20px;
@@ -4986,6 +5027,10 @@ img {
   /* ── Shell ── */
   .shell {
     padding: 100px 16px 56px;
+  }
+  .app-footer {
+    padding-left: 16px;
+    padding-right: 16px;
   }
   .nav-inner {
     padding-left: 16px;
