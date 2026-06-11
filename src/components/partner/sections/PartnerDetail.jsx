@@ -237,7 +237,7 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
       </main>
 
       {/* Updates from your partners and community */}
-      <UpdatesSection items={PARTNER_UPDATE_ITEMS} />
+      <UpdatesSection items={PARTNER_UPDATE_ITEMS.map((u) => ({ ...u, partner: partner.name }))} />
     </div>);
 
 }
