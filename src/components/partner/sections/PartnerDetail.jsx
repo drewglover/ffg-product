@@ -1,6 +1,6 @@
 import { PIcon } from '../icons/PIcon';
 import { PARTNER_DESC } from '../data/partners';
-import { CATEGORY_ICONS } from '../data/categoryIcons';
+import { CauseAllocationTreemap } from '../../shared/CauseAllocationTreemap';
 import { Badge } from '../atoms/Badge';
 import { LogoPlaceholder } from '../atoms/LogoPlaceholder';
 import { KPI } from '../atoms/KPI';
@@ -185,28 +185,13 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
                   <span className="pt-label">Cause Allocation</span>
                   <PIcon.Info className="pt-info" />
                 </div>
-                <div className="pt-tm-grid">
-                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Culture"].color, gridArea: "culture" }}>
-                    <div className="pt-tm__pct">20%</div>
-                    <div className="pt-tm__cat">Culture</div>
-                  </div>
-                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Education"].color, gridArea: "education" }}>
-                    <div className="pt-tm__pct">20%</div>
-                    <div className="pt-tm__cat">Education</div>
-                  </div>
-                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Social Justice"].color, gridArea: "social" }}>
-                    <div className="pt-tm__pct">40%</div>
-                    <div className="pt-tm__cat">Social Justice</div>
-                  </div>
-                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Community"].color, gridArea: "community" }}>
-                    <div className="pt-tm__pct">15%</div>
-                    <div className="pt-tm__cat">Community</div>
-                  </div>
-                  <div className="pt-tm__cell" style={{ borderColor: CATEGORY_ICONS["Environment"].color, gridArea: "environment" }}>
-                    <div className="pt-tm__pct">15%</div>
-                    <div className="pt-tm__cat">Environment</div>
-                  </div>
-                </div>
+                <CauseAllocationTreemap
+                  data={[
+                  { name: "Culture", size: 20 },
+                  { name: "Education", size: 20 },
+                  { name: "Social Justice", size: 40 },
+                  { name: "Community", size: 15 },
+                  { name: "Environment", size: 15 }]} />
               </div>
             </div>
           </div>
