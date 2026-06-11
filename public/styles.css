@@ -4160,6 +4160,10 @@ img {
   width: 100%;
   min-height: 0;
 }
+/* Focus bubbles — 10% cause color fill on hover, same treatment as treemap. */
+.ob-bubble-group { cursor: default; }
+.ob-bubble-group:hover .ob-bubble__fill { fill-opacity: 0.1; }
+
 /* Hairline cell; fills with a 10% wash of its cause color on hover. */
 .pt-tm__rect {
   fill: var(--cell-color);
