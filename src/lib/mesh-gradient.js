@@ -1,37 +1,41 @@
-/**
- * mesh-gradient.js
- * Animated Coons-patch mesh gradient renderer (WebGL).
- * Vertices are laid out on a rows×cols grid; each cell is a bicubic
- * Coons patch tessellated into triangles and rendered with Gouraud shading.
- *
- * Handle naming (relative offsets from vertex position):
- *   e = toward next column (+x)   w = toward previous column (−x)
- *   n = toward next row    (+y)   s = toward previous row   (−y)
- * Null handles default to [0, 0] (linear edge in that direction).
- */
-
-// ── shaders ──────────────────────────────────────────────────────────────────
+// Mesh gradient background — true mesh-gradient renderer.
+//
+// Topology: a fixed `rows × cols` grid of vertices. Each vertex has a color and
+// a position in 0..1 space (origin bottom-left). Edges between adjacent vertices
+// are cubic Bezier curves, controlled by per-vertex tangent handles (one per
+// neighbor direction: e, w, n, s). Patches between four adjacent vertices are
+// filled by Coons-patch interpolation for position, bilinear interpolation for
+// color. The whole mesh is tessellated in JS each frame and drawn as a triangle
+// strip with vertex colors (gouraud shading on the GPU).
+//
+// Animation states are unchanged from the v1 blob renderer: intro (each vertex
+// animates from `introFrom` to `position`), floating (gentle drift on interior
+// vertices only — boundary stays glued to the canvas), outro (animates to
+// `outroTo`).
 
 const VERT_SRC = `
-  attribute vec2 a_pos;
-  attribute vec3 a_col;
-  varying   vec3 v_col;
-  void main() {
-    /* map [0,1] y-down coords → WebGL clip space (y-up) */
-    gl_Position = vec4(a_pos.x * 2.0 - 1.0, 1.0 - a_pos.y * 2.0, 0.0, 1.0);
-    v_col = a_col;
-  }
+attribute vec2 a_position;       // mesh-space, 0..1, origin bottom-left
+attribute vec3 a_color;          // linear RGB 0..1
+varying vec3 v_color;
+void main() {
+  vec2 clip = a_position * 2.0 - 1.0;  // 0..1 → -1..1
+  gl_Position = vec4(clip, 0.0, 1.0);
+  v_color = a_color;
+}
 `;
 
 const FRAG_SRC = `
-  precision mediump float;
-  varying vec3 v_col;
-  void main() {
-    gl_FragColor = vec4(v_col, 1.0);
-  }
+precision mediump float;
+varying vec3 v_color;
+uniform float u_intensity;       // 0..1 — fades color toward bg during intro/outro
+uniform vec3  u_bgColor;
+void main() {
+  vec3 c = mix(u_bgColor, v_color, u_intensity);
+  gl_FragColor = vec4(c, 1.0);
+}
 `;
 
-// ── math helpers ─────────────────────────────────────────────────────────────
+// ---------- helpers ----------
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');
@@ -42,341 +46,698 @@ function hexToRgb(hex) {
   ];
 }
 
-/** Evaluate a cubic Bezier at t. */
-function cubicBez(t, p0, p1, p2, p3) {
+const EASE = {
+  outCubic: t => 1 - Math.pow(1 - t, 3),
+  inCubic:  t => t * t * t,
+};
+
+// Idle float tuning. Fixed (not configurable) — interior vertices drift gently
+// while the mesh is at rest. Amplitude is 10% below the legacy 0.025 default.
+const FLOAT_AMPLITUDE = 0.0225;       // mesh-space units of peak drift
+const FLOAT_SPEED     = 0.00018;      // radians per ms (base angular speed)
+// Ramp window for fading the idle drift in (intro → float) and back out
+// (decayed on top of the outro), so the mesh never snaps on/off its drift.
+const FLOAT_SETTLE_DURATION = 900;    // ms
+
+// Pulse tuning. A one-shot ripple where interior vertices pull radially inward
+// toward the mesh center and ease back, layered on top of the idle drift.
+const PULSE_DURATION  = 1600;         // ms (total: quick pull-in + long ease-out)
+const PULSE_AMPLITUDE = 0.085;        // mesh-space units of peak radial pull
+const PULSE_IN_FRACTION = 0.3;        // share of the duration spent pulling in
+
+// Evaluate cubic Bezier B(t) = (1-t)³P0 + 3(1-t)²t·P1 + 3(1-t)t²·P2 + t³P3.
+// Returns [x, y]. P0..P3 are [x, y] arrays.
+function cubicBezier(P0, P1, P2, P3, t) {
   const u = 1 - t;
+  const u2 = u * u, u3 = u2 * u;
+  const t2 = t * t, t3 = t2 * t;
+  const a = u3, b = 3 * u2 * t, c = 3 * u * t2, d = t3;
   return [
-    u*u*u*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t*t*t*p3[0],
-    u*u*u*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t*t*t*p3[1],
+    a * P0[0] + b * P1[0] + c * P2[0] + d * P3[0],
+    a * P0[1] + b * P1[1] + c * P2[1] + d * P3[1],
   ];
 }
 
-/** Bilinear interpolation of a scalar across four corners. */
-function bilerp(a, b, c, d, u, v) {
-  return a*(1-u)*(1-v) + b*u*(1-v) + c*(1-u)*v + d*u*v;
-}
-
-/**
- * Coons patch: bilinear blend of four cubic Bezier edge curves.
- *
- * p00=top-left, p10=top-right, p01=bottom-left, p11=bottom-right
- * e* = east  handle of left  vertices (toward +x)
- * w* = west  handle of right vertices (toward −x)
- * n* = north handle of top   vertices (toward +y / next row)
- * s* = south handle of bot   vertices (toward −y / prev row)
- */
-function coonsSample(u, v,
-  p00, p10, p01, p11,
-  e00, w10, e01, w11,
-  n00, s01, n10, s11
-) {
-  const top  = cubicBez(u, p00, [p00[0]+e00[0], p00[1]+e00[1]], [p10[0]+w10[0], p10[1]+w10[1]], p10);
-  const bot  = cubicBez(u, p01, [p01[0]+e01[0], p01[1]+e01[1]], [p11[0]+w11[0], p11[1]+w11[1]], p11);
-  const lft  = cubicBez(v, p00, [p00[0]+n00[0], p00[1]+n00[1]], [p01[0]+s01[0], p01[1]+s01[1]], p01);
-  const rgt  = cubicBez(v, p10, [p10[0]+n10[0], p10[1]+n10[1]], [p11[0]+s11[0], p11[1]+s11[1]], p11);
-
-  // H-blend + V-blend − bilinear correction
+// Build the absolute control-point positions for a cubic Bezier between two
+// adjacent vertices A and B, given their handles in the direction of each other.
+// `dirAB`/`dirBA` are 'e'|'w'|'n'|'s' naming which handle on each vertex points
+// at the other.
+function edgeControls(A, B, dirAB, dirBA, defaultLength) {
+  const hA = (A.handles && A.handles[dirAB]) || defaultHandle(dirAB, defaultLength);
+  const hB = (B.handles && B.handles[dirBA]) || defaultHandle(dirBA, defaultLength);
   return [
-    (1-v)*top[0] + v*bot[0] + (1-u)*lft[0] + u*rgt[0] - bilerp(p00[0], p10[0], p01[0], p11[0], u, v),
-    (1-v)*top[1] + v*bot[1] + (1-u)*lft[1] + u*rgt[1] - bilerp(p00[1], p10[1], p01[1], p11[1], u, v),
+    A.position,
+    [A.position[0] + hA[0], A.position[1] + hA[1]],
+    [B.position[0] + hB[0], B.position[1] + hB[1]],
+    B.position,
   ];
 }
 
-// ── easing ───────────────────────────────────────────────────────────────────
+// Default handle offset when none is set: 1/3 of `length` in the named direction.
+function defaultHandle(dir, length) {
+  const L = length / 3;
+  if (dir === 'e') return [ L, 0];
+  if (dir === 'w') return [-L, 0];
+  if (dir === 'n') return [ 0, L];
+  if (dir === 's') return [ 0,-L];
+  return [0, 0];
+}
 
-const easeOutCubic    = t => 1 - Math.pow(1 - t, 3);
-const easeInOutCubic  = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
-
-// ── MeshGradient class ───────────────────────────────────────────────────────
+// ---------- main class ----------
 
 export class MeshGradient {
-  constructor(opts = {}) {
-    this._bg        = hexToRgb(opts.bgColor        || '#ffffff');
-    this._introDur  = opts.introDuration            || 1800;
-    this._outroDur  = opts.outroDuration            || 1400;
-    this._floatAmp  = opts.floatAmplitude           || 0.025;
-    this._floatSpd  = opts.floatSpeed               || 0.00018;
-    this._rows      = opts.rows                     || 4;
-    this._cols      = opts.cols                     || 4;
+  constructor(options = {}) {
+    this.rows = options.rows ?? 4;
+    this.cols = options.cols ?? 4;
+    this.subdivisions = options.subdivisions ?? 20; // per-patch tessellation density
 
-    // Pre-process vertices: parse colors, default null handles to [0,0]
-    this._verts = (opts.vertices || []).map(v => ({
-      pos       : v.position,
-      colorRgb  : hexToRgb(v.color),
-      introFrom : v.introFrom || v.position,
-      outroTo   : v.outroTo   || v.position,
-      h: {
-        e: v.handles?.e || [0, 0],
-        w: v.handles?.w || [0, 0],
-        n: v.handles?.n || [0, 0],
-        s: v.handles?.s || [0, 0],
-      },
+    this.bgColor = options.bgColor || '#f7f5f1';
+    this.introDuration  = options.introDuration  ?? 1800;
+    this.outroDuration  = options.outroDuration  ?? 1400;
+    this.onOutroComplete = options.onOutroComplete || (() => {});
+
+    // Vertices: row-major. v(i, j) at index j*cols + i.
+    // i is column (x-axis), j is row (y-axis with 0=bottom).
+    this.vertices = options.vertices || defaultGrid(this.rows, this.cols);
+
+    // Per-vertex phase offsets for the floating animation.
+    this._floatPhases = this.vertices.map(() => ({
+      ax: Math.random() * Math.PI * 2,
+      ay: Math.random() * Math.PI * 2,
+      sx: 0.7 + Math.random() * 0.6,
+      sy: 0.7 + Math.random() * 0.6,
     }));
 
-    this._phase  = 'idle';  // idle | intro | floating | outro
-    this._phaseT = 0;
-    this._subdiv = 24;      // tessellation subdivisions per cell edge
+    // Internal state.
+    this.state = 'idle'; // 'idle' | 'intro' | 'floating' | 'outro' | 'done'
+    this.stateStart = 0;
 
-    this._initCanvas();
-    this._initGL();
-    this._buildIBO();
-    this._startLoop();
+    this._preserveDrawingBuffer = options.preserveDrawingBuffer ?? false;
+
+    this._setupCanvas(options.container);
+    this._setupGL();
+    this._allocBuffers();
+    this._resize();
+    this._resizeHandler = () => this._resize();
+    window.addEventListener('resize', this._resizeHandler);
   }
 
-  // ── public API ──────────────────────────────────────────────────────────────
-
-  playIntro() {
-    this._phase  = 'intro';
-    this._phaseT = performance.now();
-    this._ensureLoop();
+  // Tear-down for when the editor rebuilds.
+  destroy() {
+    window.removeEventListener('resize', this._resizeHandler);
+    if (this._scrollHandler) window.removeEventListener('scroll', this._scrollHandler);
+    this.state = 'done';
+    if (this.canvas && this.canvas.parentNode) this.canvas.remove();
   }
 
-  playOutro() {
-    if (this._phase === 'outro') return;
-    this._phase  = 'outro';
-    this._phaseT = performance.now();
-    this._ensureLoop();
-  }
+  // ---------- GL setup ----------
 
-  _ensureLoop() {
-    if (!this._loopActive) {
-      this._loopActive = true;
-      requestAnimationFrame(now => this._tick(now));
+  _setupCanvas(container) {
+    this.canvas = document.createElement('canvas');
+    this.container = container || document.body;
+    this._isFullViewport = !container;
+    // When mounted into a specific container, fill that container. When
+    // attached to document.body with no container, fall back to the legacy
+    // full-viewport behavior (useful for "just drop a gradient on the page").
+    if (this._isFullViewport) {
+      this.canvas.style.cssText = `
+        position: fixed; inset: 0; width: 100vw; height: 100vh;
+        z-index: 0; pointer-events: none; display: block;
+        will-change: opacity;
+      `;
+    } else {
+      this.canvas.style.cssText = `
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        pointer-events: none; display: block;
+      `;
+    }
+    // Full-viewport: prepend behind the app content (matches the legacy mount,
+    // which the transparent `.app` shows through). Container mode: append.
+    if (this._isFullViewport) this.container.prepend(this.canvas);
+    else this.container.appendChild(this.canvas);
+
+    // Full-viewport mode keeps the legacy scroll treatment: the mesh fades out
+    // and drifts upward (parallax) as the user scrolls down the page.
+    if (this._isFullViewport) {
+      this._scrollHandler = () => this._handleScroll();
+      this._handleScroll();
+      window.addEventListener('scroll', this._scrollHandler, { passive: true });
     }
   }
 
-  // ── canvas + GL setup ───────────────────────────────────────────────────────
-
-  _initCanvas() {
-    const cvs = this._cvs = document.createElement('canvas');
-    Object.assign(cvs.style, {
-      position        : 'fixed',
-      top             : '0',
-      right           : '0',
-      left            : '0',
-      width           : '100%',
-      height          : '100%',
-      pointerEvents   : 'none',
-      zIndex          : '0',
-      display         : 'block',
-      transformOrigin : 'top right',
-      willChange      : 'opacity, transform',
-    });
-    document.body.prepend(cvs);
-    this._handleResize();
-    window.addEventListener('resize', () => this._handleResize());
-    // Scroll: opacity fade + parallax (initialise immediately)
-    this._handleScroll();
-    window.addEventListener('scroll', () => this._handleScroll(), { passive: true });
-  }
-
+  // Opacity fade (1.0 → 0.2 by end of page) as the user scrolls. Full-viewport
+  // only. (Parallax was intentionally removed — the canvas stays put.)
   _handleScroll() {
     const scrollY   = window.scrollY || 0;
     const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     const ratio     = Math.min(1, scrollY / maxScroll);
-
-    // Opacity: 1.0 → 0.2 by end of page
-    this._cvs.style.opacity = 1 - ratio * 0.8;
-
-    // Parallax: shift canvas upward as user scrolls (stacks on the -50px anchor offset)
-    this._cvs.style.transform = `translateY(${-50 - scrollY * 0.15}px)`;
+    this.canvas.style.opacity = 1 - ratio * 0.8;
   }
 
-  _handleResize() {
-    // Resize clears the canvas — redraw a single frame if the loop is paused.
-    this._cvs.width  = window.innerWidth;
-    this._cvs.height = window.innerHeight;
-    if (this._gl) this._gl.viewport(0, 0, this._cvs.width, this._cvs.height);
-    if (!this._loopActive) this._drawFrame(performance.now());
-  }
-
-  _initGL() {
-    const gl = this._gl = this._cvs.getContext('webgl', {
-      antialias: false, premultipliedAlpha: false,
+  _setupGL() {
+    const gl = this.canvas.getContext('webgl', {
+      antialias: true,
+      premultipliedAlpha: false,
+      preserveDrawingBuffer: this._preserveDrawingBuffer || false,
     });
-    if (!gl) return;
+    if (!gl) throw new Error('WebGL not available');
+    this.gl = gl;
 
-    const compileShader = (type, src) => {
+    const compile = (type, src) => {
       const s = gl.createShader(type);
       gl.shaderSource(s, src);
       gl.compileShader(s);
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-        throw new Error('MeshGradient shader error: ' + gl.getShaderInfoLog(s));
+        throw new Error('Shader compile failed: ' + gl.getShaderInfoLog(s));
       }
       return s;
     };
 
     const prog = gl.createProgram();
-    gl.attachShader(prog, compileShader(gl.VERTEX_SHADER,   VERT_SRC));
-    gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FRAG_SRC));
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT_SRC));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG_SRC));
     gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      throw new Error('Program link failed: ' + gl.getProgramInfoLog(prog));
+    }
     gl.useProgram(prog);
+    this.program = prog;
 
-    this._prog = prog;
-    this._aPos = gl.getAttribLocation(prog, 'a_pos');
-    this._aCol = gl.getAttribLocation(prog, 'a_col');
-    this._vbo  = gl.createBuffer();
-    this._ibo  = gl.createBuffer();
+    this.attribs = {
+      position: gl.getAttribLocation(prog, 'a_position'),
+      color:    gl.getAttribLocation(prog, 'a_color'),
+    };
+    this.uniforms = {
+      intensity: gl.getUniformLocation(prog, 'u_intensity'),
+      bgColor:   gl.getUniformLocation(prog, 'u_bgColor'),
+    };
 
-    gl.enableVertexAttribArray(this._aPos);
-    gl.enableVertexAttribArray(this._aCol);
+    this.posBuf   = gl.createBuffer();
+    this.colorBuf = gl.createBuffer();
+    this.indexBuf = gl.createBuffer();
   }
 
-  /** Build the static index buffer (topology never changes). */
-  _buildIBO() {
-    const S = this._subdiv;
-    const N = S + 1;                                      // vertices per cell edge
-    const cells = (this._rows - 1) * (this._cols - 1);
-    const idxArr = [];
+  // Pre-allocate the typed arrays we'll re-fill each frame, and build a static
+  // index buffer for the triangle mesh (topology doesn't change per frame).
+  _allocBuffers() {
+    const N = this.subdivisions;        // samples per patch edge (N+1 vertices per edge)
+    const patchVerts = (N + 1) * (N + 1);
+    const patchTris  = N * N * 2;
+    const patchCount = (this.cols - 1) * (this.rows - 1);
 
-    for (let cell = 0; cell < cells; cell++) {
-      const base = cell * N * N;
-      for (let j = 0; j < S; j++) {
-        for (let i = 0; i < S; i++) {
-          const tl = base + j * N + i;
-          const tr = tl + 1;
-          const bl = tl + N;
-          const br = bl + 1;
-          idxArr.push(tl, tr, bl,  tr, br, bl);
+    this._vertsPerPatch = patchVerts;
+    this._patchCount = patchCount;
+
+    this._positions = new Float32Array(patchCount * patchVerts * 2);
+    this._colors    = new Float32Array(patchCount * patchVerts * 3);
+
+    // Index buffer: 6 indices per cell (two triangles).
+    const indices = new Uint16Array(patchCount * patchTris * 3);
+    let idx = 0;
+    for (let p = 0; p < patchCount; p++) {
+      const base = p * patchVerts;
+      for (let j = 0; j < N; j++) {
+        for (let i = 0; i < N; i++) {
+          const a = base + j * (N + 1) + i;
+          const b = a + 1;
+          const c = a + (N + 1);
+          const d = c + 1;
+          indices[idx++] = a; indices[idx++] = b; indices[idx++] = c;
+          indices[idx++] = b; indices[idx++] = d; indices[idx++] = c;
         }
       }
     }
+    const gl = this.gl;
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuf);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    this._indexCount = indices.length;
 
-    this._idxCount = idxArr.length;
-    const gl = this._gl;
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._ibo);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idxArr), gl.STATIC_DRAW);
+    // Heads-up: with subdivisions=20 and a 4x4 grid we use 9 patches × 441
+    // vertices = 3,969 vertices — well under Uint16's 65,535 limit. If you
+    // bump rows/cols or subdivisions a lot, switch to Uint32Array + the
+    // OES_element_index_uint extension.
   }
 
-  // ── animation state ─────────────────────────────────────────────────────────
-
-  /** Returns {ip: introProgress[0→1], op: outroProgress[0→1]}. */
-  _getProgress(now) {
-    const elapsed = now - this._phaseT;
-    if (this._phase === 'intro') {
-      const raw = Math.min(1, elapsed / this._introDur);
-      if (raw >= 1) this._phase = 'floating';
-      return { ip: easeOutCubic(raw), op: 0 };
+  _resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w, h;
+    if (this._isFullViewport) {
+      w = window.innerWidth;
+      h = window.innerHeight;
+    } else {
+      const r = this.container.getBoundingClientRect();
+      // Container may not be laid out yet on first call — fall back to 1x1
+      // and rely on a follow-up resize once layout settles.
+      w = Math.max(1, r.width);
+      h = Math.max(1, r.height);
     }
-    if (this._phase === 'outro') {
-      const raw = Math.min(1, elapsed / this._outroDur);
-      return { ip: 1, op: easeInOutCubic(raw) };
-    }
-    // floating or idle
-    return { ip: 1, op: 0 };
+    this.canvas.width  = w * dpr;
+    this.canvas.height = h * dpr;
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  /** Compute the animated [x, y] for one vertex given current intro/outro progress. */
-  _animPos(v, ip, op) {
-    const [px, py] = v.pos;
+  // ---------- public API ----------
 
-    // Base = final rest position (no float)
-    let x = px;
-    let y = py;
-
-    // Intro: blend from introFrom → rest
-    if (ip < 1) {
-      const [ix, iy] = v.introFrom;
-      x = ix * (1 - ip) + px * ip;
-      y = iy * (1 - ip) + py * ip;
-    }
-
-    // Outro: blend from current → outroTo
-    if (op > 0) {
-      const [ox, oy] = v.outroTo;
-      x = x * (1 - op) + ox * op;
-      y = y * (1 - op) + oy * op;
-    }
-
-    return [x, y];
+  playIntro() {
+    this.state = 'intro';
+    this.stateStart = performance.now();
+    if (!this._running) this._loop();
+  }
+  playOutro() {
+    // If the mesh is drifting, carry the live drift into the outro and decay it
+    // to zero as the outro animates — the vertices ease directly off their
+    // current (offset) positions onto the outro path, no separate settle.
+    this._outroFloatCarry = this.state === 'floating';
+    this.state = 'outro';
+    this.stateStart = performance.now();
+    if (!this._running) this._loop();
+  }
+  // One-shot pulse: ripple the interior vertices inward and back, then resume
+  // the idle float. No-op during intro/outro so it can't interrupt them.
+  playPulse() {
+    if (this.state === 'intro' || this.state === 'outro' || this.state === 'morph') return;
+    this._pulseStart = performance.now();
+    this.state = 'pulse';
+    this.stateStart = this._pulseStart;
+    if (!this._running) this._loop();
   }
 
-  // ── mesh tessellation ───────────────────────────────────────────────────────
-
-  _buildVBO(now) {
-    const { ip, op } = this._getProgress(now);
-    const rows = this._rows, cols = this._cols;
-    const S = this._subdiv, N = S + 1;
-    const cells = (rows - 1) * (cols - 1);
-    const FLOATS_PER_VERT = 5;  // x, y, r, g, b
-    const data = new Float32Array(cells * N * N * FLOATS_PER_VERT);
-
-    // Resolve animated positions for all grid vertices
-    const av = this._verts.map(v => ({
-      pos : this._animPos(v, ip, op),
-      col : v.colorRgb,
-      h   : v.h,
-    }));
-
-    let off = 0;
-    for (let row = 0; row < rows - 1; row++) {
-      for (let col = 0; col < cols - 1; col++) {
-        const i00 = row * cols + col;
-        const i10 = i00 + 1;
-        const i01 = (row + 1) * cols + col;
-        const i11 = i01 + 1;
-        const v00 = av[i00], v10 = av[i10], v01 = av[i01], v11 = av[i11];
-
-        for (let j = 0; j <= S; j++) {
-          const vt = j / S;
-          for (let i = 0; i <= S; i++) {
-            const ut = i / S;
-
-            const xy = coonsSample(
-              ut, vt,
-              v00.pos, v10.pos, v01.pos, v11.pos,
-              v00.h.e, v10.h.w, v01.h.e, v11.h.w,   // horizontal handles
-              v00.h.n, v01.h.s, v10.h.n, v11.h.s,   // vertical handles
-            );
-
-            data[off++] = xy[0];
-            data[off++] = xy[1];
-            data[off++] = bilerp(v00.col[0], v10.col[0], v01.col[0], v11.col[0], ut, vt);
-            data[off++] = bilerp(v00.col[1], v10.col[1], v01.col[1], v11.col[1], ut, vt);
-            data[off++] = bilerp(v00.col[2], v10.col[2], v01.col[2], v11.col[2], ut, vt);
-          }
-        }
-      }
-    }
-    return data;
-  }
-
-  // ── render loop ─────────────────────────────────────────────────────────────
-
-  /** Single GL draw pass — extracted so resize can trigger a one-off redraw. */
-  _drawFrame(now) {
-    const gl    = this._gl;
-    if (!gl) return;
-    const STRIDE = 5 * 4;
-    const data   = this._buildVBO(now);
-
-    gl.clearColor(this._bg[0], this._bg[1], this._bg[2], 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this._vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
-    gl.vertexAttribPointer(this._aPos, 2, gl.FLOAT, false, STRIDE, 0);
-    gl.vertexAttribPointer(this._aCol, 3, gl.FLOAT, false, STRIDE, 2 * 4);
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._ibo);
-    gl.drawElements(gl.TRIANGLES, this._idxCount, gl.UNSIGNED_SHORT, 0);
-  }
-
-  /** Called by _ensureLoop; each frame renders and re-schedules itself until
-   *  the phase settles to 'floating' (static) or 'idle', then stops. */
-  _tick(now) {
-    // Canvas is static — stop the loop; _ensureLoop restarts it for outro.
-    if (this._phase === 'floating' || this._phase === 'idle') {
-      this._loopActive = false;
+  // Morph in place to a new vertex config (different surface's gradient).
+  // Lerps every vertex's position, color, and handles from the current config to
+  // the target over `duration`, then commits the target and resumes the float.
+  // Requires the target to share this mesh's topology (same rows×cols / vertex
+  // count & index order); on mismatch it hard-swaps + replays the intro instead.
+  morphTo(targetVertices, duration = 1200) {
+    if (this.state === 'done') return;
+    if (!Array.isArray(targetVertices) || targetVertices.length !== this.vertices.length) {
+      console.warn('[MeshGradient] morphTo: vertex count mismatch — hard-swapping config.');
+      this.vertices = targetVertices;
+      this.playIntro();
       return;
     }
-
-    this._drawFrame(now);
-    requestAnimationFrame(now => this._tick(now));
+    this._morphFrom = this.vertices;
+    this._morphTo   = targetVertices;
+    this._morphDur  = duration;
+    this.state = 'morph';
+    this.stateStart = performance.now();
+    if (!this._running) this._loop();
   }
 
-  _startLoop() {
-    // Loop is demand-driven: started by playIntro() / playOutro() via _ensureLoop().
-    this._loopActive = false;
+  // Eased morph progress 0→1 for the current frame.
+  _morphEase(now) {
+    return EASE.outCubic(Math.min(1, (now - this.stateStart) / this._morphDur));
   }
+
+  // Render a static frame at the current vertex positions (no animation) at the
+  // given pixel dimensions and return a JPG data URL. Requires the instance to
+  // have been created with `preserveDrawingBuffer: true`.
+  snapshot(width, height, quality = 0.92) {
+    const prev = { w: this.canvas.width, h: this.canvas.height, state: this.state };
+
+    // Resize canvas to export dimensions.
+    this.canvas.width  = width;
+    this.canvas.height = height;
+    this.gl.viewport(0, 0, width, height);
+
+    // Render with vertices at their rest positions by temporarily freezing state.
+    this.state = 'idle';
+    this._render(0);
+
+    const dataUrl = this.canvas.toDataURL('image/jpeg', quality);
+
+    // Restore.
+    this.canvas.width  = prev.w;
+    this.canvas.height = prev.h;
+    this.gl.viewport(0, 0, prev.w, prev.h);
+    this.state = prev.state;
+
+    return dataUrl;
+  }
+
+  // ---------- render loop ----------
+
+  _loop() {
+    this._running = true;
+    const tick = (now) => {
+      if (this.state === 'done') { this._running = false; return; }
+      this._render(now);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // Returns the current position of vertex at index `vi`, given state & time.
+  _vertexPosition(vi, now) {
+    const v = this.vertices[vi];
+    const elapsed = now - this.stateStart;
+
+    if (this.state === 'intro') {
+      const stagger = vi * 50;
+      const t = Math.max(0, Math.min(1, (elapsed - stagger) / this.introDuration));
+      const e = EASE.outCubic(t);
+      const from = v.introFrom || v.position;
+      return [
+        from[0] + (v.position[0] - from[0]) * e,
+        from[1] + (v.position[1] - from[1]) * e,
+      ];
+    }
+
+    if (this.state === 'outro') {
+      const stagger = vi * 40;
+      const t = Math.max(0, Math.min(1, (elapsed - stagger) / this.outroDuration));
+      const e = EASE.inCubic(t);
+      const to = v.outroTo || v.position;
+      let x = v.position[0] + (to[0] - v.position[0]) * e;
+      let y = v.position[1] + (to[1] - v.position[1]) * e;
+      // Decay any carried-over idle drift to zero as the outro proceeds, so the
+      // vertex eases directly off its drifted position rather than snapping.
+      if (this._outroFloatCarry) {
+        const w = 1 - EASE.outCubic(Math.min(1, elapsed / FLOAT_SETTLE_DURATION));
+        const d = this._floatDelta(vi, now);
+        x += d[0] * w;
+        y += d[1] * w;
+      }
+      return [x, y];
+    }
+
+    if (this.state === 'pulse') {
+      // Interior vertices push outward from the mesh center and ease back, on
+      // top of the continuous idle drift. Boundary vertices stay glued.
+      const d = this._floatDelta(vi, now);
+      let x = v.position[0] + d[0];
+      let y = v.position[1] + d[1];
+      const { i, j } = this._gridCoords(vi);
+      const interior = !(i === 0 || i === this.cols - 1 || j === 0 || j === this.rows - 1);
+      if (interior) {
+        // Asymmetric envelope: a fairly quick pull inward, then a long, gentle
+        // ease back out so the mesh settles rather than snapping into place.
+        const t = Math.min(1, elapsed / PULSE_DURATION);
+        let env;
+        if (t < PULSE_IN_FRACTION) {
+          env = EASE.outCubic(t / PULSE_IN_FRACTION);
+        } else {
+          const k = (t - PULSE_IN_FRACTION) / (1 - PULSE_IN_FRACTION);
+          env = Math.pow(1 - k, 3); // velocity → 0 as k → 1, so no snap
+        }
+        let rx = v.position[0] - 0.5, ry = v.position[1] - 0.5;
+        const len = Math.hypot(rx, ry) || 1;
+        x -= (rx / len) * env * PULSE_AMPLITUDE;
+        y -= (ry / len) * env * PULSE_AMPLITUDE;
+      }
+      return [x, y];
+    }
+
+    if (this.state === 'morph') {
+      // Lerp from the previous config's rest position to the target's, with the
+      // idle drift carried at full strength so motion stays continuous.
+      const e = this._morphEase(now);
+      const from = this._morphFrom[vi].position;
+      const to   = this._morphTo[vi].position;
+      const d = this._floatDelta(vi, now);
+      return [
+        from[0] + (to[0] - from[0]) * e + d[0],
+        from[1] + (to[1] - from[1]) * e + d[1],
+      ];
+    }
+
+    if (this.state === 'floating') {
+      // Ease the drift in from zero when we first enter the float so the mesh
+      // doesn't jump off its rest position as the intro hands over.
+      const t = Math.max(0, Math.min(1, elapsed / FLOAT_SETTLE_DURATION));
+      const w = EASE.outCubic(t);
+      const d = this._floatDelta(vi, now);
+      return [v.position[0] + d[0] * w, v.position[1] + d[1] * w];
+    }
+
+    return v.position;
+  }
+
+  // Per-vertex idle drift offset in mesh space. Boundary vertices stay glued to
+  // the canvas edges (zero offset); interior vertices oscillate on independent
+  // phases/speeds. Uses absolute `now` so the motion is continuous across the
+  // float ramp-in and the outro drift-decay.
+  _floatDelta(vi, now) {
+    const { i, j } = this._gridCoords(vi);
+    if (i === 0 || i === this.cols - 1 || j === 0 || j === this.rows - 1) {
+      return [0, 0];
+    }
+    const ph = this._floatPhases[vi];
+    const dx = Math.sin(now * FLOAT_SPEED * ph.sx + ph.ax) * FLOAT_AMPLITUDE;
+    const dy = Math.sin(now * FLOAT_SPEED * ph.sy + ph.ay) * FLOAT_AMPLITUDE;
+    return [dx, dy];
+  }
+
+  _gridCoords(vi) { return { i: vi % this.cols, j: Math.floor(vi / this.cols) }; }
+  _vi(i, j)       { return j * this.cols + i; }
+
+  _stateIntensity(now) {
+    const elapsed = now - this.stateStart;
+    if (this.state === 'intro') {
+      const t = Math.min(1, elapsed / this.introDuration);
+      return EASE.outCubic(t);
+    }
+    if (this.state === 'outro') {
+      const t = Math.min(1, elapsed / this.outroDuration);
+      return 1 - EASE.inCubic(t);
+    }
+    return 1;
+  }
+
+  // Build an effective vertices array with positions resolved for `now`.
+  // Returns array of { position: [x,y], color: '#...', handles } — same shape as
+  // the source vertices but with `position` swapped for the animated value.
+  // Handles are kept as-is in offset form (relative offsets remain valid even
+  // when the anchor moves).
+  _resolveVertices(now) {
+    const morphing = this.state === 'morph';
+    const e = morphing ? this._morphEase(now) : 0;
+    const out = new Array(this.vertices.length);
+    for (let vi = 0; vi < this.vertices.length; vi++) {
+      const src = this.vertices[vi];
+      if (morphing) {
+        const from = this._morphFrom[vi], to = this._morphTo[vi];
+        const cf = hexToRgb(from.color), ct = hexToRgb(to.color);
+        out[vi] = {
+          position: this._vertexPosition(vi, now),
+          handles: this._lerpHandles(from.handles, to.handles, e),
+          _colorRgb: [
+            cf[0] + (ct[0] - cf[0]) * e,
+            cf[1] + (ct[1] - cf[1]) * e,
+            cf[2] + (ct[2] - cf[2]) * e,
+          ],
+        };
+      } else {
+        out[vi] = {
+          position: this._vertexPosition(vi, now),
+          color: src.color,
+          handles: src.handles,
+          _colorRgb: hexToRgb(src.color),
+        };
+      }
+    }
+    return out;
+  }
+
+  // Interpolate two vertices' handle sets. Lerps component-wise where both
+  // configs define a handle in a direction; otherwise uses the target's handle
+  // (or null), which the tessellator falls back to a computed default for.
+  _lerpHandles(from, to, e) {
+    const out = {};
+    for (const dir of ['e', 'w', 'n', 's']) {
+      const a = from && from[dir];
+      const b = to && to[dir];
+      if (a && b) out[dir] = [a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e];
+      else out[dir] = b || null;
+    }
+    return out;
+  }
+
+  _render(now) {
+    const elapsed = now - this.stateStart;
+    if (this.state === 'intro' && elapsed > this.introDuration + this.vertices.length * 50) {
+      this.state = 'floating';
+      this.stateStart = now;
+      // Settle into the continuous idle-float loop.
+    } else if (this.state === 'outro' && elapsed > this.outroDuration + this.vertices.length * 40) {
+      this.state = 'done';
+      this.onOutroComplete();
+    } else if (this.state === 'morph' && elapsed > this._morphDur) {
+      // Commit the target config and resume the float. Backdate the start so the
+      // float's settle ramp is already complete (drift ran at full strength
+      // through the morph), avoiding a re-ramp jerk. Float phases are unchanged
+      // (same vertex count), so the drift stays continuous.
+      this.vertices = this._morphTo;
+      this._morphFrom = this._morphTo = null;
+      this.state = 'floating';
+      this.stateStart = now - FLOAT_SETTLE_DURATION;
+    } else if (this.state === 'pulse' && elapsed > PULSE_DURATION) {
+      this.state = 'floating';
+      // Backdate the start so the float's settle ramp is already complete — the
+      // drift is at full strength throughout the pulse, so re-ramping it from
+      // zero here would jerk the mesh. Drift uses absolute `now`, so it stays
+      // continuous across the handoff.
+      this.stateStart = now - FLOAT_SETTLE_DURATION;
+    }
+
+    const verts = this._resolveVertices(now);
+    this._tessellate(verts);
+
+    const gl = this.gl;
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, this._positions, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(this.attribs.position);
+    gl.vertexAttribPointer(this.attribs.position, 2, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, this._colors, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(this.attribs.color);
+    gl.vertexAttribPointer(this.attribs.color, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuf);
+
+    gl.uniform1f(this.uniforms.intensity, this._stateIntensity(now));
+    gl.uniform3fv(this.uniforms.bgColor, hexToRgb(this.bgColor));
+
+    gl.drawElements(gl.TRIANGLES, this._indexCount, gl.UNSIGNED_SHORT, 0);
+  }
+
+  // Walk every patch, evaluate Coons patch + bilinear color at N×N samples,
+  // and fill the position / color typed arrays.
+  _tessellate(verts) {
+    const N = this.subdivisions;
+    const cols = this.cols, rows = this.rows;
+    const stepU = 1 / N;
+    // Default handle length: average grid spacing.
+    const defLen = 1 / Math.max(cols, rows);
+
+    let patchIdx = 0;
+    for (let j = 0; j < rows - 1; j++) {
+      for (let i = 0; i < cols - 1; i++) {
+        const v00 = verts[this._vi(i,     j)];
+        const v10 = verts[this._vi(i + 1, j)];
+        const v01 = verts[this._vi(i,     j + 1)];
+        const v11 = verts[this._vi(i + 1, j + 1)];
+
+        // Four boundary Bezier control sets.
+        const bottom = edgeControls(v00, v10, 'e', 'w', defLen);
+        const top    = edgeControls(v01, v11, 'e', 'w', defLen);
+        const left   = edgeControls(v00, v01, 'n', 's', defLen);
+        const right  = edgeControls(v10, v11, 'n', 's', defLen);
+
+        const C00 = v00._colorRgb, C10 = v10._colorRgb;
+        const C01 = v01._colorRgb, C11 = v11._colorRgb;
+        const P00 = v00.position, P10 = v10.position;
+        const P01 = v01.position, P11 = v11.position;
+
+        const baseVert = patchIdx * this._vertsPerPatch;
+
+        for (let sj = 0; sj <= N; sj++) {
+          const v = sj * stepU;
+          for (let si = 0; si <= N; si++) {
+            const u = si * stepU;
+
+            // Coons patch: ruled blend of opposite boundary curves minus the
+            // bilinear correction at the corners.
+            const B = cubicBezier(bottom[0], bottom[1], bottom[2], bottom[3], u);
+            const T = cubicBezier(top[0],    top[1],    top[2],    top[3],    u);
+            const L = cubicBezier(left[0],   left[1],   left[2],   left[3],   v);
+            const R = cubicBezier(right[0],  right[1],  right[2],  right[3],  v);
+
+            const omu = 1 - u, omv = 1 - v;
+            const x = omv * B[0] + v * T[0] + omu * L[0] + u * R[0]
+                    - (omu * omv * P00[0] + u * omv * P10[0] + omu * v * P01[0] + u * v * P11[0]);
+            const y = omv * B[1] + v * T[1] + omu * L[1] + u * R[1]
+                    - (omu * omv * P00[1] + u * omv * P10[1] + omu * v * P01[1] + u * v * P11[1]);
+
+            // Bilinear color interpolation across the patch.
+            const w00 = omu * omv, w10 = u * omv, w01 = omu * v, w11 = u * v;
+            const r = w00 * C00[0] + w10 * C10[0] + w01 * C01[0] + w11 * C11[0];
+            const g = w00 * C00[1] + w10 * C10[1] + w01 * C01[1] + w11 * C11[1];
+            const b = w00 * C00[2] + w10 * C10[2] + w01 * C01[2] + w11 * C11[2];
+
+            const vi = baseVert + sj * (N + 1) + si;
+            this._positions[vi * 2]     = x;
+            this._positions[vi * 2 + 1] = y;
+            this._colors[vi * 3]     = r;
+            this._colors[vi * 3 + 1] = g;
+            this._colors[vi * 3 + 2] = b;
+          }
+        }
+        patchIdx++;
+      }
+    }
+  }
+}
+
+// ---------- defaults ----------
+
+// Build a sensible default 4x4 grid: vertices on a uniform grid, colors blended
+// from corners, no custom handles (all null → straight-line defaults), all
+// vertices' introFrom set just outside their respective edge so the mesh
+// "swells in" from the boundaries on intro, and outroTo mirrors it.
+export function defaultGrid(rows = 4, cols = 4) {
+  // Corner colors — a sunset-ish palette by default.
+  const corners = {
+    bl: '#3D5AFE', // bottom-left
+    br: '#FF6B9D', // bottom-right
+    tl: '#FFA45B', // top-left
+    tr: '#5BFFC8', // top-right
+  };
+  const dx = 1 / (cols - 1);
+  const dy = 1 / (rows - 1);
+  const hx = dx / 3;          // default handle length along x
+  const hy = dy / 3;          // default handle length along y
+  const out = [];
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < cols; i++) {
+      const u = i / (cols - 1);
+      const v = j / (rows - 1);
+      // Concrete default handles. Null where there's no neighbor in that
+      // direction. Editor mutates these directly; renderer falls back to
+      // computed defaults only if a handle is null (safety net).
+      const handles = {
+        e: (i < cols - 1) ? [ hx, 0] : null,
+        w: (i > 0)        ? [-hx, 0] : null,
+        n: (j < rows - 1) ? [ 0,  hy] : null,
+        s: (j > 0)        ? [ 0, -hy] : null,
+      };
+      out.push({
+        position: [u, v],
+        color: '#f7f5f1',
+        handles,
+        // Intro: push edge vertices off-canvas, interior stays put. The mesh
+        // "stretches in" from the boundary on intro.
+        introFrom: introFromFor(u, v),
+        outroTo:   outroToFor(u, v),
+      });
+    }
+  }
+  return out;
+}
+
+function introFromFor(u, v) {
+  // Edges push out from their respective sides; interior stays in place.
+  const onLeft = u < 0.01, onRight = u > 0.99;
+  const onBottom = v < 0.01, onTop = v > 0.99;
+  let x = u, y = v;
+  if (onLeft)   x = -0.3;
+  if (onRight)  x =  1.3;
+  if (onBottom) y = -0.3;
+  if (onTop)    y =  1.3;
+  // Pure corners: push along the diagonal slightly so motion reads.
+  return [x, y];
+}
+function outroToFor(u, v) { return introFromFor(u, v); }
+
+function bilerpHex(bl, br, tl, tr, u, v) {
+  const a = hexToRgb(bl), b = hexToRgb(br), c = hexToRgb(tl), d = hexToRgb(tr);
+  const omu = 1 - u, omv = 1 - v;
+  const w00 = omu * omv, w10 = u * omv, w01 = omu * v, w11 = u * v;
+  const r = w00 * a[0] + w10 * b[0] + w01 * c[0] + w11 * d[0];
+  const g = w00 * a[1] + w10 * b[1] + w01 * c[1] + w11 * d[1];
+  const bl_ = w00 * a[2] + w10 * b[2] + w01 * c[2] + w11 * d[2];
+  return '#' + [r, g, bl_].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
 }
