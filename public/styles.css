@@ -316,14 +316,14 @@ img {
   grid-template-columns: 90px 150px minmax(0, 1fr) 130px 130px 96px 44px;
   align-items: center;
   gap: 16px;
-  padding: 18px 0;
+  padding: 18px 16px;
   border-bottom: 1px solid var(--ffg-divider);
   transition: background-color 120ms ease;
 }
 .txn-row:not(.txn-row--head):hover { background: var(--overlay-dark-10); }
 .txn-row:not(.txn-row--head):hover .txn-cell { color: var(--ffg-surface-950); }
 .txn-row--head {
-  padding: 16px 0;
+  padding: 16px 16px;
   border-bottom: 1px solid var(--ffg-divider);
 }
 .txn-row--head .txn-cell {
@@ -861,6 +861,21 @@ img {
   border: 1px solid var(--ffg-surface-950);
 }
 .status-pill--resolved .status-pill__dot { background: var(--ffg-good); }
+
+/* Failed — destructive hover-fill (destructive/20) + destructive text */
+.status-pill--failed {
+  background: color-mix(in oklab, var(--destructive) 20%, transparent);
+  color: var(--destructive);
+  border: 1px solid transparent;
+}
+
+/* Cancelled / Reversed — neutral muted fill + surface-700 text */
+.status-pill--cancelled,
+.status-pill--reversed {
+  background: var(--overlay-dark-10);
+  color: var(--ffg-surface-700);
+  border: 1px solid transparent;
+}
 
 
 

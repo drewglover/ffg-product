@@ -5,6 +5,7 @@
       "name": "ffg",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite"],
+      "autoPort": true,
       "port": 5173
     }
   ]
