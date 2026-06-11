@@ -119,7 +119,7 @@ export default function Dashboard() {
         <RidgeDivider />
       </div>
 
-      <TweaksPanel>
+      <TweaksPanel title="Tweaks & States">
         <TweakSection label="Donation status" />
         <TweakRadio
           label="State"
