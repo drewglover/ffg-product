@@ -36,6 +36,15 @@ function compare(a, b, key) {
 const FLOW_SIGN = { credit: "+", debit: "-", upload: "" };
 const FLOW_LABEL = { credit: "Account credit", debit: "Account debit", upload: "Donation upload" };
 
+// Map each transaction status to a status-pill variant.
+const STATUS_VARIANT = {
+  Completed: "resolved",
+  Pending: "active",
+  Failed: "failed",
+  Cancelled: "cancelled",
+  Reversed: "reversed",
+};
+
 const PER_PAGE = 10;
 
 function TransactionHistorySection({ phase }) {
@@ -61,9 +70,10 @@ function TransactionHistorySection({ phase }) {
     setSort((s) => s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" });
   };
 
-  // Allocated: every row reads "Completed". In progress: rows keep their own status.
+  // Allocated: pending transfers read "Completed"; Failed/Cancelled/Reversed
+  // keep their own status. In progress: rows keep their own status.
   const sorted = TRANSACTIONS.
-  map((t) => ({ ...t, status: phase === "allocated" ? "Completed" : t.status })).
+  map((t) => ({ ...t, status: phase === "allocated" && t.status === "Pending" ? "Completed" : t.status })).
   sort((a, b) => {
     const v = compare(a, b, sort.key);
     return sort.dir === "asc" ? v : -v;
@@ -121,7 +131,7 @@ function TransactionHistorySection({ phase }) {
             <div className="txn-cell txn-cell--ein" role="cell">{t.ein}</div>
             <div className="txn-cell txn-cell--status" role="cell">
               <StatusPill
-              variant={t.status === "Completed" ? "resolved" : "active"}
+              variant={STATUS_VARIANT[t.status] || "active"}
               label={t.status}
               size="md" />
 
