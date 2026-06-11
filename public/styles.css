@@ -466,6 +466,7 @@ img {
   justify-content: center;
   color: var(--ffg-surface-950);
   cursor: pointer;
+  border-radius: var(--radius-sm);
   transition: background-color 120ms ease;
 }
 .txn-menu-btn:hover { background: var(--overlay-dark-10); }
