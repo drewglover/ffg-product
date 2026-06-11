@@ -51,7 +51,7 @@ function Directory({ onOpen }) {
   return (
     <div className="pt-dir">
       <header className="pt-dir__head">
-        <h1 className="pt-dir__title" style={{ fontSize: "48px", fontWeight: "300" }}>Our Partners</h1>
+        <h1 className="pt-dir__title" style={{ fontSize: "48px", fontWeight: "300" }}>Our Opportunities</h1>
         <p className="pt-dir__sub" style={{ color: "var(--ffg-muted)", fontWeight: "300", fontSize: "16px" }}>
           Browse all of the organizations we partner with and find the right match for you.
         </p>

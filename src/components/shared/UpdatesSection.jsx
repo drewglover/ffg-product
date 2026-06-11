@@ -12,7 +12,7 @@ import { UpdateCard } from './UpdateCard';
 
 const UpdatesSection = ({
   items = [],
-  title = 'Updates from your partners and community',
+  title = 'Updates from your organizations and community',
   seeMoreHref = '#',
 }) => {
   return (
