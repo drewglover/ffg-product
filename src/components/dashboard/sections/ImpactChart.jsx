@@ -6,6 +6,7 @@ function ChartTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   const dollarsItem = payload.find((p) => p.dataKey === "dollars");
   const outcomesItem = payload.find((p) => p.dataKey === "outcomes");
+  const balanceItem = payload.find((p) => p.dataKey === "balance");
   const dollars = dollarsItem ? dollarsItem.value : 0;
   const outcomes = outcomesItem ? outcomesItem.value : 0;
   return (
@@ -21,16 +22,23 @@ function ChartTooltip({ active, payload, label }) {
         <span className="chart-tooltip__label">Outcomes</span>
         <span className="chart-tooltip__value">{outcomes.toLocaleString()}</span>
       </div>
+      {balanceItem &&
+      <div className="chart-tooltip__row">
+        <span className="chart-tooltip__swatch chart-tooltip__swatch--balance" />
+        <span className="chart-tooltip__label">Account balance</span>
+        <span className="chart-tooltip__value">${balanceItem.value.toLocaleString()}</span>
+      </div>}
     </div>);
 
 }
 
-function ImpactChart({ accent = ["#15315A", "#6F9DCB", "#B6D2E8"], data, scale = 1, mode = "actual" }) {
+function ImpactChart({ accent = ["#15315A", "#6F9DCB", "#B6D2E8"], data, scale = 1, mode = "actual", showBalance = true }) {
   const [dark, mid, light] = accent;
   const scaled = data.map((d) => ({
     m: d.m,
     dollars: d.dollars * scale,
-    outcomes: d.outcomes * scale
+    outcomes: d.outcomes * scale,
+    balance: d.balance * scale
   }));
   // For "projected" the outcomes line trends slightly higher than actual.
   const projMul = mode === "projected" ? 1.25 : 1;
@@ -56,7 +64,7 @@ function ImpactChart({ accent = ["#15315A", "#6F9DCB", "#B6D2E8"], data, scale =
               <stop offset="100%" stopColor={light} stopOpacity={0.05} />
             </linearGradient>
             <linearGradient id="ffg-area-stroke" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={dark} stopOpacity={0.0} />
+              <stop offset="0%" stopColor={mid} stopOpacity={0.3} />
               <stop offset="40%" stopColor={mid} stopOpacity={0.7} />
               <stop offset="100%" stopColor={dark} stopOpacity={1} />
             </linearGradient>
@@ -80,7 +88,6 @@ function ImpactChart({ accent = ["#15315A", "#6F9DCB", "#B6D2E8"], data, scale =
 
           <YAxis
             yAxisId="left"
-            dataKey="dollars"
             axisLine={false}
             tickLine={false}
             width={56}
@@ -132,6 +139,20 @@ function ImpactChart({ accent = ["#15315A", "#6F9DCB", "#B6D2E8"], data, scale =
             animationDuration={1200}
             animationBegin={300}
             strokeDasharray={mode === "projected" ? "4 4" : "0"} />
+
+          {showBalance &&
+          <Area
+            yAxisId="left"
+            type="monotone"
+            dataKey="balance"
+            stroke="var(--ffg-data-qual-environment)"
+            strokeWidth={1.75}
+            strokeDasharray="6 3"
+            fill="none"
+            dot={false}
+            isAnimationActive={true}
+            animationDuration={1200}
+            animationBegin={300} />}
 
         </ComposedChart>
       </ResponsiveContainer>
