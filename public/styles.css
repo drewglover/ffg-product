@@ -1472,7 +1472,9 @@ img {
   margin-bottom: 0;
   padding-top: 0;
   border-top: 0;
-  justify-content: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  width: 100%;
 }
 .chart-legend__item {
   display: inline-flex;
@@ -1501,6 +1503,25 @@ img {
   height: 4px;
   border-radius: var(--radius-sm);
   background: linear-gradient(90deg, var(--ffg-blue-300), var(--ffg-blue-900));
+}
+.chart-legend__swatch--balance {
+  width: 18px;
+  height: 0;
+  border-top: 2px dashed var(--ffg-data-qual-environment);
+}
+.chart-legend__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ffg-surface-600);
+  letter-spacing: 0.005em;
+  cursor: pointer;
+}
+.chart-legend__toggle input {
+  accent-color: var(--ffg-data-qual-environment);
+  cursor: pointer;
 }
 
 .chip {
@@ -1670,6 +1691,11 @@ img {
   background: linear-gradient(180deg, var(--ffg-blue-500), var(--ffg-blue-300));
   border-radius: var(--radius-sm);
   height: 4px;
+}
+.chart-tooltip__swatch--balance {
+  background: var(--ffg-data-qual-environment);
+  border-radius: var(--radius-sm);
+  height: 3px;
 }
 .chart-tooltip__label {
   flex: 1;

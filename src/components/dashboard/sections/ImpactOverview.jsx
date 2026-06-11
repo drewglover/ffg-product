@@ -15,6 +15,7 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
   const [areaFilter, setAreaFilter] = useState("all");
   const [modeFilter, setModeFilter] = useState("actual");
   const [periodFilter, setPeriodFilter] = useState("year");
+  const [showBalance, setShowBalance] = useState(true);
 
   const scale = scope === "factory" ? 15 : scope === "circle" ? 5 : 1;
   const livesValue = Math.round(34000 * scale).toLocaleString();
@@ -79,16 +80,29 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
 
             </div>
           </div>
-          <ImpactChart accent={accent} data={periodData} scale={scale} mode={modeFilter} />
+          <ImpactChart accent={accent} data={periodData} scale={scale} mode={modeFilter} showBalance={showBalance} />
           <div className="chart-legend">
-            <span className="chart-legend__item" style={{ fontSize: "14px" }}>
+            <span className="chart-legend__item">
               <span className="chart-legend__swatch chart-legend__swatch--bar" />
               Dollars given
             </span>
-            <span className="chart-legend__item" style={{ fontSize: "14px" }}>
+            <span className="chart-legend__item">
               <span className="chart-legend__swatch chart-legend__swatch--area" />
               Outcomes created
             </span>
+            {showBalance &&
+            <span className="chart-legend__item">
+              <span className="chart-legend__swatch chart-legend__swatch--balance" />
+              Account balance
+            </span>}
+            <label className="chart-legend__toggle">
+              <input
+                  type="checkbox"
+                  checked={showBalance}
+                  onChange={(e) => setShowBalance(e.target.checked)} />
+
+              Show account balance
+            </label>
           </div>
         </div>
 
