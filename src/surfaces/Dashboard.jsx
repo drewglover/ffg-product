@@ -10,7 +10,8 @@ import { PageTabs } from '../components/dashboard/sections/PageTabs.jsx';
 import { ImpactOverview } from '../components/dashboard/sections/ImpactOverview.jsx';
 import { ImpactAreasSection } from '../components/dashboard/sections/ImpactAreasSection.jsx';
 import { TransactionHistorySection } from '../components/dashboard/sections/TransactionHistorySection.jsx';
-import { UpdatesSection } from '../components/dashboard/sections/UpdatesSection.jsx';
+import { UpdatesSection } from '../components/shared/UpdatesSection.jsx';
+import { UPDATE_ITEMS } from '../components/dashboard/data/updateItems.jsx';
 import { RidgeDivider } from '../components/dashboard/atoms/RidgeDivider.jsx';
 
 const TWEAK_DEFAULTS = {
@@ -114,7 +115,7 @@ export default function Dashboard() {
         {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} />}
         {pageTab === 'areas' && <ImpactAreasSection cohortSize={t.cohortSize} />}
         {pageTab === 'history' && <TransactionHistorySection phase={t.phase} />}
-        {pageTab === 'overview' && <UpdatesSection />}
+        {pageTab === 'overview' && <UpdatesSection items={UPDATE_ITEMS} />}
         <RidgeDivider />
       </div>
 

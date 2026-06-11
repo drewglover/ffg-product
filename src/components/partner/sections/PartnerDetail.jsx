@@ -7,7 +7,8 @@ import { KPI } from '../atoms/KPI';
 import { Section } from '../atoms/Section';
 import { Stat } from '../atoms/Stat.partner';
 import { TimelineStep } from '../atoms/TimelineStep';
-import { UpdateCard } from '../../shared/UpdateCard';
+import { UpdatesSection } from '../../shared/UpdatesSection';
+import { PARTNER_UPDATE_ITEMS } from '../data/updateItems';
 import { Accordion } from '../modals/Accordion.partner';
 import { ChartCard } from '../charts/ChartCard';
 import { DotChart } from '../charts/DotChart';
@@ -236,36 +237,7 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
       </main>
 
       {/* Updates from your partners and community */}
-      <section className="pt-updates">
-        <div className="pt-updates__head">
-          <h2 className="pt-updates__title" style={{ fontSize: "20px", fontFamily: "\"PP Fragment Sans\"" }}>Updates from your partners and community</h2>
-          <a className="pt-updates__more" href="#" style={{ fontSize: "16px", fontWeight: "300" }}>See more</a>
-        </div>
-        <div className="pt-updates__grid">
-          <UpdateCard
-          img="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=900&q=80&auto=format&fit=crop"
-          title="New shelter site opens in Treasure Valley"
-          copy="We've opened a new shelter wing with capacity to serve another 100 families this winter."
-          tag="Community" />
-
-          <UpdateCard
-          img="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=900&q=80&auto=format&fit=crop"
-          title="Q1 housing-stability report is live"
-          copy="Three quarters in, our caseworkers report a 38% drop in repeat-shelter intake across the families we placed last year."
-          tag="Education" />
-
-          <UpdateCard
-          img="https://images.unsplash.com/photo-1552581234-26160f608093?w=900&q=80&auto=format&fit=crop"
-          title="Partnering with Boise State on case-management training"
-          copy="A new cohort of social-work students is shadowing our caseworkers each week as part of a year-long field placement."
-          tag="Culture" />
-
-        </div>
-        <div className="pt-updates__nav">
-          <button className="pt-arrow" aria-label="Previous"><PIcon.ArrowLeft /></button>
-          <button className="pt-arrow" aria-label="Next"><PIcon.Arrow /></button>
-        </div>
-      </section>
+      <UpdatesSection items={PARTNER_UPDATE_ITEMS.map((u) => ({ ...u, partner: partner.name }))} />
     </div>);
 
 }
