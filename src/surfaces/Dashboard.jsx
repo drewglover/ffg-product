@@ -13,6 +13,7 @@ import { TransactionHistorySection } from '../components/dashboard/sections/Tran
 import { UpdatesSection } from '../components/shared/UpdatesSection.jsx';
 import { UPDATE_ITEMS } from '../components/dashboard/data/updateItems.jsx';
 import { RidgeDivider } from '../components/dashboard/atoms/RidgeDivider.jsx';
+import { pulse as pulseGradient } from '../lib/gradient/controller.js';
 
 const TWEAK_DEFAULTS = {
   name: 'McKay',
@@ -71,6 +72,13 @@ export default function Dashboard() {
   const [pageTab, setPageTab] = useState('overview');
   const [allocAmount, setAllocAmount] = useState(200000);
 
+  // Committing a higher annual donation ripples the background mesh. Decreases
+  // (or no-change) commit silently.
+  const handleAmountConfirm = (next) => {
+    if (next > allocAmount) pulseGradient();
+    setAllocAmount(next);
+  };
+
   // Pin to the top on mount. The staggered section entrances start at
   // translateY(10px); with scroll anchoring on, that settling otherwise
   // nudges the page down ~10px on load. Reset before paint so we never
@@ -103,7 +111,7 @@ export default function Dashboard() {
           onTabChange={setPageTab}
           welcomeState={t.welcome}
           dynamicAction={dynamicAction}
-          onAmountConfirm={setAllocAmount}
+          onAmountConfirm={handleAmountConfirm}
           confirmedAmount={allocAmount} />
         {t.showProgress && (
           <Progress
