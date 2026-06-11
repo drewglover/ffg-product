@@ -1387,8 +1387,8 @@ img {
 }
 
 /* TREEMAP SYSTEM (canonical)
-   One treemap: .pt-tm-grid (defined in §27 partner), rendered by the shared
-   CauseAllocationTreemap on both the partner page and the dashboard. */
+   One treemap: recharts-powered .pt-tm-rc (styled in §27 partner), rendered by
+   the shared CauseAllocationTreemap on both the partner page and dashboard. */
 /* ---- Allocation treemap ---- */
 .alloc-treemap-card {
   display: flex;
@@ -1398,9 +1398,9 @@ img {
 /* .alloc-treemap-head shares .chart-header styling (see below) so the
    "Impact areas" title aligns with the chart card's "Your impact growth". */
 
-/* Dashboard variant — stretch the canonical .pt-tm-grid to fill the chart
+/* Dashboard variant — stretch the canonical treemap to fill the chart
    card's column height (it sits directly under .alloc-treemap-head). */
-.alloc-treemap-card .pt-tm-grid {
+.alloc-treemap-card .pt-tm-rc {
   flex: 1 1 auto;
   min-height: 360px;
 }
@@ -4121,26 +4121,32 @@ img {
   flex-direction: column;
   gap: 4px;
 }
-/* Proportional treemap grid — areas reflect percentages */
-.pt-tm-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 20fr 20fr 15fr;
-  grid-template-areas:
-    "culture   social"
-    "education social"
-    "community environment";
-  gap: 4px;
+/* Recharts-powered proportional treemap — cell areas reflect percentages.
+   .pt-tm-rc wraps the ResponsiveContainer; .pt-tm__label is the overlay
+   rendered inside each cell's <foreignObject>. */
+.pt-tm-rc {
   flex: 1;
+  width: 100%;
+  min-height: 0;
 }
-.pt-tm__cell {
-  border: 1px solid var(--ffg-surface-950);
-  padding: 14px 16px;
+/* Hairline cell; fills with a 10% wash of its cause color on hover. */
+.pt-tm__rect {
+  fill: var(--cell-color);
+  fill-opacity: 0;
+  transition: fill-opacity 120ms ease;
+}
+.pt-tm__rect:hover {
+  fill-opacity: 0.1;
+}
+.pt-tm__label {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: transparent;
-  min-height: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  user-select: none;
 }
 .pt-tm__pct {
   font-family: "PP Fragment Sans", sans-serif;
@@ -4185,8 +4191,9 @@ img {
   display: flex;
   flex-direction: column;
 }
-.pt-metrics-right .pt-tm-grid {
+.pt-metrics-right .pt-tm-rc {
   flex: 1;
+  min-height: 280px;
 }
 .pt-metrics-left {
   display: flex;

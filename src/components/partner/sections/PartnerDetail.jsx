@@ -17,6 +17,12 @@ import { DotChart } from '../charts/DotChart';
 // INDIVIDUAL PARTNER PAGE
 // ═══════════════════════════════════════════════════════════════════════════
 function PartnerDetail({ partner, onBack }) {
+  // Cause Allocation treemap mirrors this org's impact-area badges
+  // (partner.tags); the primary tag takes the larger share so the allocation
+  // reads as primary/secondary.
+  const TAG_SPLIT = { 1: [100], 2: [60, 40], 3: [50, 30, 20] };
+  const split = TAG_SPLIT[partner.tags.length] || partner.tags.map(() => Math.round(100 / partner.tags.length));
+  const allocData = partner.tags.map((name, i) => ({ name, size: split[i] }));
   return (
     <div className="pt-detail">
       {/* Top bar — Back link + right-side badges */}
@@ -185,13 +191,7 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
                   <span className="pt-label">Cause Allocation</span>
                   <PIcon.Info className="pt-info" />
                 </div>
-                <CauseAllocationTreemap
-                  data={[
-                  { name: "Culture", size: 20 },
-                  { name: "Education", size: 20 },
-                  { name: "Social Justice", size: 40 },
-                  { name: "Community", size: 15 },
-                  { name: "Environment", size: 15 }]} />
+                <CauseAllocationTreemap data={allocData} />
               </div>
             </div>
           </div>
