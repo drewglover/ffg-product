@@ -1386,134 +1386,34 @@ img {
   padding-left: 0;
 }
 
-/* TREEMAP SYSTEM (C4 unified)
-   Canon: .tm-* (dashboard). .pt-tm* aligned in §27 partner. */
+/* TREEMAP SYSTEM (canonical)
+   One treemap: recharts-powered .pt-tm-rc (styled in §27 partner), rendered by
+   the shared CauseAllocationTreemap on both the partner page and dashboard. */
 /* ---- Allocation treemap ---- */
 .alloc-treemap-card {
   display: flex;
   flex-direction: column;
   padding-left: 0;
 }
+/* .alloc-treemap-head shares .chart-header styling (see below) so the
+   "Impact areas" title aligns with the chart card's "Your impact growth". */
+
+/* Dashboard variant — stretch the canonical treemap to fill the chart
+   card's column height (it sits directly under .alloc-treemap-head). */
+.alloc-treemap-card .pt-tm-rc {
+  flex: 1 1 auto;
+  min-height: 360px;
+}
+
+.chart-header,
 .alloc-treemap-head {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: 0;
-  /* align border-bottom with the chart card's chart-legend border-top */
-  min-height: 45px;
-  display: flex;
-  align-items: flex-start;
-}
-.treemap-wrap {
-  flex: 1 1 auto;
-  width: 100%;
-  min-height: 360px;
-  height: 100%;
-  position: relative;
-}
-
-/* Dashboard variant — partner-style static treemap inside .alloc-treemap-card.
-   Reuses .pt-tm chrome but stretches to fill the chart card's column height. */
-.alloc-treemap-static {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 360px;
-}
-.alloc-treemap-static .pt-tm { flex: 2 1 0; min-height: 0; }
-.alloc-treemap-static .pt-tm--row { flex: 1 1 0; }
-.alloc-treemap-static .pt-tm__col { min-height: 0; }
-.alloc-treemap-static .pt-tm__cell,
-.alloc-treemap-static .pt-tm__cell--lg,
-.alloc-treemap-static .pt-tm__cell--row {
-  min-height: 0;
-  flex: 1 1 0;
-}
-.tm-tooltip {
-  position: fixed;
-  pointer-events: none;
-  z-index: 1000;
-  background: #1B1B1A;
-  color: #F2EEE6;
-  padding: 14px 16px;
-  width: 280px;
-  max-width: 320px;
-  box-shadow: 0 8px 28px rgba(20, 20, 19, 0.28);
-  font-family: "PP Fragment Sans", sans-serif;
-  letter-spacing: 0.005em;
-  line-height: 1.45;
-}
-.tm-tooltip__title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #FFFCF6;
-  margin-bottom: 8px;
-}
-.tm-tooltip__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
-}
-.tm-tooltip__desc {
-  margin: 0 0 10px 0;
-  font-size: 12.5px;
-  color: rgba(242, 238, 230, 0.7);
-}
-.tm-tooltip__meta {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  font-size: 12.5px;
-}
-.tm-tooltip__amount {
-  font-weight: 600;
-  color: #FFFCF6;
-  font-variant-numeric: tabular-nums;
-}
-.tm-tooltip__sep { color: rgba(242, 238, 230, 0.5); }
-.tm-tooltip__pct { color: rgba(242, 238, 230, 0.7); }
-.tm-cell {
-  font-family: "PP Fragment Sans", sans-serif;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: var(--ffg-surface-950);
-  user-select: none;
-}
-.tm-pct {
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-.tm-name {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--ffg-surface-900);
-  letter-spacing: 0.005em;
-}
-.tm-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.chart-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  /* match the chart header's filter-chip-driven height (28px chip + 12px pad)
+     so the centered titles align across both cards */
+  min-height: 40px;
   margin-bottom: 14px;
   padding-bottom: 12px;
 }
@@ -4221,29 +4121,35 @@ img {
   flex-direction: column;
   gap: 4px;
 }
-/* Proportional treemap grid — areas reflect percentages */
-.pt-tm-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 20fr 20fr 15fr;
-  grid-template-areas:
-    "culture   social"
-    "education social"
-    "community environment";
-  gap: 4px;
+/* Recharts-powered proportional treemap — cell areas reflect percentages.
+   .pt-tm-rc wraps the ResponsiveContainer; .pt-tm__label is the overlay
+   rendered inside each cell's <foreignObject>. */
+.pt-tm-rc {
   flex: 1;
+  width: 100%;
+  min-height: 0;
 }
-.pt-tm__cell {
-  border: 1px solid var(--ffg-surface-950);
-  padding: 14px 16px;
+/* Hairline cell; fills with a 10% wash of its cause color on hover. */
+.pt-tm__rect {
+  fill: var(--cell-color);
+  fill-opacity: 0;
+  transition: fill-opacity 120ms ease;
+}
+.pt-tm__rect:hover {
+  fill-opacity: 0.1;
+}
+.pt-tm__label {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: transparent;
-  min-height: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  user-select: none;
 }
 .pt-tm__pct {
-  font-family: "PP Fragment Glare", serif;
+  font-family: "PP Fragment Sans", sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: var(--type-h4);
@@ -4253,11 +4159,20 @@ img {
   font-variant-numeric: tabular-nums;
 }
 .pt-tm__cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: "PP Fragment Sans", sans-serif;
   font-weight: 400;
   font-size: var(--type-caption);
   color: var(--color-body);
   letter-spacing: 0.005em;
+}
+.pt-tm__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 
 /* Performance Metrics masonry grid */
@@ -4276,8 +4191,9 @@ img {
   display: flex;
   flex-direction: column;
 }
-.pt-metrics-right .pt-tm-grid {
+.pt-metrics-right .pt-tm-rc {
   flex: 1;
+  min-height: 280px;
 }
 .pt-metrics-left {
   display: flex;
