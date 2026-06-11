@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useMatches } from 'react-router-dom';
 import { FFGTopNavUnauth } from '../topnav-unauth.jsx';
 import { RouteFade } from './RouteFade.jsx';
+import { Footer } from '../components/shared/Footer.jsx';
 
 // Persistent unauthenticated shell. Mirrors AuthLayout but mounts the unauth
 // top nav (sign-in CTAs instead of the avatar menu). The nav stays put while
@@ -27,6 +28,7 @@ export default function UnauthLayout() {
       <RouteFade>
         <Outlet />
       </RouteFade>
+      <Footer />
     </div>
   );
 }

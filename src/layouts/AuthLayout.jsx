@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useMatches } from 'react-router-dom';
 import { FFGTopNav } from '../topnav-auth.jsx';
 import { RouteFade } from './RouteFade.jsx';
+import { Footer } from '../components/shared/Footer.jsx';
 import { Toaster } from '@/components/ui/sonner';
 
 // Persistent authenticated shell. The top nav mounts once here and stays put
@@ -31,6 +32,7 @@ export default function AuthLayout() {
       <RouteFade>
         <Outlet />
       </RouteFade>
+      <Footer />
       {/* bottom-center keeps toasts clear of the bottom-right tweaks panel */}
       <Toaster position="bottom-center" theme="light" />
     </div>
