@@ -523,11 +523,12 @@ img {
 
 /* ---- Allocated-state callout ---- */
 .allocated-callout {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 24px;
   padding: 18px 24px;
-  background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0));
+  background: linear-gradient(to right, var(--ffg-surface-wash), var(--ffg-light));
   border: 1px solid var(--overlay-dark-10);
   border-radius: var(--radius);
 }
@@ -551,12 +552,16 @@ img {
   color: var(--color-body);
   line-height: 1.5;
 }
-/* In the hero's right slot the callout fills the column like the alloc card,
-   rather than spanning the full-width section it used to occupy. */
-.allocated-callout--in-hero {
-  flex: 0 0 33.333%;
-  max-width: 33.333%;
-  align-self: stretch;
+/* In the updates-area the callout spans the full content width. The action
+   variant keeps its CTA pinned right; advisory/general are text-only. Reserve
+   space on the right so the dismiss ✕ never overlaps the copy/CTA. */
+.allocated-callout--action,
+.allocated-callout--advisory,
+.allocated-callout--general {
+  padding-right: 48px;
+}
+.allocated-callout--action .hero-btn {
+  flex: 0 0 auto;
 }
 
 /* SHADCN TARGET — Alert (.confirm-banner, .allocated-callout) */
@@ -922,7 +927,7 @@ img {
   display: flex;
   align-items: flex-start;
   gap: 64px;
-  padding-bottom: 48px;
+  padding-bottom: 72px;
 }
 .hero-text { flex: 1 1 0; min-width: 0; }
 .hero h1 {
@@ -1101,10 +1106,40 @@ img {
 /* ---- Transfer status ---- */
 .section-block { padding-bottom: 64px; }
 .section-block[aria-label="Impact overview"] { padding-bottom: 110px; }
-.section-block[aria-label="Transfer status"] {
+.section-block[aria-label="Update"] {
   position: relative;
-  padding-bottom: 72px;
+  padding-bottom: 48px;
   transition: opacity 300ms ease, transform 300ms ease;
+}
+/* Dismiss ✕ — top-right of the updates-area. For callout updates it reads as
+   the corner of the card; for the bare stepper it anchors to the section. */
+.updates-area__dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ffg-surface-950);
+  opacity: 0.35;
+  border-radius: var(--radius-sm);
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+.updates-area__dismiss:hover {
+  opacity: 0.7;
+  background: var(--overlay-dark-10);
+}
+.updates-area__dismiss svg { color: currentColor; }
+/* Inside a callout card, inset the ✕ so it sits within the card's padding. */
+.updates-area:has(.allocated-callout) .updates-area__dismiss {
+  top: 12px;
+  right: 12px;
 }
 
 .subhead {
@@ -5253,14 +5288,14 @@ img {
 }
 .hero-actions,
 .alloc-card,
-.allocated-callout--in-hero,
+.allocated-callout,
 .stepper {
   animation: ffg-swap-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-actions,
   .alloc-card,
-  .allocated-callout--in-hero,
+  .allocated-callout,
   .stepper { animation: none; }
 }
 
