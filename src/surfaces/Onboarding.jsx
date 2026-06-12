@@ -11,6 +11,7 @@ import { ReviewStep } from '../components/onboarding/steps/ReviewStep.jsx';
 import { Submitted } from '../components/onboarding/steps/Submitted.jsx';
 import { StepChrome } from '../components/onboarding/atoms/StepChrome.jsx';
 import { Ic } from '../components/onboarding/icons/Ic.jsx';
+import { morphToGradient } from '../lib/gradient/controller.js';
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -45,9 +46,10 @@ export default function Onboarding() {
     setGoalsByCause({});
     setScales([]);
     setLocations([]);
+    morphToGradient('onboarding');
     goTo('landing');
   };
-  const closeOut = () => goTo('landing');
+  const closeOut = () => { morphToGradient('onboarding'); goTo('landing'); };
 
   // Continue-button enabled state per step
   const canContinue = useMemo(() => {
@@ -82,7 +84,7 @@ export default function Onboarding() {
         <button type="button" className="ob-landing__close" onClick={() => navigate('/dashboard')} aria-label="Close">
           <Ic.X width="24" height="24" />
         </button>
-        <Landing onStart={next} />
+        <Landing onStart={() => { morphToGradient('onboardingActive'); next(); }} />
       </div>);
   }
   if (screen === 'done') {
