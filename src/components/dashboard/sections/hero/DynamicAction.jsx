@@ -2,75 +2,13 @@ import React, { useState, useRef } from 'react';
 import { Icon } from '../../icons/Icon';
 import { toast } from 'sonner';
 
-/* Bottom-aligned action prompts (copy + a single button). Keyed by variant
-   slug so adding another is a one-line entry here + an option in the panel. */
-const ACTION_PROMPTS = {
-  "action-annual-review": { copy: "It's time to review your good for the year.", button: "Schedule your review" },
-  "action-wrapped":       { copy: "Your 2026 impact wrapped is ready.",          button: "Open" },
-  "action-sign":          { copy: "Confirm your good.",                          button: "Sign engagement" },
-  "action-wire":          { copy: "Get your good in action.",                    button: "Wire funds" },
-  "action-vet":           { copy: "Your good is waiting.",                       button: "Choose nonprofits" },
-  "action-renew":         { copy: "Keep your good going.",                        button: "Renew now" },
-};
-
 /* ====== Dynamic action ======
-   Top-right of the hero. A single slot whose contents swap based on the
-   resolved `variant`. Today's variants:
-     - "none"               → renders nothing
-     - "annual giving"      → annual-giving card (carousel + custom amount)
-     - "in action"          → the "funds at work" callout
-     - "vetting"            → the "vetting your orgs" callout
-     - "action-*"           → a copy + button prompt (bottom-aligned); see
-                              ACTION_PROMPTS for the set
-   Unknown variants render nothing, so new states can be added additively. */
-function DynamicAction({ variant, onAmountConfirm, confirmedAmount }) {
-  if (ACTION_PROMPTS[variant]) return <ActionPrompt {...ACTION_PROMPTS[variant]} />;
-  switch (variant) {
-    case "annual giving":
-      return <AllocationSlider onAmountConfirm={onAmountConfirm} confirmedAmount={confirmedAmount} />;
-    case "in action":
-      return (
-        <Callout
-          label="Funds in action"
-          title="Your funds are being put to work."
-          copy="Outcomes are visible in your dash, we'll send you impact stories as they happen." />
-      );
-    case "vetting":
-      return (
-        <Callout
-          label="Vetting"
-          title="We're vetting your requested organizations."
-          copy="We'll send you an update in 3-4 weeks." />
-      );
-    case "none":
-    default:
-      return null;
-  }
-}
-
-/* ---- action-*: a single copy line + button ---- */
-function ActionPrompt({ copy, button }) {
-  return (
-    <div className="action-prompt" aria-label="Action">
-      <p className="action-prompt__copy">{copy}</p>
-      <button type="button" className="hero-btn hero-btn--solid">{button}</button>
-    </div>
-  );
-}
-
-/* ---- callout ("in action" / "vetting") ----
-   A titled status callout for the hero slot (option B); the `--in-hero`
-   modifier lets it stretch to fill the right column rather than the
-   full-width section it used to occupy below the stepper. */
-function Callout({ label, title, copy }) {
-  return (
-    <div className="allocated-callout allocated-callout--in-hero" aria-label={label}>
-      <div className="allocated-callout__text">
-        <div className="allocated-callout__title">{title}</div>
-        <p className="allocated-callout__copy">{copy}</p>
-      </div>
-    </div>
-  );
+   Top-right of the hero. The slot now holds only the allocation card: when
+   `enabled` it renders the annual-giving card, otherwise nothing (Welcome then
+   spans the full width). Status/action callouts have moved to the UpdatesArea. */
+function DynamicAction({ enabled = true, onAmountConfirm, confirmedAmount }) {
+  if (!enabled) return null;
+  return <AllocationSlider onAmountConfirm={onAmountConfirm} confirmedAmount={confirmedAmount} />;
 }
 
 /* ---- annual giving ----

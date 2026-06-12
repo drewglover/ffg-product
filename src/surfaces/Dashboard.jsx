@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakSelect, TweakToggle } from '../tweaks-panel.jsx';
 import { DENSITY_PRESETS } from '../components/dashboard/data/densityPresets.jsx';
 import { Hero } from '../components/dashboard/sections/Hero.jsx';
-import { Progress } from '../components/dashboard/sections/hero/Progress.jsx';
+import { UpdatesArea } from '../components/dashboard/sections/UpdatesArea.jsx';
 import { PageTabs } from '../components/dashboard/sections/PageTabs.jsx';
 import { ImpactOverview } from '../components/dashboard/sections/ImpactOverview.jsx';
 import { ImpactAreasSection } from '../components/dashboard/sections/ImpactAreasSection.jsx';
@@ -23,10 +23,37 @@ const TWEAK_DEFAULTS = {
   firstGiveDate: 'April 15, 2026',
   phase: 'in-progress',
   welcome: 'new good',
-  dynamicAction: 'auto',
+  allocationCard: true,
+  update: 'auto',
   stepCount: 4,
-  showProgress: true,
 };
+
+// Copy presets for the non-status update types, rehomed from the old hero
+// callouts / action prompts.
+const UPDATE_PRESETS = {
+  'update-action':   { title: 'Get your good in action.', copy: 'Your transfer is ready to be wired so your good can begin.', action: { label: 'Wire funds' } },
+  'update-advisory': { title: "We're vetting your requested organizations.", copy: "We'll send you an update in 3-4 weeks." },
+  'update-general':  { title: 'Your funds are being put to work.', copy: "Outcomes are visible in your dash, we'll send you impact stories as they happen." },
+};
+
+// Which update a phase shows when the tweak is on "auto".
+const PHASE_DEFAULT_UPDATE = {
+  preview: 'action',
+  'in-progress': 'status',
+  allocated: 'general',
+};
+
+// Resolve the tweak + phase into a single update object for UpdatesArea.
+function buildUpdate(updateTweak, phase, steps, title) {
+  const kind = updateTweak === 'auto' ? (PHASE_DEFAULT_UPDATE[phase] || 'none') : updateTweak;
+  if (kind === 'none') return null;
+  if (kind === 'status') {
+    if (!steps.length) return null;
+    return { type: 'update-status', title, steps };
+  }
+  const type = `update-${kind}`;
+  return UPDATE_PRESETS[type] ? { type, ...UPDATE_PRESETS[type] } : null;
+}
 
 // Step labels per progress variant. The 4-step variant keeps the original
 // transfer copy (including the dollar amount on the first step).
@@ -34,13 +61,6 @@ const STEP_LABELS = {
   3: ['Transfer initiated', 'Funds received', 'Funds distributed'],
   4: ['Transfer initiated: $200,000', 'Funds received', 'Allocation in progress', 'Funds distributed'],
   5: ['Transfer initiated', 'Allocate funds', 'Vetting', 'Final selection', 'Funds distributed'],
-};
-
-// Which dynamic-action variant a phase maps to when the tweak is on "auto".
-const PHASE_DEFAULT_ACTION = {
-  preview: 'annual giving',
-  'in-progress': 'none',
-  allocated: 'in action',
 };
 
 // Build the stepper data for the current phase + step count. "allocated"
@@ -96,11 +116,9 @@ export default function Dashboard() {
     r.setProperty('--type-card-title', preset.card + 'px');
   }, [t.density]);
 
-  const dynamicAction = t.dynamicAction === 'auto'
-    ? (PHASE_DEFAULT_ACTION[t.phase] || 'none')
-    : t.dynamicAction;
   const steps = buildSteps(t.phase, Number(t.stepCount), t.firstGiveDate);
   const progressTitle = t.phase === 'allocated' ? 'Transfer complete' : 'Transfer in progress';
+  const update = buildUpdate(t.update, t.phase, steps, progressTitle);
 
   return (
     <>
@@ -110,15 +128,10 @@ export default function Dashboard() {
           livesCount={t.livesCount}
           onTabChange={setPageTab}
           welcomeState={t.welcome}
-          dynamicAction={dynamicAction}
+          allocationCard={t.allocationCard}
           onAmountConfirm={handleAmountConfirm}
           confirmedAmount={allocAmount} />
-        {t.showProgress && (
-          <Progress
-            title={progressTitle}
-            steps={steps}
-            dismissible={t.phase === 'allocated'} />
-        )}
+        <UpdatesArea key={update?.type || 'none'} update={update} />
         <PageTabs value={pageTab} onChange={setPageTab} />
         {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} />}
         {pageTab === 'areas' && <ImpactAreasSection cohortSize={t.cohortSize} />}
@@ -140,15 +153,16 @@ export default function Dashboard() {
           value={t.welcome}
           options={['new good', 'generic', 'initial', 'none']}
           onChange={(v) => setTweak('welcome', v)} />
-        <TweakSelect
-          label="Dynamic area"
-          value={t.dynamicAction}
-          options={['auto', 'none', 'annual giving', 'in action', 'vetting', 'action-annual-review', 'action-wrapped', 'action-sign', 'action-wire', 'action-vet', 'action-renew']}
-          onChange={(v) => setTweak('dynamicAction', v)} />
         <TweakToggle
-          label="Show progress"
-          value={t.showProgress}
-          onChange={(v) => setTweak('showProgress', v)} />
+          label="Allocation card"
+          value={t.allocationCard}
+          onChange={(v) => setTweak('allocationCard', v)} />
+        <TweakSection label="Updates" />
+        <TweakSelect
+          label="Update"
+          value={t.update}
+          options={['auto', 'none', 'status', 'action', 'advisory', 'general']}
+          onChange={(v) => setTweak('update', v)} />
         <TweakRadio
           label="Progress"
           value={t.stepCount}
