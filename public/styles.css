@@ -1109,7 +1109,8 @@ img {
 .section-block[aria-label="Update"] {
   position: relative;
   padding-bottom: 48px;
-  transition: opacity 300ms ease, transform 300ms ease;
+  transition: opacity 400ms ease, transform 400ms ease,
+    max-height 400ms ease, padding 400ms ease;
 }
 /* Dismiss ✕ — top-right of the updates-area. For callout updates it reads as
    the corner of the card; for the bare stepper it anchors to the section. */
