@@ -26,7 +26,7 @@ npm run build    # production build → dist/
 - `src/surfaces/` — the three top-level surface shells (`Dashboard`, `Onboarding`, `Partner`).
 - `src/components/{dashboard,onboarding,partner,shared}/` — ported components, grouped by surface (icons, data, atoms, panels, sections, …).
 - `src/topnav-auth.jsx`, `src/tweaks-panel.jsx` — shared chrome.
-- `src/lib/mesh-gradient.js` — the WebGL Coons-patch mesh background renderer; `MeshBackground.jsx` mounts it once at the app root.
+- `src/lib/mesh-gradient.js` — the WebGL Coons-patch mesh background renderer; `MeshBackground.jsx` mounts it once at the app root. See [src/lib/gradients/README.md](src/lib/gradients/README.md) for how to import a gradient, set it to morph, and link a pulse to an action.
 - `public/styles.css` — the design system's single stylesheet (CSS-variable tokens, PP Fragment fonts).
 - `public/assets/` — fonts, logo, avatar.
 
