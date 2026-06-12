@@ -3962,16 +3962,20 @@ img {
 .pt-reviewed-by {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+}
+.pt-reviewed-by__pipe {
+  width: 1px;
+  align-self: stretch;
+  background-color: var(--ffg-surface-300);
 }
 .pt-reviewed-by__badge {
   width: 36px;
   height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  color: var(--ffg-surface-950);
+  background-color: var(--ffg-surface-600);
+  -webkit-mask: url("/assets/FFG_dark.svg") center / contain no-repeat;
+  mask: url("/assets/FFG_dark.svg") center / contain no-repeat;
 }
 .pt-reviewed-by__logo {
   font-family: "PP Fragment Glare", serif;
