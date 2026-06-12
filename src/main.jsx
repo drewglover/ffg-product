@@ -13,6 +13,7 @@ import Onboarding from './surfaces/Onboarding.jsx';
 import OrganizationsUnauth from './surfaces/OrganizationsUnauth.jsx';
 import Partner from './surfaces/Partner.jsx';
 import ShadcnDemo from './surfaces/ShadcnDemo.jsx';
+import Inventory from './surfaces/Inventory.jsx';
 
 // Layout routes keep the top nav mounted across child navigations: only the
 // <Outlet/> content swaps, so moving between sibling surfaces never reloads
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
       },
       { path: '/onboarding', element: <Onboarding /> },
       { path: '/shadcn-demo', element: <ShadcnDemo /> },
+      { path: '/inventory', element: <Inventory /> },
       { path: '*', element: <Navigate to="/dashboard" replace /> },
     ],
   },
