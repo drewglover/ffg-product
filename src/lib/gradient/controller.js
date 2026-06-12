@@ -6,7 +6,7 @@
 // remounts and is reachable from both React (route sync) and plain modules
 // (e.g. an action handler firing a pulse).
 import { MeshGradient } from '../mesh-gradient.js';
-import { gradientForPath } from '../gradients/index.js';
+import { gradientForPath, GRADIENTS } from '../gradients/index.js';
 
 let engine = null;
 let currentConfig = null; // the vertex array currently shown/targeted
@@ -45,10 +45,21 @@ export function setSurface(pathname = '/') {
   engine.morphTo(next, 2400);
 }
 
+// Morph to a named gradient config (a key of GRADIENTS) regardless of route.
+// Used by in-surface actions that change the gradient without navigating —
+// e.g. the onboarding "Let's get started" transition. No-op until initialised.
+export function morphToGradient(name, duration = 2400) {
+  if (!engine) return;
+  const next = GRADIENTS[name];
+  if (!next || next === currentConfig) return;
+  currentConfig = next;
+  engine.morphTo(next, duration);
+}
+
 // Fire a one-shot pulse. The reusable action trigger — any module can call this.
 export function pulse() {
   if (engine) engine.playPulse();
 }
 
 // Single import surface for callers that prefer an object handle.
-export const gradientController = { initGradient, setSurface, pulse };
+export const gradientController = { initGradient, setSurface, morphToGradient, pulse };

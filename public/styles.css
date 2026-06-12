@@ -2316,7 +2316,10 @@ img {
 
 .ob-app {
   min-height: 100vh;
-  background: var(--ffg-surface-50);
+  /* Transparent so the fixed mesh canvas (z-index 0) shows through, matching
+     .app and the dashboard treatment. The html/body fallback colour covers the
+     gap before the WebGL canvas mounts. */
+  background: transparent;
   display: flex;
   flex-direction: column;
   font-family: "PP Fragment Sans", sans-serif;

@@ -7,8 +7,12 @@
 // so the renderer can morph between them vertex-for-vertex on navigation.
 import dashboard from './dashboard.json';
 import partner from './partner.json';
+import onboarding from './onboarding.json';
+import onboardingActive from './onboarding-active.json';
 
-export const GRADIENTS = { dashboard, partner };
+// `onboardingActive` is not a route surface — it's the morph target the
+// onboarding flow swaps to when the user clicks "Let's get started".
+export const GRADIENTS = { dashboard, partner, onboarding, onboardingActive };
 
 export const DEFAULT_GRADIENT = 'dashboard';
 
@@ -16,5 +20,6 @@ export const DEFAULT_GRADIENT = 'dashboard';
 // dashboard gradient.
 export function gradientForPath(pathname = '') {
   if (pathname.startsWith('/partner')) return GRADIENTS.partner;
+  if (pathname.startsWith('/onboarding')) return GRADIENTS.onboarding;
   return GRADIENTS[DEFAULT_GRADIENT];
 }
