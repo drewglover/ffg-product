@@ -42,7 +42,7 @@ export function setSurface(pathname = '/') {
   const next = gradientForPath(pathname);
   if (next === currentConfig) return;
   currentConfig = next;
-  engine.morphTo(next);
+  engine.morphTo(next, 2400);
 }
 
 // Fire a one-shot pulse. The reusable action trigger — any module can call this.
