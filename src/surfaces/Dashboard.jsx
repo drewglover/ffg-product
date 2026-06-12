@@ -22,9 +22,9 @@ const TWEAK_DEFAULTS = {
   cohortSize: 122,
   firstGiveDate: 'April 15, 2026',
   phase: 'in-progress',
-  welcome: 'new good',
-  allocationCard: true,
-  update: 'auto',
+  welcome: 'generic',
+  allocationCard: false,
+  update: 'status',
   stepCount: 4,
 };
 
@@ -36,16 +36,8 @@ const UPDATE_PRESETS = {
   'update-general':  { title: 'Your funds are being put to work.', copy: "Outcomes are visible in your dash, we'll send you impact stories as they happen." },
 };
 
-// Which update a phase shows when the tweak is on "auto".
-const PHASE_DEFAULT_UPDATE = {
-  preview: 'action',
-  'in-progress': 'status',
-  allocated: 'general',
-};
-
-// Resolve the tweak + phase into a single update object for UpdatesArea.
-function buildUpdate(updateTweak, phase, steps, title) {
-  const kind = updateTweak === 'auto' ? (PHASE_DEFAULT_UPDATE[phase] || 'none') : updateTweak;
+// Resolve the update tweak into a single update object for UpdatesArea.
+function buildUpdate(kind, steps, title) {
   if (kind === 'none') return null;
   if (kind === 'status') {
     if (!steps.length) return null;
@@ -118,7 +110,7 @@ export default function Dashboard() {
 
   const steps = buildSteps(t.phase, Number(t.stepCount), t.firstGiveDate);
   const progressTitle = t.phase === 'allocated' ? 'Transfer complete' : 'Transfer in progress';
-  const update = buildUpdate(t.update, t.phase, steps, progressTitle);
+  const update = buildUpdate(t.update, steps, progressTitle);
 
   return (
     <>
@@ -161,7 +153,7 @@ export default function Dashboard() {
         <TweakSelect
           label="Update"
           value={t.update}
-          options={['auto', 'none', 'status', 'action', 'advisory', 'general']}
+          options={['none', 'status', 'action', 'advisory', 'general']}
           onChange={(v) => setTweak('update', v)} />
         <TweakRadio
           label="Progress"

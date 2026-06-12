@@ -1136,6 +1136,11 @@ img {
   background: var(--overlay-dark-10);
 }
 .updates-area__dismiss svg { color: currentColor; }
+/* Inside a callout card, inset the ✕ so it sits within the card's padding. */
+.updates-area:has(.allocated-callout) .updates-area__dismiss {
+  top: 12px;
+  right: 12px;
+}
 
 .subhead {
   font-size: 13px;
