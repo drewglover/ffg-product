@@ -5,7 +5,8 @@ import React from 'react';
    `state`:
      - "new good" → impact recap with a link to the new lives reached
      - "generic"  → "Review what your good is doing."
-     - "initial"  → "Direct where your good goes." (pairs with the preview phase) */
+     - "initial"  → "Direct where your good goes." (pairs with the preview phase)
+     - "none"     → no subtitle line at all */
 const SUBTITLE_STYLE = { fontWeight: "300", fontSize: "16px", color: "var(--ffg-muted)" };
 
 function Welcome({ name, livesCount, onTabChange, state = "new good" }) {
@@ -25,7 +26,9 @@ function Welcome({ name, livesCount, onTabChange, state = "new good" }) {
   );
 
   let subtitle;
-  if (state === "generic") {
+  if (state === "none") {
+    subtitle = null;
+  } else if (state === "generic") {
     subtitle = <p style={SUBTITLE_STYLE}>Review what {goodLink} is doing.</p>;
   } else if (state === "initial") {
     subtitle = <p style={SUBTITLE_STYLE}>Direct where {goodLink} goes.</p>;
