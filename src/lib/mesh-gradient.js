@@ -49,15 +49,18 @@ function hexToRgb(hex) {
 const EASE = {
   outCubic: t => 1 - Math.pow(1 - t, 3),
   inCubic:  t => t * t * t,
+  // Smootherstep: zero velocity at both ends, so motion creeps in without a
+  // perceptible "start" — used to fade the idle drift in after the intro.
+  inOutQuint: t => t * t * t * (t * (t * 6 - 15) + 10),
 };
 
 // Idle float tuning. Fixed (not configurable) — interior vertices drift gently
 // while the mesh is at rest. Amplitude is 10% below the legacy 0.025 default.
-const FLOAT_AMPLITUDE = 0.0225;       // mesh-space units of peak drift
+const FLOAT_AMPLITUDE = 0.013;        // mesh-space units of peak drift
 const FLOAT_SPEED     = 0.00018;      // radians per ms (base angular speed)
 // Ramp window for fading the idle drift in (intro → float) and back out
 // (decayed on top of the outro), so the mesh never snaps on/off its drift.
-const FLOAT_SETTLE_DURATION = 900;    // ms
+const FLOAT_SETTLE_DURATION = 2000;   // ms
 
 // Pulse tuning. A one-shot ripple where interior vertices pull radially inward
 // toward the mesh center and ease back, layered on top of the idle drift.
@@ -464,7 +467,7 @@ export class MeshGradient {
       // Ease the drift in from zero when we first enter the float so the mesh
       // doesn't jump off its rest position as the intro hands over.
       const t = Math.max(0, Math.min(1, elapsed / FLOAT_SETTLE_DURATION));
-      const w = EASE.outCubic(t);
+      const w = EASE.inOutQuint(t);
       const d = this._floatDelta(vi, now);
       return [v.position[0] + d[0] * w, v.position[1] + d[1] * w];
     }
