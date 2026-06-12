@@ -166,12 +166,12 @@ export class MeshGradient {
       this.canvas.style.cssText = `
         position: fixed; inset: 0; width: 100vw; height: 100vh;
         z-index: 0; pointer-events: none; display: block;
-        will-change: opacity;
+        will-change: opacity; mix-blend-mode: darken;
       `;
     } else {
       this.canvas.style.cssText = `
         position: absolute; inset: 0; width: 100%; height: 100%;
-        pointer-events: none; display: block;
+        pointer-events: none; display: block; mix-blend-mode: soft-light;
       `;
     }
     // Full-viewport: prepend behind the app content (matches the legacy mount,
