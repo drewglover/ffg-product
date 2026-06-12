@@ -138,7 +138,7 @@ export default function Dashboard() {
         <TweakSelect
           label="Welcome"
           value={t.welcome}
-          options={['new good', 'generic', 'initial']}
+          options={['new good', 'generic', 'initial', 'none']}
           onChange={(v) => setTweak('welcome', v)} />
         <TweakSelect
           label="Dynamic area"

@@ -11,7 +11,7 @@ function PartnerCard({ partner, onOpen }) {
 
   return (
     <article className="pt-card" onClick={onOpen} role="button" tabIndex={0}
-    onKeyDown={(e) => {if (e.key === "Enter") onOpen();}} style={{ height: "275px", opacity: "0.25", backgroundColor: "rgba(255, 255, 255, 0.25)" }}>
+    onKeyDown={(e) => {if (e.key === "Enter") onOpen();}}>
       {/* Identity: logo + name (+ verified badge) + location, with the
               open-card affordance pinned top-right. */}
       <div className="pt-card__head">
@@ -26,7 +26,7 @@ function PartnerCard({ partner, onOpen }) {
                 </span>}
             </h3>
             <div className="pt-card__loc">
-              <span style={{ fontSize: "14px" }}>{partner.location}</span>
+              <span>{partner.location}</span>
             </div>
           </div>
         </div>
@@ -45,9 +45,9 @@ function PartnerCard({ partner, onOpen }) {
       </div>
 
       {/* Footer: credibility tier (1–5) */}
-      <div className="pt-card__foot pt-card__foot--tier" style={{ alignItems: "baseline" }}>
-        <span className="pt-card__tier" style={{ fontWeight: "400" }}>{tier * 20}%</span>
-        <span className="pt-card__tier-unit" style={{ fontSize: "14px" }}>Confidence Level</span>
+      <div className="pt-card__foot pt-card__foot--tier">
+        <span className="pt-card__tier">{tier * 20}%</span>
+        <span className="pt-card__tier-unit">Confidence Level</span>
         <PIcon.Info className="pt-info" />
       </div>
     </article>);

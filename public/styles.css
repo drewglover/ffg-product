@@ -13,7 +13,7 @@
    DECISIONS APPLIED
    B1–B6   Bugs fixed inline
    C4      Treemap visual language unified → .tm-* canon (.pt-tm* aligned)
-   C7      Surface-wash tokenised (--ffg-surface-wash-soft/wash/wash-strong)
+   C7      Surface-wash tokenised (--ffg-surface-wash, opaque #F9F8F5)
    C12     Type tokens declared in :root; --type-section split into two (C12b)
 
    SHADCN MIGRATION QUEUED (C1/C2 Button · C3 Pagination · C6 Card+Carousel
@@ -172,10 +172,8 @@ html, body {
   --ffg-data-qual-economic-growth: #64BC98; /* Economic Growth #64BC98 → #9FD3BC */
   --ffg-data-qual-humanitarian:    #EE0D0E; /* Humanitarian    #EE0D0E → #F26A69 */
 
-  /* ── Surface wash ramp — surface-50 at opacity (C7) ── */
-  --ffg-surface-wash-soft:   rgba(247, 245, 241, 0.45); /* update-card__body    */
-  --ffg-surface-wash:        rgba(247, 245, 241, 0.55); /* pt-card, pt-chart    */
-  --ffg-surface-wash-strong: rgba(247, 245, 241, 0.65); /* pt-side__card        */
+  /* ── Surface wash — opaque #F9F8F5 (C7) ── */
+  --ffg-surface-wash:        oklch(0.9776 0.0027 106.42); /* #F9F8F5 — pt-card, pt-chart, pt-side__card, update-card__body */
 
   /* ── Shadcn breakpoints (ShadBreakpoints) ── */
   --bp-tn:  0px;    /* tiny        */
@@ -3088,7 +3086,7 @@ img {
    SHADCN TARGETS: Button · Badge · Card · Pagination · DropdownMenu · Accordion · Dialog · Carousel
    FFG-NATIVE:     .pt-timeline · .pt-side sticky sidebar · .pt-kpi stat blocks · .pt-tm static grid
    C4:  .pt-tm__pct weight+letter-spacing aligned to .tm-* canon
-   C7:  rgba wash values → var(--ffg-surface-wash*)
+   C7:  rgba wash values → var(--ffg-surface-wash)
 ════════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -3429,7 +3427,7 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ffg-muted);
   letter-spacing: 0.005em;
 }
@@ -3600,19 +3598,20 @@ img {
 
 .pt-card__foot--tier {
   justify-content: flex-start;
+  align-items: baseline;
   gap: 8px;
 }
 .pt-card__tier {
   font-family: "PP Fragment Sans", sans-serif;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--ffg-surface-950);
   letter-spacing: -0.005em;
   font-variant-numeric: tabular-nums;
 }
 .pt-card__tier-unit {
   font-weight: 400;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ffg-muted);
   letter-spacing: 0.005em;
 }
@@ -4564,7 +4563,7 @@ img {
 .pt-side__card {
   border: 1px solid var(--ffg-divider);
   border-radius: var(--radius);
-  background: var(--ffg-surface-wash-strong);
+  background: var(--ffg-surface-wash);
   padding: 22px 22px 24px;
   display: flex;
   flex-direction: column;
