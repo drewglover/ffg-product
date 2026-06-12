@@ -30,23 +30,13 @@ function Stepper({ steps = [] }) {
           >
             {s.label}
           </div>
-          {s.state === "done" && (
+          {((s.state === "done" && s.date) || (s.state === "active" && s.note)) && (
             <div
               className="step-date"
               style={{ fontWeight: "300", fontSize: "12px", color: "var(--ffg-surface-950)", opacity: "0.4" }}
             >
-              {s.date}
+              {s.state === "active" ? s.note : s.date}
             </div>
-          )}
-          {s.action && (
-            <button
-              type="button"
-              className="step-action"
-              onClick={s.action.onClick}
-              disabled={s.action.disabled}
-            >
-              {s.action.label}
-            </button>
           )}
         </div>
       ))}

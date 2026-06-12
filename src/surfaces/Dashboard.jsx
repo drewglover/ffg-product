@@ -24,7 +24,7 @@ const TWEAK_DEFAULTS = {
   phase: 'in-progress',
   welcome: 'generic',
   allocationCard: false,
-  update: 'status',
+  update: 'none',
   stepCount: 4,
 };
 
@@ -47,12 +47,29 @@ function buildUpdate(kind, steps, title) {
   return UPDATE_PRESETS[type] ? { type, ...UPDATE_PRESETS[type] } : null;
 }
 
-// Step labels per progress variant. The 4-step variant keeps the original
-// transfer copy (including the dollar amount on the first step).
-const STEP_LABELS = {
-  3: ['Transfer initiated', 'Funds received', 'Funds distributed'],
-  4: ['Transfer initiated: $200,000', 'Funds received', 'Allocation in progress', 'Funds distributed'],
-  5: ['Transfer initiated', 'Allocate funds', 'Vetting', 'Final selection', 'Funds distributed'],
+// Step definitions per progress variant. Each step carries its label, an
+// optional `date` shown when it's complete (falls back to the global first-give
+// date), and an optional `activeText` rendered in the date style when the step
+// is the active one (e.g. a date or "in progress").
+const STEP_DEFS = {
+  3: [
+    { label: 'Transfer initiated' },
+    { label: 'Funds received', activeText: 'April 24' },
+    { label: 'Funds distributed' },
+  ],
+  4: [
+    { label: 'Transfer initiated: $200,000' },
+    { label: 'Funds received', date: 'April 24' },
+    { label: 'Allocation', activeText: 'in progress' },
+    { label: 'Funds distributed' },
+  ],
+  5: [
+    { label: 'Transfer initiated' },
+    { label: 'Allocate funds', date: 'April 24' },
+    { label: 'Vetting', date: 'May 2' },
+    { label: 'Final selection', activeText: 'in progress' },
+    { label: 'Funds distributed' },
+  ],
 };
 
 // Build the stepper data for the current phase + step count. "allocated"
@@ -60,22 +77,20 @@ const STEP_LABELS = {
 // one before it active); "preview" shows no stepper at all.
 function buildSteps(phase, stepCount, date) {
   if (phase === 'preview') return [];
-  const labels = STEP_LABELS[stepCount] || STEP_LABELS[4];
-  const activeIdx = labels.length - 2; // second-to-last is "in progress"
-  return labels.map((label, i) => {
+  const defs = STEP_DEFS[stepCount] || STEP_DEFS[4];
+  const activeIdx = defs.length - 2; // second-to-last is "in progress"
+  return defs.map((def, i) => {
+    const base = { label: def.label };
     if (phase === 'allocated') {
-      return { label, date, progress: 100, state: 'done' };
+      return { ...base, date: def.date || date, progress: 100, state: 'done' };
     }
-    if (i < activeIdx) return { label, date, progress: 100, state: 'done' };
+    if (i < activeIdx) return { ...base, date: def.date || date, progress: 100, state: 'done' };
     if (i === activeIdx) {
-      // Active bar spans full width (keeps the pulse); the 4-step variant
-      // surfaces a nonprofit-selection action in place of the date.
-      const step = { label, date, progress: 100, state: 'active' };
-      if (stepCount === 4) step.action = { label: 'Choose nonprofits' };
-      if (stepCount === 5) step.action = { label: 'Review vetting' };
-      return step;
+      // Active bar spans full width (keeps the pulse); `note` renders in the
+      // date style beneath the label.
+      return { ...base, note: def.activeText, progress: 100, state: 'active' };
     }
-    return { label, date, progress: 0, state: 'pending' };
+    return { ...base, progress: 0, state: 'pending' };
   });
 }
 
