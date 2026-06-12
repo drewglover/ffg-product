@@ -3405,7 +3405,7 @@ img {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-family: "PP Fragment Glare", serif;
+  font-family: "PP Fragment Sans", sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: var(--type-body-1);
