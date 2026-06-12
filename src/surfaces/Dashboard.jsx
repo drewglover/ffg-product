@@ -54,20 +54,20 @@ function buildUpdate(kind, steps, title) {
 const STEP_DEFS = {
   3: [
     { label: 'Transfer initiated' },
-    { label: 'Funds received', activeText: 'April 24' },
+    { label: 'Funds received', activeText: 'In progress' },
     { label: 'Funds distributed' },
   ],
   4: [
     { label: 'Transfer initiated: $200,000' },
     { label: 'Funds received', date: 'April 24' },
-    { label: 'Allocation', activeText: 'in progress' },
+    { label: 'Allocation', activeText: 'In progress' },
     { label: 'Funds distributed' },
   ],
   5: [
     { label: 'Transfer initiated' },
     { label: 'Allocate funds', date: 'April 24' },
-    { label: 'Vetting', date: 'May 2' },
-    { label: 'Final selection', activeText: 'in progress' },
+    { label: 'Vetting', date: 'May 2, 2026' },
+    { label: 'Final selection', activeText: 'In progress' },
     { label: 'Funds distributed' },
   ],
 };

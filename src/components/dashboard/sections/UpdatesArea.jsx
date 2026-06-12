@@ -16,12 +16,21 @@ import { Stepper } from './hero/Stepper.jsx';
 function UpdatesArea({ update }) {
   const [dismissed, setDismissed] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const [maxHeight, setMaxHeight] = React.useState(null);
+  const sectionRef = React.useRef(null);
 
   if (!update || !update.type || dismissed) return null;
 
   const handleDismiss = () => {
-    setIsClosing(true);
-    setTimeout(() => setDismissed(true), 320);
+    // Pin the current height, then collapse it on the next frame so the
+    // content below slides up smoothly instead of snapping when we unmount.
+    const h = sectionRef.current ? sectionRef.current.offsetHeight : 0;
+    setMaxHeight(h);
+    requestAnimationFrame(() => {
+      setIsClosing(true);
+      setMaxHeight(0);
+    });
+    setTimeout(() => setDismissed(true), 425);
   };
 
   const isStatus = update.type === "update-status";
@@ -29,11 +38,15 @@ function UpdatesArea({ update }) {
 
   return (
     <section
+      ref={sectionRef}
       className="section-block updates-area"
       aria-label="Update"
       style={{
         opacity: isClosing ? 0 : 1,
         transform: isClosing ? "translateY(-14px)" : "translateY(0)",
+        maxHeight: maxHeight === null ? undefined : maxHeight,
+        overflow: maxHeight === null ? undefined : "hidden",
+        paddingBottom: isClosing ? 0 : undefined,
       }}
     >
       <button
